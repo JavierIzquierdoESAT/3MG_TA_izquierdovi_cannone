@@ -1,0 +1,6 @@
+[requires]
+glfw/3.3.8
+glew/2.2.0
+
+[generator]
+premake
