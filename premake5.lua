@@ -1,3 +1,7 @@
+include ("../../build/deps/Debug/conanbuildinfo.premake.lua")
+include ("../../build/deps/Release/conanbuildinfo.premake.lua")
+include ("../../build/deps/RelWithDebInfo/conanbuildinfo.premake.lua")
+
 build_configurations = {}
 
 build_configurations[0] = "Debug"
