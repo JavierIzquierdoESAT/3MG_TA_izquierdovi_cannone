@@ -1,5 +1,5 @@
 @echo off
 cd %~dp0..
-C:\Users\%USERNAME%\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\Scripts\conan install -if build/deps/Release -s build_type=Release -s compiler="Visual Studio" -s compiler.runtime=MD --build=* src/build/
-C:\Users\%USERNAME%\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\Scripts\conan install -if build/deps/RelWithDebInfo -s build_type=RelWithDebInfo -s compiler="Visual Studio" -s compiler.runtime=MD --build=* src/build/
-C:\Users\%USERNAME%\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\Scripts\conan install -if build/deps/Debug -s build_type=Debug -s compiler="Visual Studio" -s compiler.runtime=MDd --build=* src/build/
+conan install -if build/deps/Release -s build_type=Release -s compiler="Visual Studio" -s compiler.runtime=MD --build=* src/build/
+conan install -if build/deps/RelWithDebInfo -s build_type=RelWithDebInfo -s compiler="Visual Studio" -s compiler.runtime=MD --build=* src/build/
+conan install -if build/deps/Debug -s build_type=Debug -s compiler="Visual Studio" -s compiler.runtime=MDd --build=* src/build/
