@@ -1,7 +1,3 @@
-include ("../../build/deps/Debug/conanbuildinfo.premake.lua")
-include ("../../build/deps/Release/conanbuildinfo.premake.lua")
-include ("../../build/deps/RelWithDebInfo/conanbuildinfo.premake.lua")
-
 build_configurations = {}
 
 build_configurations[0] = "Debug"
@@ -15,7 +11,7 @@ function get_conan_config()
 
   for i,build_cfg in ipairs(build_configurations) do
 
-    include("build/deps/"..build_cfg.."/conanbuildinfo.premake.lua")
+    include("../../build/deps/"..build_cfg.."/conanbuildinfo.premake.lua")
 
     configurations[build_cfg] = {}
 
@@ -57,7 +53,9 @@ end
 workspace "WindowTest"
    configurations { "Debug", "RelWithDebInfo", "Release" }
    location "build"
-   conan_basic_setup()
+   conan_cfg = get_conan_config()
+   setup_dependencies(conan_cfg)
+   
 
 
 project "WindowTest"
@@ -68,11 +66,7 @@ project "WindowTest"
    location "build"
 
    files { "premake5.lua", "include/**.h", "src/**.h", "src/**.c",
-           "src/**.cpp", "src/bild/**.txt" }
-
-    conan_cfg = get_conan_config()
-    setup_dependencies(conan_cfg)
-
+           "src/**.cpp", "src/build/**.txt" }
 
 
    filter "configurations:Debug"
