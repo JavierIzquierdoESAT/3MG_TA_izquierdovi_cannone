@@ -1,3 +1,4 @@
+
 #include "window.hpp"
 #include <GLFW/glfw3.h>
 
@@ -8,10 +9,15 @@ Window::Window(int w, int h, const char* title)
   window = glfwCreateWindow(w, h, title, NULL, NULL);
 }
 
-std::optional<Window>& Window::Make(int w, int h, const char* title)
+Window::Window(Window&& w)
 {
-  std::optional<Window> win = Window(w, h, title);
-  return win;
+  this->window = w.window;
+  w.window = NULL;
+}
+
+std::optional<Window> Window::Make(int w, int h, const char* title)
+{
+  return Window(w, h, title);
 }
 
 
