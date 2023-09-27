@@ -1,11 +1,9 @@
-#include <optional>
-#include <string>
-
+#include "../src/stdafx.hpp"
 
 
 class Window
 {
-public:
+ public:
 
 	~Window();
 	Window(const Window&) = delete;
@@ -21,8 +19,9 @@ public:
 	/// </summary>
 	bool isDone() const;
 
-private:
+ private:
 	Window(int w, int h, const char* title);
 
 	struct GLFWwindow* window_handle_;
+
 };

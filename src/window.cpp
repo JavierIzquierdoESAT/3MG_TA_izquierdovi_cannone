@@ -13,7 +13,8 @@ Window::Window(Window& w) : window_handle_{ w.window_handle_ }
   w.window_handle_ = NULL;
 }
 
-Window::Window(Window&& w) noexcept : window_handle_{w.window_handle_}
+Window::Window(Window&& w) noexcept 
+  : window_handle_{w.window_handle_}
 {
   w.window_handle_ = NULL;
 }
