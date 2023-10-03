@@ -1,5 +1,7 @@
 #include "../src/stdafx.hpp"
 
+struct GLFWwindow;
+
 /** Handles Window */
 class Window
 {
@@ -21,9 +23,9 @@ class Window
 
  private:
 
-	Window(int w, int h, const char* title);
+	Window(GLFWwindow* w);
 
 	/** openGL window handle */
-	struct GLFWwindow* window_handle_;
+	GLFWwindow* window_handle_;
 
 };
