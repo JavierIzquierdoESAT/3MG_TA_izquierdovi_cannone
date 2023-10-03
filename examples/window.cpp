@@ -1,9 +1,11 @@
 #include "window.hpp"
+#include "engine.hpp"
 
 int main(int, char**) {
 
-  auto w = Window::Make(640,480,"ventana");
 
+  Engine::Init();
+  auto w = Window::Make(640,480,"ventana");
 
   if (w) {
     auto& window = w.value();
@@ -13,6 +15,7 @@ int main(int, char**) {
     }
   }
 
+  Engine::Terminate();
   return 0;
 }
 
