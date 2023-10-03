@@ -2,6 +2,6 @@
 
 #include <GLFW/glfw3.h>
 
-void Engine::Init() { glfwInit(); }
+Engine::Engine() { glfwInit(); }
 
-void Engine::Terminate() { glfwTerminate(); }
+Engine::~Engine() { glfwTerminate(); }
