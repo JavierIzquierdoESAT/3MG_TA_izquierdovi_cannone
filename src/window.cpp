@@ -1,4 +1,5 @@
 #include "window.hpp"
+#include "engine.hpp"
 
 #include <GLFW/glfw3.h>
 
@@ -20,7 +21,7 @@ Window::~Window() {
   }
 }
 
-std::optional<Window> Window::Make(int w, int h, const char* title) {
+std::optional<Window> Window::Make(const Engine& e,int w, int h, const char* title) {
   std::optional<Window> res;
 
   GLFWwindow* wind = glfwCreateWindow(w, h, title, NULL, NULL);

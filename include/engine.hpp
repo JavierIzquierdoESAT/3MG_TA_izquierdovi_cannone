@@ -1,11 +1,10 @@
 #pragma once
 class Engine {
  public:
-  static void Init();
-  static void Terminate();
 
-  ~Engine() = default;
+  Engine();
+  ~Engine();
 
  private:
-  Engine() = default;
+  
 };

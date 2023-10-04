@@ -1,6 +1,7 @@
 #include "../src/stdafx.hpp"
 
 struct GLFWwindow;
+class Engine;
 
 /** Handles Window */
 class Window
@@ -16,7 +17,7 @@ class Window
 	~Window();
 
 	/** creates the window */
-	static std::optional<Window> Make(int w, int h, const char* title);
+	static std::optional<Window> Make(const Engine& e,int w, int h, const char* title);
 
 	/** checks if the should be closed and refreshes buffer */
 	bool isDone() const;
