@@ -3,21 +3,32 @@
 class Window;
 
 struct Vec3 {
-	float x, y, z;
+  float x, y, z;
 };
 
 struct Vertex {
-	Vec3 position_;
-	//Vec3 colors_;
-	//Vec3 normal_;
+  Vec3 position_;
+  // Vec3 colors_;
+  // Vec3 normal_;
 };
 
-struct Triangle {
+class Triangle {
+ public:
+  
+  ~Triangle();
 
-	int num_vertex_ = 3;
-	Vertex vertex_[3];
-	
+  static std::optional<Triangle> Init();
 
+  unsigned int vao() const { return vao_; };
+
+ private:
+  Triangle();
+
+  unsigned int vao_;
+  unsigned int vbo_;
+
+  const int num_vertex_ = 3;
+  Vertex vertex_[3];
 };
 
 void paint(Triangle& t, Window& w);

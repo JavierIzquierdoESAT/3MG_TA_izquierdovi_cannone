@@ -6,20 +6,19 @@
 #include <iostream>
 
 #include "engine.hpp"
-#include "triangle.hpp"
 
-Window::Window(GLFWwindow* w) : window_handle_{w}, VAO_{0}, VBO_{0} {
+Window::Window(GLFWwindow* w) : window_handle_{w}{
   glfwMakeContextCurrent(w);
   glewInit();
 }
 
 Window::Window(Window& w)
-    : window_handle_{w.window_handle_}, VAO_{w.VAO_}, VBO_{w.VBO_} {
+    : window_handle_{w.window_handle_}{
   w.window_handle_ = NULL;
 }
 
 Window::Window(Window&& w) noexcept
-    : window_handle_{w.window_handle_}, VAO_{w.VAO_}, VBO_{w.VBO_} {
+    : window_handle_{w.window_handle_}{
   w.window_handle_ = NULL;
 }
 
@@ -49,25 +48,6 @@ std::optional<Window> Window::Make(const Engine& e, int w, int h,
 void Window::swap() const {
   glfwSwapBuffers(window_handle_);
   glfwPollEvents();
-}
-
-void Window::initBuffers(Triangle t) {
-  glGenVertexArrays(1, &VAO_);
-  glGenBuffers(1, &VBO_);
-
-  glBindVertexArray(VAO_);
-
-  auto a = sizeof(t.vertex_);
-
-  glBindBuffer(GL_ARRAY_BUFFER, VBO_);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(t.vertex_), t.vertex_, GL_STATIC_DRAW);
-
-  glVertexAttribPointer(0, t.num_vertex_, GL_FLOAT, GL_FALSE,
-                        t.num_vertex_ * sizeof(float), (void*)0);
-  glEnableVertexAttribArray(0);
-
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindVertexArray(0);
 }
 
 bool Window::isDone() const { return glfwWindowShouldClose(window_handle_); }

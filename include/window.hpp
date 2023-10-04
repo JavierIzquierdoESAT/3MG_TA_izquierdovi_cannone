@@ -27,11 +27,6 @@ class Window
 
 	void swap() const;
 
-	void initBuffers(Triangle t);
-
-	unsigned int VAO_;
-	unsigned int VBO_;
-
  private:
 
 	Window(GLFWwindow* w);
