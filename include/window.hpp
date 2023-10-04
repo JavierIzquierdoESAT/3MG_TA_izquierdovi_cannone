@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../src/stdafx.hpp"
 
 struct GLFWwindow;
