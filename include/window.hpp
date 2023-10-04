@@ -2,6 +2,7 @@
 
 struct GLFWwindow;
 class Engine;
+struct Triangle;
 
 /** Handles Window */
 class Window
@@ -22,11 +23,17 @@ class Window
 	/** checks if the should be closed and refreshes buffer */
 	bool isDone() const;
 
+	void swap() const;
+
+	void initBuffers(Triangle t);
+
  private:
 
 	Window(GLFWwindow* w);
 
 	/** openGL window handle */
 	GLFWwindow* window_handle_;
+	unsigned int VAO_;
+	unsigned int VBO_;
 
 };
