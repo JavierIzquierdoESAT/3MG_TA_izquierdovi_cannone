@@ -1,7 +1,10 @@
+#pragma once
+
 #include "../src/stdafx.hpp"
 
 struct GLFWwindow;
 class Engine;
+struct Triangle;
 
 /** Handles Window */
 class Window
@@ -22,11 +25,19 @@ class Window
 	/** checks if the should be closed and refreshes buffer */
 	bool isDone() const;
 
+	void swap() const;
+
+	void initBuffers(Triangle t);
+
+	unsigned int VAO_;
+	unsigned int VBO_;
+
  private:
 
 	Window(GLFWwindow* w);
 
 	/** openGL window handle */
 	GLFWwindow* window_handle_;
+
 
 };
