@@ -2,6 +2,8 @@
 #include "engine.hpp"
 #include "triangle.hpp"
 
+#include "GL/glew.h"
+
 int main(int, char**) {
 
   Engine e;
@@ -18,9 +20,8 @@ int main(int, char**) {
 
   if (w) {
     auto& window = w.value();
-
+    e.initShaders();
     window.initBuffers(t);
-
     while (!window.isDone())
     {
       

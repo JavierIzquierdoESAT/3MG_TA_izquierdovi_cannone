@@ -24,7 +24,6 @@ const char* fragmentShaderSource =
 
 Engine::Engine() {
   glfwInit();
-  initShaders();
 }
 
 Engine::~Engine() {

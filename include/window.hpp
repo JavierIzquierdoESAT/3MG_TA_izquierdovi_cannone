@@ -29,13 +29,15 @@ class Window
 
 	void initBuffers(Triangle t);
 
+	unsigned int VAO_;
+	unsigned int VBO_;
+
  private:
 
 	Window(GLFWwindow* w);
 
 	/** openGL window handle */
 	GLFWwindow* window_handle_;
-	unsigned int VAO_;
-	unsigned int VBO_;
+
 
 };
