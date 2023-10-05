@@ -15,22 +15,22 @@ int main(int, char**) {
 
   Triangle t;
 
-
-
-  t.vertex_[0] = { -1.0f, -1.0f, 0.0f };
-  t.vertex_[1] = { 1.0f, -1.0f, 0.0f };
-  t.vertex_[2] = { 0.0f, 1.0f, 0.0f };
-
+  t.init();
   
+  ShaderManager s;
+
+  s.generateAndCompileShader(kFragmentShader, "Porahora nada");
+  s.generateAndCompileShader(kVertexShader, "Porahora nada");
+
+  s.atachShaders();
 
   if (w) {
     auto& window = w.value();
-    e.initShaders();
-    window.initBuffers(t);
+
     while (!window.isDone())
     {
-      
-        paint(t, window);
+        s.useProgram();
+        paint(t);
 
         window.swap();
     }

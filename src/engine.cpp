@@ -12,6 +12,3 @@ Engine::~Engine() {
   glfwTerminate();
 }
 
-void Engine::initShaders() {
-
-}

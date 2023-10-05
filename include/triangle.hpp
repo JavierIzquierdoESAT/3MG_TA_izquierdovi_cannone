@@ -1,6 +1,5 @@
 #pragma once
-
-class Window;
+#include "buffer.hpp"
 
 struct Vec3 {
   float x, y, z;
@@ -14,21 +13,20 @@ struct Vertex {
 
 class Triangle {
  public:
-  
+
+   Triangle();
   ~Triangle();
 
-  static std::optional<Triangle> Init();
+  void init();
 
-  unsigned int vao() const { return vao_; };
+  Buffer data_buffer() const;
 
  private:
-  Triangle();
-
-  unsigned int vao_;
-  unsigned int vbo_;
-
+  
   const int num_vertex_ = 3;
   Vertex vertex_[3];
+  Buffer data_buffer_;
+
 };
 
-void paint(Triangle& t, Window& w);
+void paint(Triangle& t);

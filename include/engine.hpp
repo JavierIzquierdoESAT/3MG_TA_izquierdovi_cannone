@@ -5,6 +5,4 @@ class Engine {
 
   Engine();
   ~Engine();
-
-  void initShaders();
 };
