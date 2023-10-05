@@ -1,7 +1,7 @@
 #pragma once
 enum ShaderType {
-	kFragmentShader = 0,
-	kVertexShader,
+  kFragmentShader = 0,
+  kVertexShader,
 };
 
 class ShaderManager {
@@ -9,18 +9,16 @@ class ShaderManager {
   ShaderManager();
   ~ShaderManager();
 
-  void generateAndCompileShader(ShaderType t,const std::string& fil);
+  void generateAndCompileShader(ShaderType t, const std::string& fil);
 
   void atachShaders();
 
   void useProgram();
 
+  void setUniformValue(const int uniform_pos, const float* number);
 
  private:
-
-	 unsigned int default_shader_program_;
-	 unsigned int vertex_shader_id_;
-	 unsigned int fragment_shader_id_;
-
+  unsigned int default_shader_program_;
+  unsigned int vertex_shader_id_;
+  unsigned int fragment_shader_id_;
 };
-

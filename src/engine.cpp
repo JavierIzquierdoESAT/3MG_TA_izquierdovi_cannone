@@ -3,12 +3,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+Engine::Engine() { glfwInit(); }
 
-Engine::Engine() {
-  glfwInit();
-}
-
-Engine::~Engine() {
-  glfwTerminate();
-}
-
+Engine::~Engine() { glfwTerminate(); }

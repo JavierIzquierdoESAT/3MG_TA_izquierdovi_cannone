@@ -7,18 +7,19 @@
 
 #include "engine.hpp"
 
-Window::Window(GLFWwindow* w) : window_handle_{w}{
+Window::Window(GLFWwindow* w) : window_handle_{w} {
+  glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwMakeContextCurrent(w);
   glewInit();
 }
 
-Window::Window(Window& w)
-    : window_handle_{w.window_handle_}{
+Window::Window(Window& w) : window_handle_{w.window_handle_} {
   w.window_handle_ = NULL;
 }
 
-Window::Window(Window&& w) noexcept
-    : window_handle_{w.window_handle_}{
+Window::Window(Window&& w) noexcept : window_handle_{w.window_handle_} {
   w.window_handle_ = NULL;
 }
 
@@ -41,7 +42,7 @@ std::optional<Window> Window::Make(const Engine& e, int w, int h,
     std::cout << description << std::endl;
     return res;
   }
-  
+
   return Window{wind};
 }
 

@@ -7,26 +7,25 @@ struct Vec3 {
 
 struct Vertex {
   Vec3 position_;
-  // Vec3 colors_;
+  Vec3 colors_;
   // Vec3 normal_;
 };
 
 class Triangle {
  public:
-
-   Triangle();
+  Triangle();
   ~Triangle();
 
   void init();
 
   Buffer data_buffer() const;
 
+  const float* color(int p) const;
+
  private:
-  
   const int num_vertex_ = 3;
   Vertex vertex_[3];
   Buffer data_buffer_;
-
 };
 
 void paint(Triangle& t);
