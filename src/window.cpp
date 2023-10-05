@@ -42,8 +42,16 @@ std::optional<Window> Window::Make(const Engine& e, int w, int h,
     std::cout << description << std::endl;
     return res;
   }
-  
+
   return Window{wind};
+}
+
+bool Window::getKey(int k) const {
+  if (glfwGetKey(window_handle_, k) == GLFW_PRESS) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 void Window::swap() const {
