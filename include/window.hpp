@@ -18,8 +18,6 @@ class Window {
 
   ~Window();
 
-  bool getKey(int k) const;
-
   /** creates the window */
   static std::optional<Window> Make(const Engine& e, int w, int h,
                                     const char* title);
@@ -27,12 +25,15 @@ class Window {
   /** checks if the should be closed and refreshes buffer */
   bool isDone() const;
 
+  /** swaps buffers */
   void swap() const;
 
   void initBuffers(Triangle t);
 
   unsigned int VAO_;
   unsigned int VBO_;
+
+  GLFWwindow* initInput() const;
 
  private:
   Window(GLFWwindow* w);

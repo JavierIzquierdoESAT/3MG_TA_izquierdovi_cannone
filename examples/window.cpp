@@ -1,11 +1,10 @@
 #include "window.hpp"
 
 #include <array>
+#include <iostream>
 #include <string>
 #include <unordered_map>
-#include <iostream>
 
-#include "GL/glew.h"
 #include "Input.hpp"
 #include "engine.hpp"
 #include "triangle.hpp"
@@ -34,7 +33,7 @@ int main(int, char**) {
     e.initShaders();
     window.initBuffers(t);
     while (!window.isDone()) {
-      if (i.action("Up")) {
+      if (i.ButtonDown("Up")) {
         std::cout << "paint" << std::endl;
         paint(t, window);
       }

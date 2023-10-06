@@ -46,14 +46,6 @@ std::optional<Window> Window::Make(const Engine& e, int w, int h,
   return Window{wind};
 }
 
-bool Window::getKey(int k) const {
-  if (glfwGetKey(window_handle_, k) == GLFW_PRESS) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
 void Window::swap() const {
   glfwSwapBuffers(window_handle_);
   glfwPollEvents();
@@ -79,3 +71,8 @@ void Window::initBuffers(Triangle t) {
 }
 
 bool Window::isDone() const { return glfwWindowShouldClose(window_handle_); }
+
+
+GLFWwindow* Window::initInput() const {
+  return window_handle_;  
+}
