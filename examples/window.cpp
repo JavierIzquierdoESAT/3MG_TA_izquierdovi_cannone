@@ -33,9 +33,15 @@ int main(int, char**) {
     e.initShaders();
     window.initBuffers(t);
     while (!window.isDone()) {
+      paint(t, window);
       if (i.ButtonDown("Up")) {
-        std::cout << "paint" << std::endl;
-        paint(t, window);
+        std::cout << "down" << std::endl;
+      }
+      if (i.ButtonPressed("Up")) {
+        std::cout << "press" << std::endl;
+      }
+      if (i.ButtonUp("Up")) {
+        std::cout << "up" << std::endl;
       }
 
       window.swap();

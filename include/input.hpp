@@ -2,10 +2,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-//TODO: find a way to remove this include
-#include "GLFW/glfw3.h"
-
-class GLFWwindow;
+struct GLFWwindow;
 class Window;
 
 enum class InputKey {
@@ -146,9 +143,9 @@ class InputManager {
   ~InputManager() = default;
 
   static InputManager Make(const Window& w, InputMap m);
-  static void key_callback(GLFWwindow* window, int key, int scancode,
-                           int action, int mods);
-  inline static std::unordered_map<InputKey, KeyState> s_mapped_keys;
+  static void update();
+
+  
 
   /** checks if any of the keys asigned to de action is pressed*/
   bool ButtonDown(std::string) const;
@@ -158,6 +155,11 @@ class InputManager {
  private:
   InputManager() = delete;
   InputManager(GLFWwindow* w, InputMap m);
+
+  static void key_callback(GLFWwindow* window, int key, int scancode,
+                           int action, int mods);
+  inline static std::unordered_map<InputKey, KeyState> s_mapped_keys;
+  inline static std::vector<KeyState*> s_modified_keys;
 
   std::vector<KeyState> findKeyState(const InputMap& map, std::string s) const;
 

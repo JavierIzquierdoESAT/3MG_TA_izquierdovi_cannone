@@ -59,6 +59,15 @@ std::vector<KeyState> InputManager::findKeyState(const InputMap& map,
   }
 }
 
+void InputManager::update() { 
+  for (KeyState* state : s_modified_keys) {
+    state->pushed = false;
+    state->released = false;
+  }
+  s_modified_keys.clear();
+  glfwPollEvents(); 
+}
+
 //TODO: update to clear pushhed and released afte a frame
 void InputManager::key_callback(GLFWwindow* window, int key, int scancode,
                                 int action, int mods) {
@@ -66,9 +75,6 @@ void InputManager::key_callback(GLFWwindow* window, int key, int scancode,
 
   if (eventKey != s_mapped_keys.end()) {
     KeyState& keyState = eventKey->second;
-    keyState.pushed = false;
-    keyState.pressed = false;
-    keyState.released = false;
 
     if (GLFW_PRESS == action) {
       keyState.pushed = true;
@@ -79,5 +85,8 @@ void InputManager::key_callback(GLFWwindow* window, int key, int scancode,
       keyState.released = true;
       keyState.pressed = false;
     }
+    
+    s_modified_keys.push_back(&keyState);
   }
+
 }
