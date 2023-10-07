@@ -7,25 +7,26 @@ class Engine;
 struct Triangle;
 
 /** Handles Window */
-class Window
-{
+class Window {
  public:
-	//copy constructor
-	Window(const Window&) = delete;
-	//lvalue move constructor
-	Window(Window& w);
-	//rvalue move constructor
-	Window(Window&& w) noexcept;
+  // copy constructor
+  Window(const Window&) = delete;
+  // lvalue move constructor
+  Window(Window& w);
+  // rvalue move constructor
+  Window(Window&& w) noexcept;
 
-	~Window();
+  ~Window();
 
-	/** creates the window */
-	static std::optional<Window> Make(const Engine& e,int w, int h, const char* title);
+  /** creates the window */
+  static std::optional<Window> Make(const Engine& e, int w, int h,
+                                    const char* title);
 
-	/** checks if the should be closed and refreshes buffer */
-	bool isDone() const;
+  /** checks if the should be closed and refreshes buffer */
+  bool isDone() const;
 
-	void swap() const;
+  /** swaps buffers */
+  void swap() const;
 
  private:
 
@@ -34,5 +35,9 @@ class Window
 	/** openGL window handle */
 	GLFWwindow* window_handle_;
 
+ private:
+  Window(GLFWwindow* w);
 
+  /** openGL window handle */
+  GLFWwindow* window_handle_;
 };

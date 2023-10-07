@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "engine.hpp"
+#include "input.hpp"
 
 Window::Window(GLFWwindow* w) : window_handle_{w} {
   glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
@@ -48,7 +49,13 @@ std::optional<Window> Window::Make(const Engine& e, int w, int h,
 
 void Window::swap() const {
   glfwSwapBuffers(window_handle_);
-  glfwPollEvents();
+  InputManager::update();
+  
 }
 
 bool Window::isDone() const { return glfwWindowShouldClose(window_handle_); }
+
+
+GLFWwindow* Window::initInput() const {
+  return window_handle_;  
+}
