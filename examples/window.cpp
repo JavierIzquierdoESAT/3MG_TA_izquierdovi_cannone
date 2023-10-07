@@ -18,8 +18,8 @@ int main(int, char**) {
 
   ShaderManager s;
 
-  s.generateAndCompileShader(kFragmentShader, "Porahora nada");
-  s.generateAndCompileShader(kVertexShader, "Porahora nada");
+  s.generateAndCompileShader(kFragmentShader, "../assets/col.fs");
+  s.generateAndCompileShader(kVertexShader, "../assets/col.vs");
 
   s.atachShaders();
 
