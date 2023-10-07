@@ -7,6 +7,7 @@
 
 #include "engine.hpp"
 #include "triangle.hpp"
+#include "input.hpp"
 
 Window::Window(GLFWwindow* w) : window_handle_{w}, VAO_{0}, VBO_{0} {
   glfwMakeContextCurrent(w);
@@ -42,13 +43,14 @@ std::optional<Window> Window::Make(const Engine& e, int w, int h,
     std::cout << description << std::endl;
     return res;
   }
-  
+
   return Window{wind};
 }
 
 void Window::swap() const {
   glfwSwapBuffers(window_handle_);
-  glfwPollEvents();
+  InputManager::update();
+  
 }
 
 void Window::initBuffers(Triangle t) {
@@ -71,3 +73,8 @@ void Window::initBuffers(Triangle t) {
 }
 
 bool Window::isDone() const { return glfwWindowShouldClose(window_handle_); }
+
+
+GLFWwindow* Window::initInput() const {
+  return window_handle_;  
+}
