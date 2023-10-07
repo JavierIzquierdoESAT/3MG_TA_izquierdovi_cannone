@@ -36,8 +36,6 @@ int main(int, char**) {
     Triangle t;
     t.init();
 
-    e.initShaders();
-    window.initBuffers(t);
     while (!window.isDone()) {
       if (i.ButtonDown("Up")) {
         std::cout << "down" << std::endl;

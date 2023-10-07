@@ -56,6 +56,7 @@ void Window::swap() const {
 bool Window::isDone() const { return glfwWindowShouldClose(window_handle_); }
 
 
+
 GLFWwindow* Window::initInput() const {
   return window_handle_;  
 }
