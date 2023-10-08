@@ -16,11 +16,7 @@ class Triangle {
   Triangle();
   ~Triangle();
 
-  void init();
-
   Buffer data_buffer() const;
-
-  const float* color(int p) const;
 
  private:
   const int num_vertex_ = 3;

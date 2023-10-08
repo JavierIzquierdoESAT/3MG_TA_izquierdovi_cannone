@@ -2,22 +2,21 @@
 
 #include "GL/glew.h"
 
-Buffer::Buffer() : buffer_id_{0}, size_{0}, vertex_array_id_{0} {}
-
-Buffer::~Buffer() { release(); }
-
-void Buffer::init(unsigned int size) {
-  size_ = size;
+Buffer::Buffer(unsigned int size) : size_{size} {
   glGenBuffers(1, &buffer_id_);
   bindBuffer(kTarget_Vertex_Data);
   glBufferData(GL_ARRAY_BUFFER, size, NULL, GL_STATIC_DRAW);
 }
 
-void Buffer::initWithData(const void* data, unsigned int size) {
-  size_ = size;
+Buffer::Buffer(const void* data, unsigned int size) : size_{size} {
   glGenBuffers(1, &buffer_id_);
   bindBuffer(kTarget_Vertex_Data);
   glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+}
+
+Buffer::~Buffer() {
+  glDeleteBuffers(1, &buffer_id_);
+  glDeleteVertexArrays(1, &vertex_array_id_);
 }
 
 void Buffer::bindBuffer(const Target t) {
@@ -45,14 +44,6 @@ void Buffer::uploadData(const void* data, unsigned int size,
                         unsigned int offset) {
   bindBuffer(kTarget_Vertex_Data);
   glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
-}
-
-void Buffer::release() {
-  glDeleteBuffers(1, &buffer_id_);
-  glDeleteVertexArrays(1, &vertex_array_id_);
-  buffer_id_ = 0;
-  vertex_array_id_ = 0;
-  size_ = 0;
 }
 
 void Buffer::enableVertexArray(const unsigned int size,

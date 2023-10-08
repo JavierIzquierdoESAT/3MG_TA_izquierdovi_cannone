@@ -9,7 +9,7 @@ class ShaderManager {
   ShaderManager();
   ~ShaderManager();
 
-  void generateAndCompileShader(ShaderType t, const std::string& fil);
+  void generateAndCompileShader(ShaderType t, const std::string& file_path);
 
   void atachShaders();
 

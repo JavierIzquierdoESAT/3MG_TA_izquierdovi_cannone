@@ -8,7 +8,6 @@
 #include "Input.hpp"
 #include "engine.hpp"
 #include "triangle.hpp"
-#include "GL/glew.h"
 #include "shader_manager.hpp"
 
 InputMap inputMap{
@@ -26,7 +25,6 @@ int main(int, char**) {
     auto& window = w.value();
     
     InputManager i = InputManager::Make(window, inputMap);
-    ShaderManager sm;
     ShaderManager s;
     
     s.generateAndCompileShader(kFragmentShader, "../assets/col.fs");
@@ -34,7 +32,6 @@ int main(int, char**) {
     s.atachShaders();
     
     Triangle t;
-    t.init();
 
     while (!window.isDone()) {
       if (i.ButtonDown("Up")) {

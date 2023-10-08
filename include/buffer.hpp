@@ -7,12 +7,11 @@ class Buffer {
     kTarget_Elements,
   };
 
-  Buffer();
+  Buffer() = delete;
+  Buffer(unsigned int size);
+  Buffer(const void* data, unsigned int size);
+
   ~Buffer();
-
-  void init(unsigned int size);
-
-  void initWithData(const void* data, unsigned int size);
 
   void bindBuffer(const Target t);
   void bindVertexArray();
@@ -20,8 +19,6 @@ class Buffer {
   unsigned int size() const;
 
   void uploadData(const void* data, unsigned int size, unsigned int offset = 0);
-
-  void release();
 
   void enableVertexArray(const unsigned int size, const unsigned int stride,
                          const unsigned int offset);
@@ -32,4 +29,5 @@ class Buffer {
   unsigned int buffer_id_;
   unsigned int vertex_array_id_;
   unsigned int size_;
+
 };

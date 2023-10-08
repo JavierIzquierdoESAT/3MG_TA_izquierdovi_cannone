@@ -1,6 +1,7 @@
 #include "shader_manager.hpp"
 
 #include <fstream>
+#include <string.h>
 
 std::string ReadFiles(const std::string& file) {
   std::string final;
@@ -29,12 +30,10 @@ ShaderManager::ShaderManager() { default_shader_program_ = glCreateProgram(); }
 ShaderManager::~ShaderManager() { glDeleteProgram(default_shader_program_); }
 
 void ShaderManager::generateAndCompileShader(ShaderType t,
-                                             const std::string& fil) {
-  std::string s = ReadFiles(fil);
-  char* file = new char[s.length() + 2];
-  std::strcpy(file, s.c_str());
-
-  file[s.length() + 2] = '\0';
+                                             const std::string& file_path) {
+  std::string s = ReadFiles(file_path);
+  char* file = new char[s.length() + 1];
+  strcpy_s(file, s.length() + 1, s.c_str());
 
   switch (t) {
     case kFragmentShader:
