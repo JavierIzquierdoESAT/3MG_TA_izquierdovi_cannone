@@ -46,6 +46,22 @@ void Buffer::uploadData(const void* data, unsigned int size,
   glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
 }
 
+void Buffer::updateData(const void* data, unsigned int size) {
+  
+  bindBuffer(kTarget_Vertex_Data);
+  glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 12, size, data);
+  
+}
+
+void Buffer::reset(const void* data, unsigned int size) {
+  glDeleteBuffers(1, &buffer_id_);
+  glDeleteVertexArrays(1, &vertex_array_id_);
+
+  //glGenBuffers(1, &buffer_id_);
+  //bindBuffer(kTarget_Vertex_Data);
+  //glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+}
+
 void Buffer::enableVertexArray(const unsigned int size,
                                const unsigned int stride,
                                const unsigned int offset) {

@@ -20,6 +20,10 @@ class Buffer {
 
   void uploadData(const void* data, unsigned int size, unsigned int offset = 0);
 
+  void updateData(const void* data, unsigned int size);
+
+  void reset(const void* data, unsigned int size);
+
   void enableVertexArray(const unsigned int size, const unsigned int stride,
                          const unsigned int offset);
 
