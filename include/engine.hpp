@@ -1,5 +1,4 @@
 #pragma once
-
 class Engine {
  public:
 
@@ -7,4 +6,6 @@ class Engine {
   ~Engine();
 
   void update();
+
+private:
 };
