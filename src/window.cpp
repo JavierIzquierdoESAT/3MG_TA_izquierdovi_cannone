@@ -8,8 +8,7 @@
 #include "engine.hpp"
 #include "input.hpp"
 
-Window::Window(GLFWwindow* w)
-    : window_handle_{w}, delta_time_{0.0f}, last_time_{glfwGetTime()} {
+Window::Window(GLFWwindow* w) : window_handle_{w} {
   glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -17,17 +16,11 @@ Window::Window(GLFWwindow* w)
   glewInit();
 }
 
-Window::Window(Window& w)
-    : window_handle_{w.window_handle_},
-      delta_time_{0.0f},
-      last_time_{glfwGetTime()} {
+Window::Window(Window& w) : window_handle_{w.window_handle_} {
   w.window_handle_ = NULL;
 }
 
-Window::Window(Window&& w) noexcept
-    : window_handle_{w.window_handle_},
-      delta_time_{0.0f},
-      last_time_{glfwGetTime()} {
+Window::Window(Window&& w) noexcept : window_handle_{w.window_handle_} {
   w.window_handle_ = NULL;
 }
 
@@ -58,11 +51,6 @@ void Window::swap() const {
   glfwSwapBuffers(window_handle_);
   glClear(GL_COLOR_BUFFER_BIT);
   InputManager::update();
-}
-
-void Window::updateDelta() {
-  delta_time_ = glfwGetTime() - last_time_;
-  last_time_ = glfwGetTime();
 }
 
 bool Window::isDone() const { return glfwWindowShouldClose(window_handle_); }

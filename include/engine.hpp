@@ -5,4 +5,6 @@ class Engine {
 
   Engine();
   ~Engine();
+
+  void update();
 };

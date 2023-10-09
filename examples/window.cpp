@@ -7,8 +7,9 @@
 
 #include "Input.hpp"
 #include "engine.hpp"
-#include "triangle.hpp"
 #include "shader_manager.hpp"
+#include "time.hpp"
+#include "triangle.hpp"
 
 InputMap inputMap{
     {"Up", {InputKey::W}},
@@ -23,36 +24,44 @@ int main(int, char**) {
   auto w = Window::Make(e, 640, 480, "ventana");
   if (w) {
     auto& window = w.value();
-    
+
     InputManager i = InputManager::Make(window, inputMap);
+
+    // Ideal input form user:
+    // ShaderProgram sp = ShaderProgram::Make("../assets/col.fs",
+    //                                        "../assets/col.vs")
     ShaderManager s;
-    
     s.generateAndCompileShader(kFragmentShader, "../assets/col.fs");
     s.generateAndCompileShader(kVertexShader, "../assets/col.vs");
     s.atachShaders();
-    
+
     Triangle t;
 
-    float t_speed = 0.1f;
+    float t_speed = 0.3f;
 
     while (!window.isDone()) {
-      if (i.ButtonPressed("Up")) {        
-        t.move(Vec3(0, t_speed * window.delta_time_, 0));
+      // input
+      if (i.ButtonPressed("Up")) {
+        t.move(Vec3(0, t_speed * Time::delta_time(), 0));
       }
       if (i.ButtonPressed("Down")) {
-        t.move(Vec3(0, -t_speed * window.delta_time_, 0));
+        t.move(Vec3(0, -t_speed * Time::delta_time(), 0));
       }
       if (i.ButtonPressed("Left")) {
-        t.move(Vec3(-t_speed * window.delta_time_, 0, 0));
+        t.move(Vec3(-t_speed * Time::delta_time(), 0, 0));
       }
       if (i.ButtonPressed("Right")) {
-        t.move(Vec3(t_speed * window.delta_time_, 0 , 0));
+        t.move(Vec3(t_speed * Time::delta_time(), 0, 0));
       }
+
+      // render
       t.updateBuffers();
       s.useProgram();
       paint(t);
       window.swap();
-      window.updateDelta();
+
+      // end frame;
+      e.update();
     }
   }
 
