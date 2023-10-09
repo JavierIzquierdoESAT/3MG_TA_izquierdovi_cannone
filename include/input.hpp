@@ -7,6 +7,16 @@ class Window;
 
 enum class InputKey {
   UNKNOWN = -1,
+
+  MOUSE_LEFT = 0,
+  MOUSE_RIGHT,
+  MOUSE_MIDDLE,
+  MOUSE_4,
+  MOUSE_5,
+  MOUSE_6,
+  MOUSE_7,
+  MOUSE_8,
+
   SPACE = 32,
   APOSTROPHE = 39,
   COMMA = 44,
@@ -156,8 +166,15 @@ class InputManager {
   InputManager() = delete;
   InputManager(GLFWwindow* w, InputMap m);
 
-  static void key_callback(GLFWwindow* window, int key, int scancode,
+  
+  static void GenericButtonCallback(int button, int action);
+
+  static void KeyCallback(GLFWwindow* window, int key, int scancode,
                            int action, int mods);
+  static void MouseButtonCallback(
+      GLFWwindow* window, int button, int action,
+      int mods);
+
   inline static std::unordered_map<InputKey, KeyState> s_mapped_keys;
   inline static std::vector<KeyState*> s_modified_keys;
 

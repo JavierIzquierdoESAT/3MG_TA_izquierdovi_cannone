@@ -4,7 +4,8 @@
 #include "window.hpp"
 
 InputManager::InputManager(GLFWwindow* w, InputMap m) : map_{m}, window_{w} {
-  glfwSetKeyCallback(window_, key_callback);
+  glfwSetKeyCallback(window_, KeyCallback);
+  glfwSetMouseButtonCallback(window_, MouseButtonCallback);
   for (auto it : m) {
     for (auto key : it.second) {
       s_mapped_keys.emplace(std::pair<InputKey, KeyState>{key, KeyState()});
@@ -59,18 +60,27 @@ std::vector<KeyState> InputManager::findKeyState(const InputMap& map,
   return res;
 }
 
-void InputManager::update() { 
+void InputManager::update() {
   for (KeyState* state : s_modified_keys) {
     state->pushed = false;
     state->released = false;
   }
   s_modified_keys.clear();
-  glfwPollEvents(); 
+  glfwPollEvents();
 }
 
-void InputManager::key_callback(GLFWwindow* window, int key, int scancode,
-                                int action, int mods) {
-  auto eventKey = s_mapped_keys.find((InputKey)key);
+void InputManager::MouseButtonCallback(GLFWwindow* window, int button,
+                                       int action, int mods) {
+  GenericButtonCallback(button, action);
+}
+
+void InputManager::KeyCallback(GLFWwindow* window, int key, int scancode,
+                               int action, int mods) {
+  GenericButtonCallback(key, action);
+}
+
+void InputManager::GenericButtonCallback(int button, int action) {
+  auto eventKey = s_mapped_keys.find((InputKey)button);
 
   if (eventKey != s_mapped_keys.end()) {
     KeyState& keyState = eventKey->second;
@@ -84,7 +94,7 @@ void InputManager::key_callback(GLFWwindow* window, int key, int scancode,
       keyState.released = true;
       keyState.pressed = false;
     }
-    
+
     s_modified_keys.push_back(&keyState);
   }
 }
