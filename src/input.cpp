@@ -6,6 +6,7 @@
 InputManager::InputManager(GLFWwindow* w, InputMap m) : map_{m}, window_{w} {
   glfwSetKeyCallback(window_, KeyCallback);
   glfwSetMouseButtonCallback(window_, MouseButtonCallback);
+  glfwSetScrollCallback(window_, ScrollCallback);
   for (auto it : m) {
     for (auto key : it.second) {
       s_mapped_keys.emplace(std::pair<InputKey, KeyState>{key, KeyState()});
@@ -67,6 +68,12 @@ void InputManager::update() {
   }
   s_modified_keys.clear();
   glfwPollEvents();
+}
+
+void InputManager::ScrollCallback(GLFWwindow* window, double xoffset,
+                                  double yoffset) {
+  int button = yoffset > 0 ? 8 : 9;
+  GenericButtonCallback(button, GLFW_PRESS);
 }
 
 void InputManager::MouseButtonCallback(GLFWwindow* window, int button,

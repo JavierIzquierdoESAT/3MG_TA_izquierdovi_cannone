@@ -16,6 +16,9 @@ enum class InputKey {
   MOUSE_6,
   MOUSE_7,
   MOUSE_8,
+  
+  SCROLL_UP = 8,
+  SCROLL_DOWN,
 
   SPACE = 32,
   APOSTROPHE = 39,
@@ -155,8 +158,6 @@ class InputManager {
   static InputManager Make(const Window& w, InputMap m);
   static void update();
 
-  
-
   /** checks if any of the keys asigned to de action is pressed*/
   bool ButtonDown(std::string) const;
   bool ButtonUp(std::string) const;
@@ -166,14 +167,13 @@ class InputManager {
   InputManager() = delete;
   InputManager(GLFWwindow* w, InputMap m);
 
-  
   static void GenericButtonCallback(int button, int action);
-
-  static void KeyCallback(GLFWwindow* window, int key, int scancode,
-                           int action, int mods);
-  static void MouseButtonCallback(
-      GLFWwindow* window, int button, int action,
-      int mods);
+  static void KeyCallback(GLFWwindow* window, int key, int scancode, int action,
+                          int mods);
+  static void MouseButtonCallback(GLFWwindow* window, int button, int action,
+                                  int mods);
+  static void ScrollCallback(GLFWwindow* window, double xoffset,
+                             double yoffset);
 
   inline static std::unordered_map<InputKey, KeyState> s_mapped_keys;
   inline static std::vector<KeyState*> s_modified_keys;
