@@ -31,13 +31,7 @@ class Window {
   //TODO:: WARNING I'm delteing the const
   void swap() const;
 
-
-  void updateDelta();
-  
-  double delta_time_;
-
  private:
-  double last_time_;
 
   Window(GLFWwindow* w);
 
