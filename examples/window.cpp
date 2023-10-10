@@ -33,19 +33,26 @@ int main(int, char**) {
     
     Triangle t;
 
+    float t_speed = 0.1f;
+
     while (!window.isDone()) {
-      if (i.ButtonDown("Up")) {
-        std::cout << "down" << std::endl;
+      if (i.ButtonPressed("Up")) {        
+        t.move(Vec3(0, t_speed * window.delta_time_, 0));
       }
-      if (i.ButtonPressed("Up")) {
-        std::cout << "press" << std::endl;
+      if (i.ButtonPressed("Down")) {
+        t.move(Vec3(0, -t_speed * window.delta_time_, 0));
       }
-      if (i.ButtonUp("Up")) {
-        std::cout << "up" << std::endl;
+      if (i.ButtonPressed("Left")) {
+        t.move(Vec3(-t_speed * window.delta_time_, 0, 0));
       }
+      if (i.ButtonPressed("Right")) {
+        t.move(Vec3(t_speed * window.delta_time_, 0 , 0));
+      }
+      t.updateBuffers();
       s.useProgram();
       paint(t);
       window.swap();
+      window.updateDelta();
     }
   }
 
