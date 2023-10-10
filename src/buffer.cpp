@@ -48,12 +48,6 @@ void Buffer::uploadData(const void* data, unsigned int size,
   glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
 }
 
-void Buffer::reset(const void* data, unsigned int size) {
-  glDeleteBuffers(1, &buffer_id_);
-  glDeleteVertexArrays(1, &vertex_array_id_);
-
-}
-
 void Buffer::enableVertexArray(const unsigned int size,
                                const unsigned int stride,
                                const unsigned int offset) {

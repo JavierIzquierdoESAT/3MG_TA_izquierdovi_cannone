@@ -17,16 +17,10 @@ Triangle::~Triangle() {}
 Buffer Triangle::data_buffer() const { return data_buffer_; }
 
 void Triangle::updateBuffers() {
-  /* data_buffer_.reset(vertex_, sizeof(vertex_));
-  Buffer b = Buffer(vertex_, sizeof(vertex_));
-  b.enableVertexArray(num_vertex_, num_vertex_ * sizeof(float), 0);
-  data_buffer_ = b;*/
   data_buffer_.uploadData(&vertex_, sizeof(vertex_), 0);
   data_buffer_.enableVertexArray(num_vertex_, num_vertex_ * sizeof(float), 0);
 }
 
 void paint(Triangle& t) {
-  //t.data_buffer().bindVertexArray();
-
   glDrawArrays(GL_TRIANGLES, 0, 3);
 }
