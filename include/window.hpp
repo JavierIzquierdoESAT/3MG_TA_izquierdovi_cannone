@@ -46,6 +46,7 @@ class Window {
   /// ~~~~~~~~
   bool isDone() const;
 
+  //TODO: update this
   /// @brief this should not be visible to the user
   /// @return a window handle
   GLFWwindow* initInput() const;
