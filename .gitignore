@@ -2,3 +2,5 @@
 /bin/
 /build/
 
+/doc/html/
+/doc/*.log

@@ -47,7 +47,8 @@ bool InputManager::ButtonPressed(std::string s) const {
   return res;
 }
 
-std::vector<KeyState> InputManager::findKeyState(const InputMap& map,
+std::vector<InputManager::KeyState> InputManager::findKeyState(
+    const InputMap& map,
                                                  std::string s) const {
   auto keys = map.find(s);
   std::vector<KeyState> res;
