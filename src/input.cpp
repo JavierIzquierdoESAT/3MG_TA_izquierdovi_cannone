@@ -1,18 +1,22 @@
 #include "input.hpp"
+
 #include "GLFW/glfw3.h"
 
-InputManager::InputManager(GLFWwindow* w, InputMap m) : map_{m}, window_{w} {
+InputManager::InputManager(GLFWwindow* w, InputButtonMap m)
+    : map_{m}, window_{w} {
   glfwSetKeyCallback(window_, KeyCallback);
   glfwSetMouseButtonCallback(window_, MouseButtonCallback);
   glfwSetScrollCallback(window_, ScrollCallback);
+  glfwSetCursorPosCallback(window_, CursorCallback);
   for (auto it : m) {
     for (auto key : it.second) {
-      s_mapped_buttons.emplace(std::pair<InputButton, KeyState>{key, KeyState()});
+      s_mapped_buttons.emplace(
+          std::pair<InputButton, KeyState>{key, KeyState()});
     }
   }
 }
 
-bool InputManager::ButtonDown(std::string s) const {
+bool InputManager::buttonDown(std::string s) const {
   bool res = false;
   auto keys = findKeyState(map_, s);
   for (KeyState state : keys) {
@@ -21,7 +25,7 @@ bool InputManager::ButtonDown(std::string s) const {
   }
   return res;
 }
-bool InputManager::ButtonUp(std::string s) const {
+bool InputManager::buttonUp(std::string s) const {
   bool res = false;
   auto keys = findKeyState(map_, s);
   for (KeyState state : keys) {
@@ -30,7 +34,7 @@ bool InputManager::ButtonUp(std::string s) const {
   }
   return res;
 }
-bool InputManager::ButtonPressed(std::string s) const {
+bool InputManager::buttonPressed(std::string s) const {
   bool res = false;
   auto keys = findKeyState(map_, s);
   for (KeyState state : keys) {
@@ -40,9 +44,11 @@ bool InputManager::ButtonPressed(std::string s) const {
   return res;
 }
 
+float InputManager::mousePositionX() const { return mouse_x_; }
+float InputManager::mousePositionY() const { return mouse_y_; }
+
 std::vector<InputManager::KeyState> InputManager::findKeyState(
-    const InputMap& map,
-                                                 std::string s) const {
+    const InputButtonMap& map, std::string s) const {
   auto keys = map.find(s);
   std::vector<KeyState> res;
   res.reserve(10);
@@ -98,4 +104,9 @@ void InputManager::GenericButtonCallback(int button, int action) {
 
     s_modified_keys.push_back(&keyState);
   }
+}
+void InputManager::CursorCallback(GLFWwindow* window, double xpos,
+                                  double ypos) {
+  mouse_x_ = (float)xpos;
+  mouse_y_ = (float)ypos;
 }

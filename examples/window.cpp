@@ -11,7 +11,7 @@
 #include "time.hpp"
 #include "triangle.hpp"
 
-InputMap inputMap{
+InputButtonMap inputMap{
     {"Up", {InputButton::W}},
     {"Down", {InputButton::S}},
     {"Left", {InputButton::A}},
@@ -40,19 +40,20 @@ int main(int, char**) {
 
     while (!window.isDone()) {
       // input
-      if (i.ButtonPressed("Up")) {
+      if (i.buttonPressed("Up")) {
         t.move(Vec3(0, t_speed * Time::delta_time(), 0));
       }
-      if (i.ButtonPressed("Down")) {
+      if (i.buttonPressed("Down")) {
         t.move(Vec3(0, -t_speed * Time::delta_time(), 0));
       }
-      if (i.ButtonPressed("Left")) {
+      if (i.buttonPressed("Left")) {
         t.move(Vec3(-t_speed * Time::delta_time(), 0, 0));
       }
-      if (i.ButtonPressed("Right")) {
+      if (i.buttonPressed("Right")) {
         t.move(Vec3(t_speed * Time::delta_time(), 0, 0));
       }
-
+      std::cout << i.mousePositionX() << "  -  "
+                << i.mousePositionY() << std::endl;
       // render
       t.updateBuffers();
       s.useProgram();

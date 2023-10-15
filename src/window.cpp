@@ -55,6 +55,6 @@ void Window::swap() const {
 
 bool Window::isDone() const { return glfwWindowShouldClose(window_handle_); }
 
-InputManager Window::addInputManager(InputMap imput_map) const {
+InputManager Window::addInputManager(InputButtonMap imput_map) const {
   return InputManager(window_handle_, imput_map);
 }

@@ -10,7 +10,7 @@ class Engine;
 class Triangle;
 
 enum class InputButton;
-using InputMap = std::unordered_map<std::string, std::vector<InputButton>>;
+using InputButtonMap = std::unordered_map<std::string, std::vector<InputButton>>;
 class InputManager;
 
 /** Handles Window */
@@ -56,7 +56,7 @@ class Window {
   /// @brief creates and returns an InputManager that will capture input for
   /// this window
   /// @return The InputManager object created
-  InputManager addInputManager(InputMap imput_map) const;
+  InputManager addInputManager(InputButtonMap imput_map) const;
 
   /// @brief swaps screen buffers
   ///

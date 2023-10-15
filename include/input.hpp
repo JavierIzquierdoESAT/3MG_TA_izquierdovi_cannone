@@ -144,12 +144,13 @@ enum class InputButton {
   LAST
 };
 
+
 /// @brief structure that binds user created actions and physical input
-using InputMap = std::unordered_map<std::string, std::vector<InputButton>>;
+using InputButtonMap = std::unordered_map<std::string, std::vector<InputButton>>;
 
 /// @brief allows for input state retrieval
 ///
-/// this class is closely related to an InputMap
+/// this class is closely related to an InputButtonMap
 /// this structure is a map with strings as keys and a vector of InputButton
 /// as value,
 /// so you should define your actions as the keys and any number of
@@ -157,7 +158,7 @@ using InputMap = std::unordered_map<std::string, std::vector<InputButton>>;
 ///
 /// ## example
 /// ~~~~~~~~~~~~~~~.cpp
-/// InputMap inputMap{
+/// InputButtonMap inputMap{
 ///   {"Up", {InputButton::W, InputButton::DOWN}},
 ///   {"Down", {InputButton::S}},
 ///   {"Left", {InputButton::A}},
@@ -170,9 +171,11 @@ class InputManager {
 
   /// @brief creates and binds an input map
   /// @param w window handle reference
-  /// @param m InputMap to bind
-  InputManager(GLFWwindow* window, InputMap m);
+  /// @param m InputButtonMap to bind
+  InputManager(GLFWwindow* window, InputButtonMap m);
 
+
+  //TODO: try to make this only accessible to the window
   /// @brief updates the state of each key
   ///
   /// must be called once per frame for proper functioning of this class
@@ -182,19 +185,24 @@ class InputManager {
   /// *pressed* during the frame
   /// @param action to check
   /// @return ture if action has been *performed* false otherwise
-  bool ButtonDown(std::string action) const;
+  bool buttonDown(std::string action) const;
 
   /// @brief checks if the any of the buttons asigned to an action have been
   /// *released* during the frame
   /// @param action to check
   /// @return ture if action has been *performed* false otherwise
-  bool ButtonUp(std::string action) const;
+  bool buttonUp(std::string action) const;
 
   /// @brief checks if the any of the buttons asigned to an action is
   /// *currently held down*
   /// @param action to check
   /// @return ture if action is *currently held down* false otherwise
-  bool ButtonPressed(std::string action) const;
+  bool buttonPressed(std::string action) const;
+
+  //TODO: integrate in generic axis system
+  float mousePositionX() const;
+  float mousePositionY() const;
+  
 
  private:
   struct KeyState {
@@ -212,6 +220,7 @@ class InputManager {
                                   int mods);
   static void ScrollCallback(GLFWwindow* window, double xoffset,
                              double yoffset);
+  static void CursorCallback(GLFWwindow* window, double xpos, double ypos);
 
   // holds the state of the buttons present on map_
   inline static std::unordered_map<InputButton, KeyState> s_mapped_buttons;
@@ -220,8 +229,12 @@ class InputManager {
   inline static std::vector<KeyState*> s_modified_keys;
 
   //retrieves the states of all the buttons with an action
-  std::vector<KeyState> findKeyState(const InputMap& map, std::string s) const;
+  std::vector<KeyState> findKeyState(const InputButtonMap& map,
+                                     std::string s) const;
 
-  InputMap map_;
+  inline static float mouse_x_;
+  inline static float mouse_y_;
+
+  InputButtonMap map_;
   GLFWwindow* window_;
 };
