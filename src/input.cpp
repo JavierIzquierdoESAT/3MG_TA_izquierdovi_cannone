@@ -1,7 +1,5 @@
 #include "input.hpp"
-
 #include "GLFW/glfw3.h"
-#include "window.hpp"
 
 InputManager::InputManager(GLFWwindow* w, InputMap m) : map_{m}, window_{w} {
   glfwSetKeyCallback(window_, KeyCallback);
@@ -9,14 +7,9 @@ InputManager::InputManager(GLFWwindow* w, InputMap m) : map_{m}, window_{w} {
   glfwSetScrollCallback(window_, ScrollCallback);
   for (auto it : m) {
     for (auto key : it.second) {
-      s_mapped_keys.emplace(std::pair<InputKey, KeyState>{key, KeyState()});
+      s_mapped_buttons.emplace(std::pair<InputButton, KeyState>{key, KeyState()});
     }
   }
-}
-
-InputManager InputManager::Make(const Window& w, InputMap m) {
-  auto handle = w.initInput();
-  return InputManager(handle, m);
 }
 
 bool InputManager::ButtonDown(std::string s) const {
@@ -54,8 +47,8 @@ std::vector<InputManager::KeyState> InputManager::findKeyState(
   std::vector<KeyState> res;
   res.reserve(10);
   if (keys != map.end()) {
-    for (InputKey key : keys->second) {
-      auto found = s_mapped_keys.find(key);
+    for (InputButton key : keys->second) {
+      auto found = s_mapped_buttons.find(key);
       res.emplace_back(found->second);
     }
   }
@@ -88,9 +81,9 @@ void InputManager::KeyCallback(GLFWwindow* window, int key, int scancode,
 }
 
 void InputManager::GenericButtonCallback(int button, int action) {
-  auto eventKey = s_mapped_keys.find((InputKey)button);
+  auto eventKey = s_mapped_buttons.find((InputButton)button);
 
-  if (eventKey != s_mapped_keys.end()) {
+  if (eventKey != s_mapped_buttons.end()) {
     KeyState& keyState = eventKey->second;
 
     if (GLFW_PRESS == action) {

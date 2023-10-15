@@ -12,10 +12,10 @@
 #include "triangle.hpp"
 
 InputMap inputMap{
-    {"Up", {InputKey::W}},
-    {"Down", {InputKey::S}},
-    {"Left", {InputKey::A}},
-    {"Right", {InputKey::D}},
+    {"Up", {InputButton::W}},
+    {"Down", {InputButton::S}},
+    {"Left", {InputButton::A}},
+    {"Right", {InputButton::D}},
 };
 
 int main(int, char**) {
@@ -24,8 +24,7 @@ int main(int, char**) {
   auto w = Window::Make(e, 640, 480, "ventana");
   if (w) {
     auto& window = w.value();
-
-    InputManager i = InputManager::Make(window, inputMap);
+    InputManager i = window.addInputManager(inputMap);
 
     // Ideal input form user:
     // ShaderProgram sp = ShaderProgram::Make("../assets/col.fs",
