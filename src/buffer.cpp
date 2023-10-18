@@ -65,4 +65,4 @@ void Buffer::enableVertexArray(const unsigned int size,
  
 }
 
-unsigned Buffer::buffer_id() const { return buffer_id_; }
+unsigned int    Buffer::buffer_id() const { return buffer_id_; }

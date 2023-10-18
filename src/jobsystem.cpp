@@ -26,7 +26,10 @@ void JobSystem::work() {
   }
 }
 
-void JobSystem::set_stop(bool t) { stop_ = t; }
+void JobSystem::set_stop(bool t) { 
+    stop_ = t; 
+    condition_.notify_all();
+}
 
 void JobSystem::add(std::function<void()> task) {
   std::lock_guard<std::mutex> lock(mutex_);
