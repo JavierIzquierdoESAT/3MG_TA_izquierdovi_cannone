@@ -1,10 +1,9 @@
+#include <chrono>
 #include <functional>
 #include <future>
 #include <iostream>
 #include <optional>
 #include <queue>
-
-#include <chrono>
 #include <thread>
 
 #include "GL/glew.h"
@@ -30,7 +29,7 @@ class Texture {
     glBindTexture(GL_TEXTURE_2D, texture_);
   }
 
-  static Texture LoadTexture(const char* a) {
+  static std::optional<Texture> LoadTexture(const char* a) {
     // return TTest(a);
     Texture t = Texture();
 
@@ -62,15 +61,6 @@ class Texture {
 
 class JobSystem {
  public:
-  // template<typename Function>
-  // auto add_complicaete(Function task()) -> std::future<decltype(Function())>
-  // { 	using Ret = decltype(Function()); 	auto t =
-  // std::packaged_task<Ret()>(task); 	std::future<Ret> future =
-  // t.get_future(); 	jobs_.push(t);
-
-  //	return future;
-  //}
-
   JobSystem() : stop_{false} {
     auto worker_count = std::thread::hardware_concurrency();
     for (int i = 0; i != worker_count; i++) {
@@ -84,9 +74,7 @@ class JobSystem {
       std::function<void()> task;
       {
         std::unique_lock<std::mutex> lock(mutex_);
-        condition_.wait(lock, [this] {
-          return !jobs_.empty() || stop_;
-        });
+        condition_.wait(lock, [this] { return !jobs_.empty() || stop_; });
 
         if (stop_ && jobs_.empty()) return;
         task = std::move(jobs_.front());
@@ -114,6 +102,16 @@ class JobSystem {
     condition_.notify_one();
   }
 
+  template <class Return, class... Args>
+  std::future<Return> Tuple(std::function<Return(Args... ar)> func) {
+    std::shared_ptr<std::packaged_task<Return()>> task =
+        std::make_shared<std::packaged_task<Return()>>(std::move(func));
+
+    std::future<Return> future = task->get_future();
+    add([task]() { (*task)(); });
+    return std::move(future);
+  };
+
  private:
   bool stop_;
   std::condition_variable condition_;
@@ -126,30 +124,24 @@ int main(int, char**) {
   glfwInit();
   JobSystem b;
 
-  std::vector<std::string> comida{
-      "../assets/4k.png", "../assets/4k.png",
-      "../assets/4k.png", "../assets/4k.png",
-      "../assets/4k.png", "../assets/4k.png"
-  };
+  std::vector<std::string> comida{"../assets/4k.png", "../assets/4k.png",
+                                  "../assets/4k.png", "../assets/4k.png",
+                                  "../assets/4k.png", "../assets/4k.png"};
   std::vector<std::future<std::optional<Texture>>> resultado;
 
   double start = glfwGetTime();
   for (auto& ente : comida) {
-    Texture t = Texture::LoadTexture(ente.c_str());
+    //Texture t = Texture::LoadTexture(ente.c_str());
   }
   std::cout << glfwGetTime() - start << std::endl;
-
 
   start = glfwGetTime();
   for (auto& ente : comida) {
     auto mycall = [ente]() { return Texture::LoadTexture(ente.c_str()); };
-    std::shared_ptr<std::packaged_task<std::optional<Texture>()>> task =
-        std::make_shared<std::packaged_task<std::optional<Texture>()>>(
-            std::move(mycall));
-    // auto task = std::packaged_task<std::string()>(std::move(mycall));
-    std::future<std::optional<Texture>> future = task->get_future();
-    b.add([task]() { (*task)(); });
-    resultado.push_back(std::move(future));
+
+    std::function<std::optional<Texture>()> f = mycall;
+
+    resultado.push_back(std::move(b.Tuple(f)));
   }
 
   int count = 0;
@@ -170,54 +162,5 @@ int main(int, char**) {
     std::cout << a.get()->texture_;
   }
 
-
-
-
   return 0;
 }
-
-// int main(int, char**) {
-//  JobSystem b;
-//  glfwInit();
-//  std::vector<std::string> comida{"../assets/4k.png"};
-//  std::vector<std::future<std::optional<std::string>>> resultado;
-//
-//  double start = glfwGetTime();
-//  for (auto& ente : comida) {
-//    // Texture t = Texture::LoadTexture(ente.c_str());
-//  }
-//  // std::cout << glfwGetTime() - start << std::endl;
-//
-//  start = glfwGetTime();
-//  for (auto& ente : comida) {
-//    auto mycall = [ente]() { return TTest::getString(ente); };
-//
-//    std::shared_ptr<std::packaged_task<std::optional<std::string>()>> task;
-//    task = std::make_shared<std::packaged_task<std::optional<std::string>()>>(
-//        std::move(mycall));
-//
-//    std::future<std::optional<std::string>> future = task->get_future();
-//    b.add([task]() { (*task)(); });
-//    resultado.push_back(std::move(future));
-//  }
-//
-//  while (resultado[0].wait_for(std::chrono::seconds(0)) !=
-//         std::future_status::ready) {
-//  }
-//  std::cout << glfwGetTime() - start << std::endl;
-//
-//  // int count = 0;
-//
-//  // while (true) {
-//  //  for (auto& a : resultado) {
-//  //    if (a.wait_for(std::chrono::seconds(0)) == std::future_status::ready)
-//  {
-//  //      count++;
-//  //    }
-//  //  }
-//  //  if (count == resultado.size()) break;
-//  //  count = 0;
-//  //}
-//
-//  return 0;
-//}
