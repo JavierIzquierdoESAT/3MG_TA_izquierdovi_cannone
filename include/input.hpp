@@ -6,8 +6,21 @@ struct GLFWwindow;
 class Window;
 
 /// @enum allowed input buttons
-enum class InputKey {
+enum class InputButton {
   UNKNOWN = -1,
+
+  MOUSE_LEFT = 0,
+  MOUSE_RIGHT,
+  MOUSE_MIDDLE,
+  MOUSE_4,
+  MOUSE_5,
+  MOUSE_6,
+  MOUSE_7,
+  MOUSE_8,
+
+  SCROLL_UP = 8,
+  SCROLL_DOWN,
+
   SPACE = 32,
   APOSTROPHE = 39,
   COMMA = 44,
@@ -131,36 +144,38 @@ enum class InputKey {
   LAST
 };
 
+
 /// @brief structure that binds user created actions and physical input
-using InputMap = std::unordered_map<std::string, std::vector<InputKey>>;
+using InputButtonMap = std::unordered_map<std::string, std::vector<InputButton>>;
 
 /// @brief allows for input state retrieval
 ///
-/// this class is closely related to an InputMap  
-/// this structure is a map with strings as keys and a vector of InputKey
-/// as value,  
+/// this class is closely related to an InputButtonMap
+/// this structure is a map with strings as keys and a vector of InputButton
+/// as value,
 /// so you should define your actions as the keys and any number of
 /// buttons as value
 ///
 /// ## example
 /// ~~~~~~~~~~~~~~~.cpp
-/// InputMap inputMap{
-///   {"Up", {InputKey::W, InputKey::DOWN}},
-///   {"Down", {InputKey::S}},
-///   {"Left", {InputKey::A}},
-///   {"Right", {InputKey::D}},
+/// InputButtonMap inputMap{
+///   {"Up", {InputButton::W, InputButton::DOWN}},
+///   {"Down", {InputButton::S}},
+///   {"Left", {InputButton::A}},
+///   {"Right", {InputButton::D}},
 /// }
 /// ~~~~~~~~~~~~~~~
 class InputManager {
  public:
   ~InputManager() = default;
 
-  /// @brief creates a usable inputSystem
-  /// @param w Window where the input will be recieved
-  /// @param m InputMap includind all actions and mapped keys
-  /// @return a usable InputManager
-  static InputManager Make(const Window& w, InputMap m);
+  /// @brief creates and binds an input map
+  /// @param w window handle reference
+  /// @param m InputButtonMap to bind
+  InputManager(GLFWwindow* window, InputButtonMap m);
 
+
+  //TODO: try to make this only accessible to the window
   /// @brief updates the state of each key
   ///
   /// must be called once per frame for proper functioning of this class
@@ -170,19 +185,24 @@ class InputManager {
   /// *pressed* during the frame
   /// @param action to check
   /// @return ture if action has been *performed* false otherwise
-  bool ButtonDown(std::string action) const;
+  bool buttonDown(std::string action) const;
 
   /// @brief checks if the any of the buttons asigned to an action have been
   /// *released* during the frame
   /// @param action to check
   /// @return ture if action has been *performed* false otherwise
-  bool ButtonUp(std::string action) const;
+  bool buttonUp(std::string action) const;
 
   /// @brief checks if the any of the buttons asigned to an action is
   /// *currently held down*
   /// @param action to check
   /// @return ture if action is *currently held down* false otherwise
-  bool ButtonPressed(std::string action) const;
+  bool buttonPressed(std::string action) const;
+
+  //TODO: integrate in generic axis system
+  float mousePositionX() const;
+  float mousePositionY() const;
+  
 
  private:
   struct KeyState {
@@ -192,15 +212,29 @@ class InputManager {
   };
 
   InputManager() = delete;
-  InputManager(GLFWwindow* w, InputMap m);
 
-  static void key_callback(GLFWwindow* window, int key, int scancode,
-                           int action, int mods);
-  inline static std::unordered_map<InputKey, KeyState> s_mapped_keys;
+  static void GenericButtonCallback(int button, int action);
+  static void KeyCallback(GLFWwindow* window, int key, int scancode, int action,
+                          int mods);
+  static void MouseButtonCallback(GLFWwindow* window, int button, int action,
+                                  int mods);
+  static void ScrollCallback(GLFWwindow* window, double xoffset,
+                             double yoffset);
+  static void CursorCallback(GLFWwindow* window, double xpos, double ypos);
+
+  // holds the state of the buttons present on map_
+  inline static std::unordered_map<InputButton, KeyState> s_mapped_buttons;
+  // hold states of the buttons modified in the las frame so that they can be
+  // reset at the end of the frame
   inline static std::vector<KeyState*> s_modified_keys;
 
-  std::vector<KeyState> findKeyState(const InputMap& map, std::string s) const;
+  //retrieves the states of all the buttons with an action
+  std::vector<KeyState> findKeyState(const InputButtonMap& map,
+                                     std::string s) const;
 
-  InputMap map_;
+  inline static float mouse_x_;
+  inline static float mouse_y_;
+
+  InputButtonMap map_;
   GLFWwindow* window_;
 };

@@ -11,11 +11,11 @@
 #include "time.hpp"
 #include "triangle.hpp"
 
-InputMap inputMap{
-    {"Up", {InputKey::W}},
-    {"Down", {InputKey::S}},
-    {"Left", {InputKey::A}},
-    {"Right", {InputKey::D}},
+InputButtonMap inputMap{
+    {"Up", {InputButton::W}},
+    {"Down", {InputButton::S}},
+    {"Left", {InputButton::A}},
+    {"Right", {InputButton::D}},
 };
 
 int main(int, char**) {
@@ -24,8 +24,7 @@ int main(int, char**) {
   auto w = Window::Make(e, 640, 480, "ventana");
   if (w) {
     auto& window = w.value();
-
-    InputManager i = InputManager::Make(window, inputMap);
+    InputManager i = window.addInputManager(inputMap);
 
     // Ideal input form user:
     // ShaderProgram sp = ShaderProgram::Make("../assets/col.fs",
@@ -41,19 +40,20 @@ int main(int, char**) {
 
     while (!window.isDone()) {
       // input
-      if (i.ButtonPressed("Up")) {
+      if (i.buttonPressed("Up")) {
         t.move(Vec3(0, t_speed * Time::delta_time(), 0));
       }
-      if (i.ButtonPressed("Down")) {
+      if (i.buttonPressed("Down")) {
         t.move(Vec3(0, -t_speed * Time::delta_time(), 0));
       }
-      if (i.ButtonPressed("Left")) {
+      if (i.buttonPressed("Left")) {
         t.move(Vec3(-t_speed * Time::delta_time(), 0, 0));
       }
-      if (i.ButtonPressed("Right")) {
+      if (i.buttonPressed("Right")) {
         t.move(Vec3(t_speed * Time::delta_time(), 0, 0));
       }
-
+      std::cout << i.mousePositionX() << "  -  "
+                << i.mousePositionY() << std::endl;
       // render
       t.updateBuffers();
       s.useProgram();

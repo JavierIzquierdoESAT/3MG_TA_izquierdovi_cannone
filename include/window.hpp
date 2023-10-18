@@ -1,10 +1,17 @@
 #pragma once
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 #include "../src/stdafx.hpp"
 
 struct GLFWwindow;
 class Engine;
 class Triangle;
+
+enum class InputButton;
+using InputButtonMap = std::unordered_map<std::string, std::vector<InputButton>>;
+class InputManager;
 
 /** Handles Window */
 class Window {
@@ -39,21 +46,22 @@ class Window {
 
   /// @brief checks if the should be closed and refreshes buffer
   /// @return true if the window should close
-  /// 
+  ///
   /// this should be used as the main loop exit condition
   /// ~~~~~~~~.cpp
   /// while (!window.isDone()) {}
   /// ~~~~~~~~
   bool isDone() const;
 
-  //TODO: update this
-  /// @brief this should not be visible to the user
-  /// @return a window handle
-  GLFWwindow* initInput() const;
+  /// @brief creates and returns an InputManager that will capture input for
+  /// this window
+  /// @return The InputManager object created
+  InputManager addInputManager(InputButtonMap imput_map) const;
 
   /// @brief swaps screen buffers
-  /// 
-  /// it should be called at the end of every frame in order to show what was rendered on screen
+  ///
+  /// it should be called at the end of every frame in order to show what was
+  /// rendered on screen
   void swap() const;
 
  private:
