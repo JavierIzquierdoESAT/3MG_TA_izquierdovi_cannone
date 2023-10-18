@@ -5,6 +5,7 @@
 struct GLFWwindow;
 class Window;
 
+/// @enum allowed input buttons
 enum class InputKey {
   UNKNOWN = -1,
   SPACE = 32,
@@ -130,29 +131,66 @@ enum class InputKey {
   LAST
 };
 
+/// @brief structure that binds user created actions and physical input
 using InputMap = std::unordered_map<std::string, std::vector<InputKey>>;
 
-struct KeyState {
-  bool pushed = false;
-  bool pressed = false;
-  bool released = false;
-};
-
+/// @brief allows for input state retrieval
+///
+/// this class is closely related to an InputMap  
+/// this structure is a map with strings as keys and a vector of InputKey
+/// as value,  
+/// so you should define your actions as the keys and any number of
+/// buttons as value
+///
+/// ## example
+/// ~~~~~~~~~~~~~~~.cpp
+/// InputMap inputMap{
+///   {"Up", {InputKey::W, InputKey::DOWN}},
+///   {"Down", {InputKey::S}},
+///   {"Left", {InputKey::A}},
+///   {"Right", {InputKey::D}},
+/// }
+/// ~~~~~~~~~~~~~~~
 class InputManager {
  public:
   ~InputManager() = default;
 
+  /// @brief creates a usable inputSystem
+  /// @param w Window where the input will be recieved
+  /// @param m InputMap includind all actions and mapped keys
+  /// @return a usable InputManager
   static InputManager Make(const Window& w, InputMap m);
+
+  /// @brief updates the state of each key
+  ///
+  /// must be called once per frame for proper functioning of this class
   static void update();
 
-  
+  /// @brief checks if the any of the buttons asigned to an action have been
+  /// *pressed* during the frame
+  /// @param action to check
+  /// @return ture if action has been *performed* false otherwise
+  bool ButtonDown(std::string action) const;
 
-  /** checks if any of the keys asigned to de action is pressed*/
-  bool ButtonDown(std::string) const;
-  bool ButtonUp(std::string) const;
-  bool ButtonPressed(std::string) const;
+  /// @brief checks if the any of the buttons asigned to an action have been
+  /// *released* during the frame
+  /// @param action to check
+  /// @return ture if action has been *performed* false otherwise
+  bool ButtonUp(std::string action) const;
+
+  /// @brief checks if the any of the buttons asigned to an action is
+  /// *currently held down*
+  /// @param action to check
+  /// @return ture if action is *currently held down* false otherwise
+  bool ButtonPressed(std::string action) const;
 
  private:
+  struct KeyState {
+    bool pushed = false;
+    bool pressed = false;
+    bool released = false;
+  };
+
   InputManager() = delete;
   InputManager(GLFWwindow* w, InputMap m);
 

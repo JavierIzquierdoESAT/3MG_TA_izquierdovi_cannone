@@ -73,12 +73,12 @@ void ShaderManager::generateAndCompileShader(ShaderType t,
   }
 }
 
-void ShaderManager::atachShaders() {
+void ShaderManager::attachShaders() {
   glAttachShader(default_shader_program_, vertex_shader_id_);
   glAttachShader(default_shader_program_, fragment_shader_id_);
   glLinkProgram(default_shader_program_);
 
-  glUseProgram(default_shader_program_);
+  useProgram();
 }
 
 void ShaderManager::useProgram() { glUseProgram(default_shader_program_); }
