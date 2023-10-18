@@ -27,16 +27,6 @@ void JobSystem::work() {
   }
 }
 
-//template <class Return, class... Args>
-//std::future<Return> JobSystem::addTask(std::function<Return(Args... ar)> func) {
-//  std::shared_ptr<std::packaged_task<Return()>> task =
-//      std::make_shared<std::packaged_task<Return()>>(std::move(func));
-//
-//  std::future<Return> future = task->get_future();
-//  add([task]() { (*task)(); });
-//  return std::move(future);
-//}
-
 void JobSystem::set_stop(bool t) {
   stop_ = t;
   condition_.notify_all();

@@ -63,14 +63,23 @@ int main(int, char**) {
   }
   std::cout << glfwGetTime() - start << std::endl;
 
+
+
+
   start = glfwGetTime();
   for (auto& ente : comida) {
+    //TODO: prety hard user usage
     auto mycall = [ente]() { return Texture::LoadTexture(ente.c_str()); };
 
     std::function<std::optional<Texture>()> f = mycall;
 
     resultado.push_back(std::move(b.addTask(f)));
   }
+
+
+
+
+
 
   int count = 0;
 

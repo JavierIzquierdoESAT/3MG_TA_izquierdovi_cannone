@@ -21,18 +21,14 @@ class JobSystem {
   /// @brief adds functions to the execution list and tells a thread to pick it
   /// up
   /// @param task the function you want to add to the list
-
-  //template <class Return, class... Args>
-  //std::future<Return> addTask(std::function<Return(Args... ar)>func);
-
-  template <class Return, class... Args>
-  std::future<Return> addTask(std::function<Return(Args... ar)> func) {
+  template <class Return>
+  std::future<Return> addTask(std::function<Return()> func) {
     std::shared_ptr<std::packaged_task<Return()>> task =
         std::make_shared<std::packaged_task<Return()>>(std::move(func));
 
     std::future<Return> future = task->get_future();
     add([task]() { (*task)(); });
-    return std::move(future);
+    return future;
   }
 
  private:
