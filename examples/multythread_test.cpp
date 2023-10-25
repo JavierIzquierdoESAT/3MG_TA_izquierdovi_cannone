@@ -57,18 +57,8 @@ int main(int, char**) {
   std::vector<std::future<std::optional<Texture>>> resultado;
 
   double start = glfwGetTime();
+
   for (auto& ente : comida) {
-    // Texture t = Texture::LoadTexture(ente.c_str());
-  }
-  std::cout << glfwGetTime() - start << std::endl;
-
-  start = glfwGetTime();
-  for (auto& ente : comida) {
-    // TODO: prety hard user usage
-    // auto mycall = [ente]() { return Texture::LoadTexture(ente.c_str()); };
-
-    // std::function<std::optional<Texture>()> f = mycall;
-
     resultado.push_back(
         std::move(b.addTask(Texture::LoadTexture, ente.c_str())));
   }
