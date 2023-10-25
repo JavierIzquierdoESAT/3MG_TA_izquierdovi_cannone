@@ -9,12 +9,16 @@ class ShaderManager {
   ShaderManager();
   ~ShaderManager();
 
+  //TODO: Create a Make for this class and follow RAII 
   void generateAndCompileShader(ShaderType t, const std::string& file_path);
 
-  void atachShaders();
+  /// @brief attaches a shader object to a program object
+  void attachShaders();
 
+  /// @brief installs a program object as part of current rendering state
   void useProgram();
 
+  // TODO: This function isn't implemented
   void setUniformValue(const int uniform_pos, const float* number);
 
  private:
