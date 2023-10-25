@@ -5,8 +5,11 @@
 #include <typeinfo>
 #include <unordered_map>
 #include <vector>
+#include <iostream>
 
-struct Position {};
+struct Position {
+  float x, y;
+};
 
 struct Physics {
   float acceleration;
@@ -23,10 +26,10 @@ template <typename T>
 struct component_list : component_base {
   void addComponent(unsigned e) override {
     if (e >= components_.size()) {
-      components_.emplace_back(std::optional<T>);
+      components_.emplace_back(std::optional<T>());
     }
   }
-  void removeComponent(unsigned e) override { components_[e].reset(); }
+  void removeComponent(unsigned e) override { components_[e - 1].reset(); }
   // void setComponent(unsigned e, T c) override {
   //  components_
   //  components_.emplace_back(std::optional<T>);
@@ -69,16 +72,26 @@ class ComponentManager {
   template <typename T>
   void setComponent(unsigned e, T c) {
     auto comp_base = components_.find(typeid(T).hash_code());
-    component_list<T> component_vector =
-        static_cast <component_list<T>>(comp_base->second);
-    component_vector.components_[e - 1] = c;
+    component_list<T>* component_vector =
+        static_cast<component_list<T>*>(comp_base->second.get());
+    component_vector->components_[e - 1] = c;
   }
 
-  void deleteEntity(unsigned e) {
+  void deleteEntity(unsigned& e) {
     for (auto& it : components_) {
       it.second->removeComponent(e);
     }
+
     freed.push_back(e);
+    e = 0;
+  }
+
+  template <typename T>
+  std::optional<T>& getComponent(unsigned e) {
+    auto comp_base = components_.find(typeid(T).hash_code());
+    component_list<T>* component_vector =
+        static_cast<component_list<T>*>(comp_base->second.get());
+    return component_vector->components_[e - 1];
   }
 
   std::vector<unsigned> freed;
@@ -137,15 +150,38 @@ int main(int, char**) {
 
   // Previous code
   unsigned player = component_manager.addEntity();
-  component_manager.deleteEntity(player);
-  Position pos{};
+
+  Position pos{5, 20};
   component_manager.setComponent<Position>(player, pos);
 
+  component_manager.getComponent<Position>(player);
+
+  component_manager.deleteEntity(player);
+
   std::vector<unsigned int> obstacles;
-  for (int i = 0; i != 30; i++) {
-    // Previous code
-    // obstacles.push_back(component_manager.new_entity({}, {}, {}));
+  for (int i = 0; i != 20; i++) {
+    obstacles.push_back(component_manager.addEntity());
+    component_manager.setComponent(obstacles[i], Position{(float)i, (float)i});
   }
+  for (int i = 5; i != 10; i++) {
+    component_manager.deleteEntity(obstacles[i]);
+
+  }
+  for (int i = 0; i != 20; i++) {
+    obstacles.push_back(component_manager.addEntity());
+    component_manager.setComponent(obstacles[i], Position{(float)i, (float)i});
+  }
+
+  for (auto p : obstacles) {
+    if (p != 0) {
+      std::optional<Position> y =
+          component_manager.getComponent<Position>(p);
+      if (y) {
+        std::cout << y.value().x << " -- " << y.value().y << std::endl;
+      }
+    }
+  }
+
   while (true) {
     // if (input.acceleration) {
     //  // Previous code
