@@ -5,13 +5,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-void basic(int a, int b) {
-
-    printf("%d, %d \n", a, b);
-
-}
-
-
 class Texture {
  public:
   Texture(std::string t)
@@ -54,7 +47,6 @@ class Texture {
  private:
 };
 
-
 int main(int, char**) {
   glfwInit();
   JobSystem b;
@@ -66,27 +58,20 @@ int main(int, char**) {
 
   double start = glfwGetTime();
   for (auto& ente : comida) {
-    //Texture t = Texture::LoadTexture(ente.c_str());
+    // Texture t = Texture::LoadTexture(ente.c_str());
   }
   std::cout << glfwGetTime() - start << std::endl;
-
-
-
 
   start = glfwGetTime();
   for (auto& ente : comida) {
     // TODO: prety hard user usage
-    //auto mycall = [ente]() { return Texture::LoadTexture(ente.c_str()); };
+    // auto mycall = [ente]() { return Texture::LoadTexture(ente.c_str()); };
 
-    //std::function<std::optional<Texture>()> f = mycall;
+    // std::function<std::optional<Texture>()> f = mycall;
 
-     resultado.push_back(std::move(b.addTask2(Texture::LoadTexture,ente.c_str())));
+    resultado.push_back(
+        std::move(b.addTask(Texture::LoadTexture, ente.c_str())));
   }
-
-
-  
-  b.addTask2(basic,100,200);
-
 
   int count = 0;
 
@@ -105,7 +90,6 @@ int main(int, char**) {
   for (auto& a : resultado) {
     std::cout << a.get()->texture_;
   }
-
 
   return 0;
 }

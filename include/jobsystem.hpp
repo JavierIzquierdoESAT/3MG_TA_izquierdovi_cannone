@@ -6,7 +6,6 @@
 #include <queue>
 #include <thread>
 
-
 class JobSystem {
  public:
   JobSystem();
@@ -19,24 +18,21 @@ class JobSystem {
   /// @param t: state to which you want to set the bool
   void set_stop(bool t);
 
-  template <class Funct, typename...  Args>
-  auto addTask2(Funct f, Args... a) -> std::future<decltype(f(a...))> {
-
-      using ret = decltype(f(a...));
-
-      std::function<ret()> fun = std::bind(f,a...);
-
-      //fun();
-    
-      return addTask(fun);
-  }
-
   /// @brief adds functions to the execution list and tells a thread to pick it
   /// up
-  /// @param task the function you want to add to the list
-  template <class Return>
-  std::future<Return> addTask(std::function<Return()> func) {
+  /// @param task the function you want to add to the list and the parameteres of the function
+  template <class Funct, typename... Args>
+  auto addTask(Funct f, Args... a) -> std::future<decltype(f(a...))> {
+    using ret = decltype(f(a...));
 
+    std::function<ret()> fun = std::bind(f, a...);
+
+    return setFuture(fun);
+  }
+
+ private:
+  template <class Return>
+  std::future<Return> setFuture(std::function<Return()> func) {
     std::shared_ptr<std::packaged_task<Return()>> task =
         std::make_shared<std::packaged_task<Return()>>(std::move(func));
 
@@ -45,7 +41,6 @@ class JobSystem {
     return future;
   }
 
- private:
   /// @brief adds functions to the execution list and tells a thread to pick
   /// it up
   /// @param task the function you want to add to the list
