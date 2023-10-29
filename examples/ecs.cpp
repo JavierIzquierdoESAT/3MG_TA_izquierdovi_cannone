@@ -1,5 +1,7 @@
-#include "ecs.hpp"
-#include "math/vector_3.h"
+#include "ecs/component_manager.hpp"
+#include "ecs/default_systems.hpp"
+
+
 
 int main(int, char**) {
   ComponentManager component_manager;

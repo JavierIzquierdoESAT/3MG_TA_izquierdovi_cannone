@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cassert>
 #include <iostream>
 #include <memory>
@@ -8,9 +10,12 @@
 #include <vector>
 
 #include "buffer.hpp"
+#include "triangle.hpp"
+
 #include "math/vector_2.h"
 #include "math/vector_3.h"
-#include "triangle.hpp"
+
+
 
 struct Position {
   Vec3 pos;
@@ -25,15 +30,14 @@ struct Render {
   std::vector<Vec2> uv;
 };
 
-// TODO: Tranform pos to Triangle Vertex pos
 
-struct component_base {
+struct component_list_base {
   virtual void addComponent(unsigned e) = 0;
   virtual void removeComponent(unsigned e) = 0;
 };
 
 template <typename T>
-struct component_list : component_base {
+struct component_list : component_list_base {
   void addComponent(unsigned e) override {
     if (e >= components_.size()) {
       components_.emplace_back(std::optional<T>());
@@ -41,54 +45,43 @@ struct component_list : component_base {
   }
   void removeComponent(unsigned e) override { components_[e - 1].reset(); }
 
+  operator int() const {return 2;}
+
   std::vector<std::optional<T>> components_;
 };
 
 class ComponentManager {
  public:
-  std::unordered_map<std::size_t, std::unique_ptr<component_base>> components_;
+  /// @brief
+  ComponentManager();
+  /// @brief non copyable
+  ComponentManager(const ComponentManager&) = delete;
 
-  ComponentManager() {
-    add_component_class<Position>();
-    add_component_class<Render>();
-  }
+  ~ComponentManager() = default;
+
+  /// @brief creates an entity with no components the needed components for the
+  /// entity must be inserted using setComponent
+  /// @return entity id
+  unsigned addEntity();
+
+  /// @brief creates and enity and intializes it's components to represent a
+  /// triangle
+  /// @return entity id
+  unsigned addTriangle();
+  void deleteEntity(unsigned& e);
+
+  /// @brief adds a custom component type to be used
+  /// @tparam T compoennt type
   template <typename T>
   void add_component_class() {
     components_.emplace(typeid(T).hash_code(),
                         std::make_unique<component_list<T>>());
   }
 
-  unsigned addEntity() {
-    unsigned res;
-    if (freed.size() > 0) {
-      res = freed[freed.size() - 1];
-      freed.pop_back();
-    } else {
-      res = current_entity;
-      current_entity++;
-    }
-
-    for (auto& it : components_) {
-      it.second->addComponent(res);
-    }
-    return res;
-  }
-  unsigned addTriangle() {
-    unsigned res = addEntity();
-    Position pos;
-    pos.pos = {0, 0, 0};
-    setComponent<Position>(res, pos);
-    Render ren;
-    ren.pos = {{-0.5f, -0.5f, 0.0f}, {0.0f, 0.5f, 0.0f}, {0.5f, -0.5f, 0.0f}};
-    ren.color = {
-        {1.0, 0.0, 0.0},
-        {0.0, 1.0, 0.0},
-        {0.0, 0.0, 1.0},
-    };
-    setComponent<Render>(res, ren);
-    return res;
-  }
-
+  /// @brief sets a component for the specified entity
+  /// @tparam T component type
+  /// @param e entity id
+  /// @param c component to set
   template <typename T>
   void setComponent(unsigned e, T c) {
     auto comp_base = components_.find(typeid(T).hash_code());
@@ -97,15 +90,10 @@ class ComponentManager {
     component_vector->components_[e - 1] = c;
   }
 
-  void deleteEntity(unsigned& e) {
-    for (auto& it : components_) {
-      it.second->removeComponent(e);
-    }
-
-    freed.push_back(e);
-    e = 0;
-  }
-
+  /// @brief retrieves a component for a specific entity
+  /// @tparam T component type
+  /// @param e entity
+  /// @return specified component if found
   template <typename T>
   std::optional<T>& getComponent(unsigned e) {
     auto comp_base = components_.find(typeid(T).hash_code());
@@ -114,6 +102,9 @@ class ComponentManager {
     return component_vector->components_[e - 1];
   }
 
+  /// @brief retrieves all the components of the specified type
+  /// @tparam T component type
+  /// @return all T components
   template <typename T>
   std::vector<std::optional<T>>& getAll() {
     auto comp_base = components_.find(typeid(T).hash_code());
@@ -122,34 +113,15 @@ class ComponentManager {
     return component_vector->components_;
   }
 
-  std::vector<unsigned> freed;
-
  private:
-  unsigned current_entity = 1;
+  // map containint all component lists
+  std::unordered_map<std::size_t, std::unique_ptr<component_list_base>>
+      components_;
+
+  // marks the positions where entities have been freed so that they can be
+  // filled with new components to avoid blanks in the compoent vectors
+  std::vector<unsigned> freed_entities_;
+
+  // biggest entity id or position in the array
+  unsigned current_entity_;
 };
-
-void render_system(std::vector<std::optional<Position>>& positions,
-                   std::vector<std::optional<Render>>& render) {
-  auto p = positions.begin();
-  auto r = render.begin();
-
-  // TODO: Render Manager
-
-  // TODO: buffer creation
-  for (; p != positions.end(); p++, r++) {
-    if (!p->has_value() || !r->has_value()) continue;
-    auto& pv = p->value();
-    auto& rv = r->value();
-
-    std::vector<Vec3> transformedPos;
-    // Transform
-    for (auto pos : rv.pos) {
-      transformedPos.emplace_back(pos + pv.pos);
-    }
-
-    // TODO: Pass render data to buffer
-
-    // Render
-  }
-  assert(r == render.end());
-}
