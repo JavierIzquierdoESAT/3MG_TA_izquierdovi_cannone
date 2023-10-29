@@ -8,29 +8,24 @@
 #include <vector>
 
 #include "buffer.hpp"
+#include "math/vector_2.h"
+#include "math/vector_3.h"
 #include "triangle.hpp"
-
-struct Vec3 {
-  float x, y, z;
-};
-struct Vec2 {
-  float x, y;
-};
 
 struct Position {
   Vec3 pos;
 };
 
 struct Render {
-  //TODO: rendermode
-  //TODO: shaderprogram
+  // TODO: rendermode
+  // TODO: shaderprogram
   std::vector<Vec3> pos;
   std::vector<Vec3> normal;
   std::vector<Vec3> color;
   std::vector<Vec2> uv;
 };
 
-//TODO: Tranform pos to Triangle Vertex pos
+// TODO: Tranform pos to Triangle Vertex pos
 
 struct component_base {
   virtual void addComponent(unsigned e) = 0;
@@ -55,7 +50,7 @@ class ComponentManager {
 
   ComponentManager() {
     add_component_class<Position>();
-    add_component_class<Position>();
+    add_component_class<Render>();
   }
   template <typename T>
   void add_component_class() {
@@ -81,13 +76,10 @@ class ComponentManager {
   unsigned addTriangle() {
     unsigned res = addEntity();
     Position pos;
-    pos.pos = {
-        {-0.5f, -0.5f, 0.0f},
-        {0.0f, 0.5f, 0.0f},
-        {0.5f, -0.5f, 0.0f},
-    };
-    setComponent<Position>(res,pos);
+    pos.pos = {0, 0, 0};
+    setComponent<Position>(res, pos);
     Render ren;
+    ren.pos = {{-0.5f, -0.5f, 0.0f}, {0.0f, 0.5f, 0.0f}, {0.5f, -0.5f, 0.0f}};
     ren.color = {
         {1.0, 0.0, 0.0},
         {0.0, 1.0, 0.0},
@@ -122,6 +114,14 @@ class ComponentManager {
     return component_vector->components_[e - 1];
   }
 
+  template <typename T>
+  std::vector<std::optional<T>>& getAll() {
+    auto comp_base = components_.find(typeid(T).hash_code());
+    component_list<T>* component_vector =
+        static_cast<component_list<T>*>(comp_base->second.get());
+    return component_vector->components_;
+  }
+
   std::vector<unsigned> freed;
 
  private:
@@ -129,23 +129,27 @@ class ComponentManager {
 };
 
 void render_system(std::vector<std::optional<Position>>& positions,
-                    std::vector<std::optional<Render>>& render) {
-
+                   std::vector<std::optional<Render>>& render) {
   auto p = positions.begin();
-  auto ph = render.begin();
+  auto r = render.begin();
+
+  // TODO: Render Manager
 
   // TODO: buffer creation
-  for (; p != positions.end(); p++, ph++) {
-    if (!p->has_value() || !ph->has_value()) continue;
+  for (; p != positions.end(); p++, r++) {
+    if (!p->has_value() || !r->has_value()) continue;
     auto& pv = p->value();
-    auto& phv = ph->value();
+    auto& rv = r->value();
+
+    std::vector<Vec3> transformedPos;
+    // Transform
+    for (auto pos : rv.pos) {
+      transformedPos.emplace_back(pos + pv.pos);
+    }
 
     // TODO: Pass render data to buffer
 
-
-  
-    //Render
-    
+    // Render
   }
-  assert(ph == render.end());
+  assert(r == render.end());
 }

@@ -104,6 +104,8 @@ project "Motor"
             "premake5.lua",
             "src/build/conanfile.txt",
             "src/stdafx.cpp", "src/stdafx.hpp",
+            "include/**.h",
+            "src/**.cc",
             "include/**.hpp",
             "src/**.cpp"
     }

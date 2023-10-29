@@ -1,14 +1,5 @@
-#include <cassert>
-#include <iostream>
-#include <memory>
-#include <optional>
-#include <tuple>
-#include <typeinfo>
-#include <unordered_map>
-#include <vector>
-
 #include "ecs.hpp"
-
+#include "math/vector_3.h"
 
 int main(int, char**) {
   ComponentManager component_manager;
@@ -16,7 +7,8 @@ int main(int, char**) {
   unsigned player = component_manager.addTriangle();
 
   while (true) {
-
+    render_system(component_manager.getAll<Position>(),
+                  component_manager.getAll<Render>());
 
     // if (input.acceleration) {
     //  // Previous code
