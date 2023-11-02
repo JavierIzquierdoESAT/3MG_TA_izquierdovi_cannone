@@ -8,7 +8,6 @@ Triangle::Triangle()
               {{0.5, -0.5, 0.0}, {0.0, 0.0, 1.0}}},
       num_vertex_{3},
       data_buffer_{Buffer(vertex_, sizeof(vertex_))} {
-  // TODO: this is initializing Buffer not following RAII
     data_buffer_.enableVertexArray(0, num_vertex_, 6 * sizeof(float), 0);
     data_buffer_.enableVertexArray(1,num_vertex_, 6 * sizeof(float), 12);
     data_buffer_.bindVertexArray();

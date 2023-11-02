@@ -26,13 +26,10 @@ unsigned ComponentManager::addTriangle() {
   Position pos;
   pos.pos = {0, 0, 0};
   setComponent<Position>(res, pos);
-  Render ren;
-  ren.pos = {{-0.5f, -0.5f, 0.0f}, {0.0f, 0.5f, 0.0f}, {0.5f, -0.5f, 0.0f}};
-  ren.color = {
-      {1.0, 0.0, 0.0},
-      {0.0, 1.0, 0.0},
-      {0.0, 0.0, 1.0},
-  };
+  Render ren({{-0.5f, -0.5f, 0.0f}, {0.0f, 0.5f, 0.0f}, {0.5f, -0.5f, 0.0f}},
+             {{1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}},
+             {{1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}},
+             {{0, 0}, {0, 0}, {0, 0}});
   setComponent<Render>(res, ren);
   return res;
 }
