@@ -10,26 +10,9 @@
 #include <vector>
 
 #include "buffer.hpp"
-#include "triangle.hpp"
-
+#include "default_components.hpp"
 #include "math/vector_2.h"
 #include "math/vector_3.h"
-
-
-
-struct Position {
-  Vec3 pos;
-};
-
-struct Render {
-  // TODO: rendermode
-  // TODO: shaderprogram
-  std::vector<Vec3> pos;
-  std::vector<Vec3> normal;
-  std::vector<Vec3> color;
-  std::vector<Vec2> uv;
-};
-
 
 struct component_list_base {
   virtual void addComponent(unsigned e) = 0;
@@ -44,8 +27,6 @@ struct component_list : component_list_base {
     }
   }
   void removeComponent(unsigned e) override { components_[e - 1].reset(); }
-
-  operator int() const {return 2;}
 
   std::vector<std::optional<T>> components_;
 };

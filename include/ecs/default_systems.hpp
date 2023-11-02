@@ -1,4 +1,12 @@
-#include "ecs/component_manager.hpp"
+#pragma once
+
+#include <assert.h>
+
+#include <optional>
+#include <vector>
+
+#include "ecs/default_components.hpp"
+#include "math/vector_3.h"
 
 void render_system(std::vector<std::optional<Position>>& positions,
                    std::vector<std::optional<Render>>& render) {
