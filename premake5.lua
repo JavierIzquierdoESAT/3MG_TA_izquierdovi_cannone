@@ -69,7 +69,7 @@ workspace "Motor"
    architecture "x64"
    cppdialect "c++20"
    location "build"
-   startproject "Window"
+   startproject "MathLibrary"
 
    filter "configurations:Debug"
            defines { "DEBUG" }
@@ -90,11 +90,24 @@ workspace "Motor"
     filter {}
 
 
+project "MathLibrary"
+
+    kind "StaticLib"
+    targetdir "build/%{cfg.buildcfg}"
+    includedirs "include"
+    conan_config_lib()
+
+    files {
+            "include/math/*.h",
+            "src/math/*.cc"
+    }
+
 project "Motor"
 
     kind "StaticLib"
     targetdir "build/%{cfg.buildcfg}"
     includedirs "include"
+    links "MathLibrary"
     conan_config_lib()
     pchheader "stdafx.hpp"
     pchsource "src/stdafx.cpp"
@@ -137,3 +150,18 @@ project"Window"
       debugargs { _MAIN_SCRIPT_DIR .. "/examples/data" }
 
       files "examples/multythread_test.cpp"
+
+project"ECS"
+
+    kind "ConsoleApp"
+    language "C++"
+    targetdir "build/%{prj.name}/%{cfg.buildcfg}"
+    includedirs "include"
+    links "Motor"
+
+    conan_config_exec("Debug")
+    conan_config_exec("Release")
+    conan_config_exec("RelWithDebInfo")
+    debugargs { _MAIN_SCRIPT_DIR .. "/examples/data" }
+
+    files "examples/ecs.cpp"

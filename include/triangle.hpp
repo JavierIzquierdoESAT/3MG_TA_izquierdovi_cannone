@@ -1,9 +1,6 @@
 #pragma once
 #include "buffer.hpp"
-
-struct Vec3 {
-  float x, y, z;
-};
+#include "math/vector_3.h"
 
 struct Vertex {
   Vec3 position_;
