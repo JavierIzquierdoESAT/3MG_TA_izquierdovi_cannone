@@ -48,7 +48,7 @@ class ComponentManager {
   /// @brief creates and enity and intializes it's components to represent a
   /// triangle
   /// @return entity id
-  unsigned addTriangle();
+  unsigned addTriangle(float size);
   void deleteEntity(unsigned& e);
 
   /// @brief adds a custom component type to be used

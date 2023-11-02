@@ -8,7 +8,12 @@
 #include "math/vector_3.h"
 
 struct Position {
-  Vec3 pos;
+  Vec3 pos = Vec3(0.0f);
+};
+
+struct AI {
+  unsigned counter = 0;
+  bool right = false;
 };
 
 struct Render {
