@@ -6,11 +6,11 @@ enum ShaderType {
 
 class ShaderManager {
  public:
-  ShaderManager();
+ 
   ~ShaderManager();
 
   //TODO: Create a Make for this class and follow RAII 
-  void generateAndCompileShader(ShaderType t, const std::string& file_path);
+  static ShaderManager* MakeShaders(const std::string& file_fragment, const std::string& file_vertex);
 
   /// @brief attaches a shader object to a program object
   void attachShaders();
@@ -22,6 +22,8 @@ class ShaderManager {
   void setUniformValue(const int uniform_pos, const float* number);
 
  private:
+     ShaderManager();
+
   unsigned int default_shader_program_;
   unsigned int vertex_shader_id_;
   unsigned int fragment_shader_id_;

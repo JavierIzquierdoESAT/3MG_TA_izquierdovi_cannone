@@ -25,52 +25,56 @@ std::string ReadFiles(const std::string& file) {
   return final;
 }
 
-ShaderManager::ShaderManager() { default_shader_program_ = glCreateProgram(); }
+ShaderManager::ShaderManager() {  }
 
 ShaderManager::~ShaderManager() { glDeleteProgram(default_shader_program_); }
 
-void ShaderManager::generateAndCompileShader(ShaderType t,
-                                             const std::string& file_path) {
-  std::string s = ReadFiles(file_path);
-  char* file = new char[s.length() + 1];
-  strcpy_s(file, s.length() + 1, s.c_str());
+ShaderManager* ShaderManager::MakeShaders(const std::string& file_fragment, const std::string& file_vertex) {
 
-  switch (t) {
-    case kFragmentShader:
-      fragment_shader_id_ = glCreateShader(GL_FRAGMENT_SHADER);
-      glShaderSource(fragment_shader_id_, 1, &file, NULL);
-      glCompileShader(fragment_shader_id_);
+    ShaderManager shader;
 
-      GLint vertex_compiled;
-      glGetShaderiv(fragment_shader_id_, GL_COMPILE_STATUS, &vertex_compiled);
-      if (vertex_compiled != GL_TRUE) {
-        GLsizei log_length = 0;
-        char message[1024];
-        glGetShaderInfoLog(fragment_shader_id_, 1024, &log_length, &message[0]);
-        printf("Frag fail: ");
-        printf("%s", message);
-      }
-      break;
+    shader.default_shader_program_ = glCreateProgram();
+    std::string frag = ReadFiles(file_fragment);
+    std::string vert = ReadFiles(file_vertex);
 
-    case kVertexShader:
-      vertex_shader_id_ = glCreateShader(GL_VERTEX_SHADER);
-      glShaderSource(vertex_shader_id_, 1, &file, NULL);
-      glCompileShader(vertex_shader_id_);
+    char* frag_file = new char[frag.length() + 1];
+    char* vert_file = new char[vert.length() + 1];
+    
+    strcpy_s(frag_file, frag.length() + 1, frag.c_str());
+    strcpy_s(vert_file, vert.length() + 1, vert.c_str());
 
-      GLint v_comp;
-      glGetShaderiv(vertex_shader_id_, GL_COMPILE_STATUS, &v_comp);
-      if (v_comp != GL_TRUE) {
-        GLsizei log_length = 0;
-        char message[1024];
-        glGetShaderInfoLog(vertex_shader_id_, 1024, &log_length, &message[0]);
-        printf("Vertex fail");
-        printf("%s", message);
-      }
-      break;
-    default:
-      printf("Shader not valid\n");
-      break;
-  }
+
+    shader.fragment_shader_id_ = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(shader.fragment_shader_id_, 1, &frag_file, NULL);
+    glCompileShader(shader.fragment_shader_id_);
+
+    GLint vertex_compiled;
+    glGetShaderiv(shader.fragment_shader_id_, GL_COMPILE_STATUS, &vertex_compiled);
+    if (vertex_compiled != GL_TRUE) {
+    GLsizei log_length = 0;
+    char message[1024];
+    glGetShaderInfoLog(shader.fragment_shader_id_, 1024, &log_length, &message[0]);
+    printf("Frag fail: ");
+    printf("%s", message);
+    }
+
+    shader.vertex_shader_id_ = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(shader.vertex_shader_id_, 1, &vert_file, NULL);
+    glCompileShader(shader.vertex_shader_id_);
+
+    GLint v_comp;
+    glGetShaderiv(shader.vertex_shader_id_, GL_COMPILE_STATUS, &v_comp);
+    if (v_comp != GL_TRUE) {
+    GLsizei log_length = 0;
+    char message[1024];
+    glGetShaderInfoLog(shader.vertex_shader_id_, 1024, &log_length, &message[0]);
+    printf("Vertex fail");
+    printf("%s", message);
+    }
+
+    shader.attachShaders();
+
+    return &shader;
 }
 
 void ShaderManager::attachShaders() {

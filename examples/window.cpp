@@ -26,13 +26,7 @@ int main(int, char**) {
     auto& window = w.value();
     InputManager i = window.addInputManager(inputMap);
 
-    // Ideal input form user:
-    // ShaderProgram sp = ShaderProgram::Make("../assets/col.fs",
-    //                                        "../assets/col.vs")
-    ShaderManager s;
-    s.generateAndCompileShader(kFragmentShader, "../assets/col.fs");
-    s.generateAndCompileShader(kVertexShader, "../assets/col.vs");
-    s.attachShaders();
+    ShaderManager* s = ShaderManager::MakeShaders("../assets/col.fs", "../assets/col.vs");
 
     Triangle t;
 
@@ -56,7 +50,7 @@ int main(int, char**) {
                 << i.mousePositionY() << std::endl;
       // render
       t.updateBuffers();
-      s.useProgram();
+      s->useProgram();
       paint(t);
       window.swap();
 
