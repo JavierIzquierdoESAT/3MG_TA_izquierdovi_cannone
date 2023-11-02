@@ -69,7 +69,7 @@ workspace "Motor"
    architecture "x64"
    cppdialect "c++20"
    location "build"
-   startproject "Window"
+   startproject "MathLibrary"
 
    filter "configurations:Debug"
            defines { "DEBUG" }
@@ -90,11 +90,24 @@ workspace "Motor"
     filter {}
 
 
+project "MathLibrary"
+
+    kind "StaticLib"
+    targetdir "build/%{cfg.buildcfg}"
+    includedirs "include"
+    conan_config_lib()
+
+    files {
+            "include/math/*.h",
+            "src/math/*.cc"
+    }
+
 project "Motor"
 
     kind "StaticLib"
     targetdir "build/%{cfg.buildcfg}"
     includedirs "include"
+    links "MathLibrary"
     conan_config_lib()
     pchheader "stdafx.hpp"
     pchsource "src/stdafx.cpp"
@@ -104,8 +117,6 @@ project "Motor"
             "premake5.lua",
             "src/build/conanfile.txt",
             "src/stdafx.cpp", "src/stdafx.hpp",
-            "include/**.h",
-            "src/**.cc",
             "include/**.hpp",
             "src/**.cpp"
     }
