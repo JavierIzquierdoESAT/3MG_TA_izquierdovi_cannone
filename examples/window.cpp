@@ -26,37 +26,51 @@ int main(int, char**) {
     auto& window = w.value();
     InputManager i = window.addInputManager(inputMap);
 
-    // Ideal input form user:
-    // ShaderProgram sp = ShaderProgram::Make("../assets/col.fs",
-    //                                        "../assets/col.vs")
-    ShaderManager s;
-    s.generateAndCompileShader(kFragmentShader, "../assets/col.fs");
-    s.generateAndCompileShader(kVertexShader, "../assets/col.vs");
-    s.attachShaders();
+    auto shade = ShaderManager::MakeShaders("../assets/col.fs", "../assets/col.vs");
+   
+    float col[3] = { 1.0f,0.0f,0.0f };
+    shade->setUniformValue(DataType::FLOAT_3, col, "initialUniform");
 
     Triangle t;
 
     float t_speed = 0.3f;
 
     while (!window.isDone()) {
+
       // input
       if (i.buttonPressed("Up")) {
         t.move(Vec3(0, t_speed * Time::delta_time(), 0));
+        col[0] = 0.0f;
+        col[1] = 0.0f;
+        col[2] = 1.0f;
+        shade->setUniformValue(DataType::FLOAT_3, col, "initialUniform");
       }
       if (i.buttonPressed("Down")) {
         t.move(Vec3(0, -t_speed * Time::delta_time(), 0));
+        col[0] = 0.0f;
+        col[1] = 1.0f;
+        col[2] = 0.0f;
+        shade->setUniformValue(DataType::FLOAT_3, col, "initialUniform");
       }
       if (i.buttonPressed("Left")) {
         t.move(Vec3(-t_speed * Time::delta_time(), 0, 0));
+        col[0] = 1.0f;
+        col[1] = 0.0f;
+        col[2] = 0.0f;
+        shade->setUniformValue(DataType::FLOAT_3, col, "initialUniform");
       }
       if (i.buttonPressed("Right")) {
         t.move(Vec3(t_speed * Time::delta_time(), 0, 0));
+        col[0] = 1.0f;
+        col[1] = 0.0f;
+        col[2] = 1.0f;
+        shade->setUniformValue(DataType::FLOAT_3, col, "initialUniform");
       }
       std::cout << i.mousePositionX() << "  -  "
                 << i.mousePositionY() << std::endl;
       // render
       t.updateBuffers();
-      s.useProgram();
+      shade->useProgram();
       paint(t);
       window.swap();
 

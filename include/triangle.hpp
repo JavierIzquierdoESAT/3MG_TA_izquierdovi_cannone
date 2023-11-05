@@ -1,10 +1,13 @@
 #pragma once
 #include "buffer.hpp"
 #include "math/vector_3.h"
+#include "math/vector_2.h"
 
 struct Vertex {
   Vec3 position_;
+  Vec3 normal_;
   Vec3 colors_;
+  Vec2 uv_;
   // Vec3 normal_;
 };
 

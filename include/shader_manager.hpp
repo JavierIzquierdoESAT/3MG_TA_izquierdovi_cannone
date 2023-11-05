@@ -1,16 +1,21 @@
 #pragma once
-enum ShaderType {
-  kFragmentShader = 0,
-  kVertexShader,
+enum class DataType {
+    FLOAT_1 = 0,
+    FLOAT_2,
+    FLOAT_3,
+    FLOAT_4,
+    MAT_4x4,
+    MAT_3x3,
+    MAT_2x2,
 };
 
 class ShaderManager {
  public:
-  ShaderManager();
+
   ~ShaderManager();
 
   //TODO: Create a Make for this class and follow RAII 
-  void generateAndCompileShader(ShaderType t, const std::string& file_path);
+  static std::optional<ShaderManager> MakeShaders(const std::string& file_fragment, const std::string& file_vertex);
 
   /// @brief attaches a shader object to a program object
   void attachShaders();
@@ -19,9 +24,11 @@ class ShaderManager {
   void useProgram();
 
   // TODO: This function isn't implemented
-  void setUniformValue(const int uniform_pos, const float* number);
+  void setUniformValue(DataType dt, const float* number, const std::string& uniform_name);
 
  private:
+     ShaderManager();
+
   unsigned int default_shader_program_;
   unsigned int vertex_shader_id_;
   unsigned int fragment_shader_id_;

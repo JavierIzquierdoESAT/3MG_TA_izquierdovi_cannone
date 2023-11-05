@@ -13,6 +13,7 @@ Buffer::Buffer(const void* data, unsigned int size) : size_{size} {
   glGenVertexArrays(1, &vertex_array_id_);
 }
 
+
 Buffer::Buffer(std::vector<Vec3> pos, std::vector<Vec3> normal,
                std::vector<Vec3> color, std::vector<Vec2> uv)
     : size_{0} {
@@ -48,6 +49,7 @@ Buffer::Buffer(std::vector<Vec3> pos, std::vector<Vec3> normal,
 
   bindVertexArray();
 }
+
 
 Buffer::~Buffer() {
   glDeleteBuffers(1, &buffer_id_);
