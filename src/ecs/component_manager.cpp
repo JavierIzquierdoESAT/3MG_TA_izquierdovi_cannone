@@ -3,6 +3,7 @@
 ComponentManager::ComponentManager() : current_entity_{1} {
   add_component_class<Position>();
   add_component_class<Render>();
+  add_component_class<AI>();
 }
 
 unsigned ComponentManager::addEntity() {
@@ -21,12 +22,12 @@ unsigned ComponentManager::addEntity() {
   return res;
 }
 
-unsigned ComponentManager::addTriangle() {
+unsigned ComponentManager::addTriangle(float size) {
   unsigned res = addEntity();
   Position pos;
   pos.pos = {0, 0, 0};
   setComponent<Position>(res, pos);
-  Render ren({{-0.5f, -0.5f, 0.0f}, {0.0f, 0.5f, 0.0f}, {0.5f, -0.5f, 0.0f}},
+  Render ren({{-size, -size, 0.0f}, {0.0f, size, 0.0f}, {size, -size, 0.0f}},
              {{1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}},
              {{1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}},
              {{0, 0}, {0, 0}, {0, 0}});
