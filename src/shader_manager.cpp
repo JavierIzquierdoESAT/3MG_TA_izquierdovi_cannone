@@ -25,15 +25,16 @@ std::string ReadFiles(const std::string& file) {
     return final;
 }
 
-ShaderManager::ShaderManager() {  }
+ShaderManager::ShaderManager() {}
 
 ShaderManager::~ShaderManager() { glDeleteProgram(default_shader_program_); }
 
-ShaderManager* ShaderManager::MakeShaders(const std::string& file_fragment, const std::string& file_vertex) {
+std::optional<ShaderManager> ShaderManager::MakeShaders(const std::string& file_fragment, const std::string& file_vertex) {
 
     ShaderManager shader;
 
     shader.default_shader_program_ = glCreateProgram();
+
     std::string frag = ReadFiles(file_fragment);
     std::string vert = ReadFiles(file_vertex);
 
@@ -74,7 +75,7 @@ ShaderManager* ShaderManager::MakeShaders(const std::string& file_fragment, cons
 
     shader.attachShaders();
 
-    return &shader;
+    return shader;
 }
 
 void ShaderManager::attachShaders() {

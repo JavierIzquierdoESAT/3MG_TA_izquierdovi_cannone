@@ -15,7 +15,7 @@ class ShaderManager {
   ~ShaderManager();
 
   //TODO: Create a Make for this class and follow RAII 
-  static ShaderManager* MakeShaders(const std::string& file_fragment, const std::string& file_vertex);
+  static std::optional<ShaderManager> MakeShaders(const std::string& file_fragment, const std::string& file_vertex);
 
   /// @brief attaches a shader object to a program object
   void attachShaders();
