@@ -32,10 +32,10 @@ int main(int, char**) {
       }
     }
 
-    ShaderManager s;
-    s.generateAndCompileShader(kFragmentShader, "../assets/col.fs");
-    s.generateAndCompileShader(kVertexShader, "../assets/col.vs");
-    s.attachShaders();
+    std::optional<ShaderManager> s =
+        ShaderManager::MakeShaders("../assets/col.fs", "../assets/col.vs");
+    float f[3] = {0.0f, 1.0f, 0.0f};
+    s->setUniformValue(DataType::FLOAT_3, f, "initialUniform");
     InputManager i = window.addInputManager(inputMap);
 
     while (!window.isDone()) {
@@ -60,7 +60,7 @@ int main(int, char**) {
       render_system(component_manager.getAll<Position>(),
                     component_manager.getAll<Render>());
 
-      s.useProgram();
+      s->useProgram();
       window.swap();
       // end frame;
       e.update();
