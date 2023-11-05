@@ -76,11 +76,11 @@ class ComponentManager {
   /// @param e entity
   /// @return specified component if found
   template <typename T>
-  std::optional<T>& getComponent(unsigned e) {
+  T* getComponent(unsigned e) {
     auto comp_base = components_.find(typeid(T).hash_code());
     component_list<T>* component_vector =
         static_cast<component_list<T>*>(comp_base->second.get());
-    return component_vector->components_[e - 1];
+    return &component_vector->components_[e - 1].value();
   }
 
   /// @brief retrieves all the components of the specified type
