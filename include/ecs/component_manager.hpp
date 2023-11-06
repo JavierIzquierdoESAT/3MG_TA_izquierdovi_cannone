@@ -48,7 +48,7 @@ class ComponentManager {
   /// @brief creates and enity and intializes it's components to represent a
   /// triangle
   /// @return entity id
-  unsigned addTriangle(float size);
+  unsigned addTriangle(float size, class ShaderManager* sm, Vec3 color);
   void deleteEntity(unsigned& e);
 
   /// @brief adds a custom component type to be used

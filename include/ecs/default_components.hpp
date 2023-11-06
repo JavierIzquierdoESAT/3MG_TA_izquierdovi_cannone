@@ -1,11 +1,12 @@
 #pragma once
 
-#include <vector>
 #include <array>
+#include <vector>
 
 #include "buffer.hpp"
 #include "math/vector_2.h"
 #include "math/vector_3.h"
+#include "shader_manager.hpp"
 
 struct Position {
   Vec3 pos = Vec3(0.0f);
@@ -18,17 +19,18 @@ struct AI {
 
 struct Render {
   // TODO: rendermode
-  // TODO: shaderprogram
   Render(std::vector<Vec3> position, std::vector<Vec3> normals,
-         std::vector<Vec3> colors, std::vector<Vec2> uvs)
+         std::vector<Vec3> colors, std::vector<Vec2> uvs, ShaderManager* sm)
       : pos{position},
         normal{normals},
         color{colors},
         uv{uvs},
+        shaderProgram{sm},
         buffer{Buffer(position, normals, colors, uvs)} {
   }
 
-//TODO: posibly useless to store
+  // TODO: posibly useless to store
+  class ShaderManager* shaderProgram;
   std::vector<Vec3> pos;
   std::vector<Vec3> normal;
   std::vector<Vec3> color;

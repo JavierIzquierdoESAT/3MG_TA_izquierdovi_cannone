@@ -19,14 +19,12 @@ void render_system(std::vector<std::optional<Position>>& positions,
     auto& pv = p->value();
     auto& rv = r->value();
 
-    std::vector<Vec3> transformedPos;
-    // Transform
-    for (auto& pos : rv.pos) {
-      transformedPos.emplace_back(pos + pv.pos);
-    }
-
-    rv.buffer = Buffer(transformedPos, rv.normal, rv.color, rv.uv);
-
+    float posToArr[3] = {pv.pos.x, pv.pos.y, pv.pos.z};
+    rv.shaderProgram->setUniformValue(DataType::FLOAT_3, posToArr,
+                                      "position");
+    float colToArr[3] = {rv.color[0].x, rv.color[0].y, rv.color[0].z};
+    rv.shaderProgram->setUniformValue(DataType::FLOAT_3, colToArr,
+                                    "initialUniform");
     // TODO: parametrize indices
     glDrawArrays(GL_TRIANGLES, 0, 3);
     // Render
@@ -54,5 +52,4 @@ void CircleMoveSystem(std::vector<std::optional<Position>>& positions,
     else
       pv.pos.x -= 0.005f;
   }
-
 }
