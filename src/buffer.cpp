@@ -28,7 +28,7 @@ Buffer::Buffer(std::vector<Vec3> pos, std::vector<Vec3> normal,
   glGenBuffers(1, &buffer_id_);
   bindBuffer(Target::kTarget_Vertex_Data);
 
-  glBufferData(GL_ARRAY_BUFFER, size_, NULL, GL_DYNAMIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, size_, NULL, GL_STATIC_DRAW);
 
 
   int size = (unsigned)(pos.size() * sizeof(Vec3));
@@ -50,13 +50,7 @@ Buffer::Buffer(std::vector<Vec3> pos, std::vector<Vec3> normal,
   uploadData(static_cast<void*>(uv.data()), size, offset);
   enableVertexArray(3, 2, 0, offset);
 
-  glBindVertexArray(0);
-  glDisableVertexAttribArray(1);
-  glDisableVertexAttribArray(2);
-  glDisableVertexAttribArray(3);
-  glDisableVertexAttribArray(4);
-  
-
+ 
 }
 
 
