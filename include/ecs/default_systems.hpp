@@ -19,12 +19,15 @@ void render_system(std::vector<std::optional<Position>>& positions,
     auto& pv = p->value();
     auto& rv = r->value();
 
+
     float posToArr[3] = {pv.pos.x, pv.pos.y, pv.pos.z};
     rv.shaderProgram->setUniformValue(DataType::FLOAT_3, posToArr,
                                       "position");
     float colToArr[3] = {rv.color[0].x, rv.color[0].y, rv.color[0].z};
     rv.shaderProgram->setUniformValue(DataType::FLOAT_3, colToArr,
                                     "initialUniform");
+
+    rv.buffer.bindVertexArray();
     // TODO: parametrize indices
     glDrawArrays(GL_TRIANGLES, 0, 3);
     // Render

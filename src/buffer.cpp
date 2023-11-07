@@ -22,11 +22,14 @@ Buffer::Buffer(std::vector<Vec3> pos, std::vector<Vec3> normal,
   size_ += (unsigned)(color.size() * sizeof(Vec3));
   size_ += (unsigned)(uv.size() * sizeof(Vec2));
 
+  glGenVertexArrays(1, &vertex_array_id_);
+  bindVertexArray();
+
   glGenBuffers(1, &buffer_id_);
   bindBuffer(Target::kTarget_Vertex_Data);
 
   glBufferData(GL_ARRAY_BUFFER, size_, NULL, GL_DYNAMIC_DRAW);
-  glGenVertexArrays(1, &vertex_array_id_);
+
 
   int size = (unsigned)(pos.size() * sizeof(Vec3));
   uploadData(static_cast<void*>(pos.data()), size, 0);
@@ -47,13 +50,19 @@ Buffer::Buffer(std::vector<Vec3> pos, std::vector<Vec3> normal,
   uploadData(static_cast<void*>(uv.data()), size, offset);
   enableVertexArray(3, 2, 0, offset);
 
-  bindVertexArray();
+  glBindVertexArray(0);
+  glDisableVertexAttribArray(1);
+  glDisableVertexAttribArray(2);
+  glDisableVertexAttribArray(3);
+  glDisableVertexAttribArray(4);
+  
+
 }
 
 
 Buffer::~Buffer() {
-  glDeleteBuffers(1, &buffer_id_);
-  glDeleteVertexArrays(1, &vertex_array_id_);
+  //glDeleteBuffers(1, &buffer_id_);
+  //glDeleteVertexArrays(1, &vertex_array_id_);
 }
 
 void Buffer::bindBuffer(const Target t) {
@@ -89,8 +98,8 @@ void Buffer::enableVertexArray(const unsigned int index,
                                const unsigned int offset) {
 
   //TODO: void* cast warning fix
-  glVertexAttribPointer(index, size, GL_FLOAT, GL_FALSE, stride, (void*)offset);
   glEnableVertexAttribArray(index);
+  glVertexAttribPointer(index, size, GL_FLOAT, GL_FALSE, stride, (void*)offset);
 }
 
 unsigned int Buffer::buffer_id() const { return buffer_id_; }
