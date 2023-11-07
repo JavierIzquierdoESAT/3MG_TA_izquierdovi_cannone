@@ -27,12 +27,12 @@ unsigned ComponentManager::addTriangle(float size, ShaderManager* sp, Vec3 color
   unsigned res = addEntity();
   Position pos;
   pos.pos = {0, 0, 0};
-  setComponent<Position>(res, pos);
+  setComponent<Position>(res, std::move(pos));
   Render ren({{-size, -size, 0.0f}, {0.0f, size, 0.0f}, {size, -size, 0.0f}},
              {{1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}},
              {color, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}},
              {{0, 0}, {0, 0}, {0, 0}}, sp);
-  setComponent<Render>(res, ren);
+  setComponent<Render>(res,std::move(ren));
   return res;
 }
 

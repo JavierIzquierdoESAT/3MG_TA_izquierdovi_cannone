@@ -26,9 +26,12 @@ struct Render {
         color{colors},
         uv{uvs},
         shaderProgram{sm},
-        buffer{Buffer(position, normals, colors, uvs)} {
+      buffer(position, normals, colors, uvs){
+    //buffer = std::make_unique<Buffer>();
   }
 
+
+  Render& operator=(const Render& other) {}
   // TODO: posibly useless to store
   class ShaderManager* shaderProgram;
   std::vector<Vec3> pos;
@@ -37,4 +40,5 @@ struct Render {
   std::vector<Vec2> uv;
 
   Buffer buffer;
+  //std::unique_ptr<Buffer> buffer;
 };

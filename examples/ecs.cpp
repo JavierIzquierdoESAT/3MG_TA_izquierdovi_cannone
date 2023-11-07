@@ -26,7 +26,7 @@ int main(int, char**) {
     unsigned player =
         component_manager.addTriangle(0.5f, &s, {1.0f, 0.0f, 0.0f});
 
-    std::vector<unsigned> ents;
+    std::vector<unsigned int> ents;
     float trisize = 0.01f;
     float tridist = 0.02f;
     int width = 100;
@@ -34,11 +34,14 @@ int main(int, char**) {
       for (int x = 0; x < width; x++) {
         float pos_x = (x - ((float)width / 2.0f)) * tridist;
         float pos_y = (y - ((float)width / 2.0f)) * tridist;
-        ents.emplace_back(component_manager.addTriangle(trisize, &s, {0.0f, 1.0f, 0.0f}));
+        ents.emplace_back(component_manager.addTriangle(trisize, &s, {1.0f, 1.0f, 0.0f}));
         Position p{Vec3(pos_x, pos_y, 0.0f)};
         AI ai;
-        component_manager.setComponent(ents[x + y * width], p);
-        component_manager.setComponent(ents[x + y * width], ai);
+        size_t sum = y;
+        sum *= width;
+        sum += x;
+        component_manager.setComponent(ents[sum], p);
+        component_manager.setComponent(ents[sum], ai);
       }
     }
 

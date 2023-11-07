@@ -64,11 +64,11 @@ class ComponentManager {
   /// @param e entity id
   /// @param c component to set
   template <typename T>
-  void setComponent(unsigned e, T c) {
+  void setComponent(unsigned e, T&& c) {
     auto comp_base = components_.find(typeid(T).hash_code());
     component_list<T>* component_vector =
         static_cast<component_list<T>*>(comp_base->second.get());
-    component_vector->components_[e - 1] = c;
+    component_vector->components_[e - 1].emplace(std::move(c));
   }
 
   /// @brief retrieves a component for a specific entity
