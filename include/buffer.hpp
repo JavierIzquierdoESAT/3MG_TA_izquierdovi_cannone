@@ -13,6 +13,10 @@ class Buffer {
   };
 
   Buffer() = delete;
+  Buffer(Buffer&& other);
+  Buffer& operator=(Buffer&& other);
+  Buffer(Buffer& other);
+  Buffer(const Buffer& other) = delete;
   Buffer(std::vector<Vec3> pos, std::vector<Vec3> normal,
          std::vector<Vec3> color, std::vector<Vec2> uv);
   Buffer(const void* data, unsigned int size);
@@ -53,4 +57,5 @@ class Buffer {
   unsigned int buffer_id_;
   unsigned int vertex_array_id_;
   unsigned int size_;
+  bool valid_;
 };

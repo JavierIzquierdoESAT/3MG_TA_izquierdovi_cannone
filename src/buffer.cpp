@@ -6,27 +6,29 @@
 #include "math/vector_2.h"
 #include "math/vector_3.h"
 
-Buffer::Buffer(const void* data, unsigned int size) : size_{size} {
+Buffer::Buffer(const void* data, unsigned int size)
+    : size_{size}, valid_{true} {
   glGenBuffers(1, &buffer_id_);
   bindBuffer(Target::kTarget_Vertex_Data);
   glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
   glGenVertexArrays(1, &vertex_array_id_);
 }
 
-
 Buffer::Buffer(std::vector<Vec3> pos, std::vector<Vec3> normal,
                std::vector<Vec3> color, std::vector<Vec2> uv)
-    : size_{0} {
+    : size_{0}, valid_{true} {
   size_ = (unsigned)(pos.size() * sizeof(Vec3));
   size_ += (unsigned)(normal.size() * sizeof(Vec3));
   size_ += (unsigned)(color.size() * sizeof(Vec3));
   size_ += (unsigned)(uv.size() * sizeof(Vec2));
 
+  glGenVertexArrays(1, &vertex_array_id_);
+  bindVertexArray();
+
   glGenBuffers(1, &buffer_id_);
   bindBuffer(Target::kTarget_Vertex_Data);
 
-  glBufferData(GL_ARRAY_BUFFER, size_, NULL, GL_DYNAMIC_DRAW);
-  glGenVertexArrays(1, &vertex_array_id_);
+  glBufferData(GL_ARRAY_BUFFER, size_, NULL, GL_STATIC_DRAW);
 
   int size = (unsigned)(pos.size() * sizeof(Vec3));
   uploadData(static_cast<void*>(pos.data()), size, 0);
@@ -46,14 +48,31 @@ Buffer::Buffer(std::vector<Vec3> pos, std::vector<Vec3> normal,
   size = (unsigned)(uv.size() * sizeof(Vec2));
   uploadData(static_cast<void*>(uv.data()), size, offset);
   enableVertexArray(3, 2, 0, offset);
-
-  bindVertexArray();
 }
 
-
 Buffer::~Buffer() {
-  glDeleteBuffers(1, &buffer_id_);
-  glDeleteVertexArrays(1, &vertex_array_id_);
+  if (valid_) {
+    glDeleteBuffers(1, &buffer_id_);
+    glDeleteVertexArrays(1, &vertex_array_id_);
+  }
+}
+
+Buffer::Buffer(Buffer&& other)
+    : buffer_id_{other.buffer_id_},
+      vertex_array_id_{other.vertex_array_id_},
+      size_{other.size_} {
+  other.valid_ = false;
+}
+Buffer::Buffer(Buffer& other)
+    : buffer_id_{other.buffer_id_},
+      vertex_array_id_{other.vertex_array_id_},
+      size_{other.size_} {
+  other.valid_ = false;
+}
+Buffer& Buffer::operator=(Buffer&& other) {
+  std::swap(buffer_id_, other.buffer_id_);
+  std::swap(vertex_array_id_, other.vertex_array_id_);
+  return *this;
 }
 
 void Buffer::bindBuffer(const Target t) {
@@ -87,10 +106,9 @@ void Buffer::enableVertexArray(const unsigned int index,
                                const unsigned int size,
                                const unsigned int stride,
                                const unsigned int offset) {
-
-  //TODO: void* cast warning fix
-  glVertexAttribPointer(index, size, GL_FLOAT, GL_FALSE, stride, (void*)offset);
+  // TODO: void* cast warning fix
   glEnableVertexAttribArray(index);
+  glVertexAttribPointer(index, size, GL_FLOAT, GL_FALSE, stride, (void*)offset);
 }
 
 unsigned int Buffer::buffer_id() const { return buffer_id_; }

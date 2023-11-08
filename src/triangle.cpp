@@ -17,7 +17,9 @@ Triangle::Triangle()
 
 Triangle::~Triangle() {}
 
-Buffer Triangle::data_buffer() const { return data_buffer_; }
+Buffer Triangle::data_buffer() const { 
+  return Buffer(0,0);
+}
 
 void Triangle::updateBuffers() {
   data_buffer_.uploadData(&vertex_, sizeof(vertex_), 0);

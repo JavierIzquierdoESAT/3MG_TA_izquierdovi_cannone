@@ -18,24 +18,33 @@ int main(int, char**) {
   auto w = Window::Make(e, 640, 480, "ventana");
   if (w) {
     auto& window = w.value();
-    ComponentManager component_manager;
-    unsigned player = component_manager.addTriangle(0.1f);
+    ShaderManager s =
+        ShaderManager::MakeShaders("../assets/col.fs", "../assets/col.vs")
+            .value();
 
-    std::vector<unsigned> ents;
-    for (size_t y = 0; y < 10; y++) {
-      for (size_t x = 0; x < 10; x++) {
-        ents.emplace_back(component_manager.addTriangle(0.05f));
-        Position p{Vec3(x * 0.1f - 0.5f, y * 0.1f - 0.5f, 0.0f)};
+    ComponentManager component_manager;
+    unsigned player =
+        component_manager.addTriangle(0.5f, &s, {1.0f, 0.0f, 0.0f});
+
+    std::vector<unsigned int> ents;
+    float trisize = 0.01f;
+    float tridist = 0.02f;
+    int width = 100;
+    for (int y = 0; y < width; y++) {
+      for (int x = 0; x < width; x++) {
+        float pos_x = (x - ((float)width / 2.0f)) * tridist;
+        float pos_y = (y - ((float)width / 2.0f)) * tridist;
+        ents.emplace_back(component_manager.addTriangle(trisize, &s, {1.0f, 1.0f, 0.0f}));
+        Position p{Vec3(pos_x, pos_y, 0.0f)};
         AI ai;
-        component_manager.setComponent(ents[x + y * 10], p);
-        component_manager.setComponent(ents[x + y * 10], ai);
+        size_t sum = y;
+        sum *= width;
+        sum += x;
+        component_manager.setComponent(ents[sum], p);
+        component_manager.setComponent(ents[sum], ai);
       }
     }
 
-    std::optional<ShaderManager> s =
-        ShaderManager::MakeShaders("../assets/col.fs", "../assets/col.vs");
-    float f[3] = {0.0f, 1.0f, 0.0f};
-    s->setUniformValue(DataType::FLOAT_3, f, "initialUniform");
     InputManager i = window.addInputManager(inputMap);
 
     while (!window.isDone()) {
@@ -60,7 +69,7 @@ int main(int, char**) {
       render_system(component_manager.getAll<Position>(),
                     component_manager.getAll<Render>());
 
-      s->useProgram();
+      s.useProgram();
       window.swap();
       // end frame;
       e.update();
