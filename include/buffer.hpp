@@ -13,9 +13,9 @@ class Buffer {
   };
 
   Buffer() = delete;
-  Buffer(Buffer&& other);
-  Buffer& operator=(Buffer&& other);
-  Buffer(Buffer& other);
+  Buffer(Buffer&& other) noexcept;
+  Buffer& operator=(Buffer&& other) noexcept;
+  Buffer(Buffer& other) noexcept;
   Buffer(const Buffer& other) = delete;
   Buffer(std::vector<Vec3> pos, std::vector<Vec3> normal,
          std::vector<Vec3> color, std::vector<Vec2> uv);

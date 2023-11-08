@@ -23,6 +23,7 @@ unsigned ComponentManager::addEntity() {
   return res;
 }
 
+//TODO: smelly
 unsigned ComponentManager::addTriangle(float size, ShaderManager* sp, Vec3 color) {
   unsigned res = addEntity();
   Position pos;
