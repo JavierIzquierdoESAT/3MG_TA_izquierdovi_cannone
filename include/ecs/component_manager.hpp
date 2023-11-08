@@ -64,7 +64,7 @@ class ComponentManager {
   /// @param e entity id
   /// @param c component to set
   template <typename T>
-  void setComponent(unsigned e, T&& c) {
+  void setComponent(unsigned e, T& c) {
     auto comp_base = components_.find(typeid(T).hash_code());
     component_list<T>* component_vector =
         static_cast<component_list<T>*>(comp_base->second.get());

@@ -30,6 +30,7 @@ struct Render {
     //buffer = std::make_unique<Buffer>();
   }
 
+  Render(Render&&) = default;
 
   Render& operator=(const Render& other) {}
   // TODO: posibly useless to store
