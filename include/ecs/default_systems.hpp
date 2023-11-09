@@ -3,10 +3,11 @@
 #include <assert.h>
 
 #include <optional>
+#include <ranges>
 #include <vector>
 
 #include "GL/glew.h"
-#include "ecs/default_components.hpp"
+#include "ecs/component_manager.hpp"
 #include "math/vector_3.h"
 
 void render_system(std::vector<std::optional<Position>>& positions,
@@ -19,13 +20,11 @@ void render_system(std::vector<std::optional<Position>>& positions,
     auto& pv = p->value();
     auto& rv = r->value();
 
-
     float posToArr[3] = {pv.pos.x, pv.pos.y, pv.pos.z};
-    rv.shaderProgram->setUniformValue(DataType::FLOAT_3, posToArr,
-                                      "position");
+    rv.shaderProgram->setUniformValue(DataType::FLOAT_3, posToArr, "position");
     float colToArr[3] = {rv.color[0].x, rv.color[0].y, rv.color[0].z};
     rv.shaderProgram->setUniformValue(DataType::FLOAT_3, colToArr,
-                                    "initialUniform");
+                                      "initialUniform");
 
     rv.buffer.bindVertexArray();
     // TODO: parametrize indices
@@ -35,15 +34,14 @@ void render_system(std::vector<std::optional<Position>>& positions,
   assert(r == render.end());
 }
 
-void CircleMoveSystem(std::vector<std::optional<Position>>& positions,
-                      std::vector<std::optional<AI>>& ai_cmp) {
-  auto p = positions.begin();
-  auto ai = ai_cmp.begin();
-
-  for (; p != positions.end(); p++, ai++) {
-    if (!p->has_value() || !ai->has_value()) continue;
-    auto& pv = p->value();
-    auto& aiv = ai->value();
+void CircleMoveSystem(ComponentList<Position>& positions,
+                      ComponentList<AI>& ai_cmp) {
+  auto p_it = positions.begin();
+  auto ai_it = ai_cmp.begin();
+  for (; p_it != positions.end() && ai_it != ai_cmp.end(); ++p_it, ++ai_it) {
+    if (!p_it->has_value() || !ai_it->has_value()) continue;
+    auto& pv = p_it->value();
+    auto& aiv = ai_it->value();
 
     aiv.counter++;
     if (aiv.counter > 20) {
