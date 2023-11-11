@@ -32,7 +32,7 @@ class ComponentManager {
   template <typename... T>
   unsigned addEntity(T&&... args) {
     unsigned e = addEntity();
-    // loopea todos los argumentos de la template ejecutando el lambda
+    // loops throug the template arguments executing the lambda
     ([&] { setComponent(e, args); }(), ...);
     return e;
   }
@@ -99,7 +99,7 @@ class ComponentManager {
 
  private:
   // map containint all component lists
-  std::unordered_map<std::size_t, std::unique_ptr<component_list_base>>
+  std::unordered_map<std::size_t, std::unique_ptr<componentListBase>>
       components_;
 
   // marks the positions where entities have been freed so that they can be
