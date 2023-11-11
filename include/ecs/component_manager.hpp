@@ -15,7 +15,6 @@
 #include "math/vector_2.h"
 #include "math/vector_3.h"
 
-
 class ComponentManager {
  public:
   /// @brief
@@ -29,6 +28,14 @@ class ComponentManager {
   /// entity must be inserted using setComponent
   /// @return entity id
   unsigned addEntity();
+
+  template <typename... T>
+  unsigned addEntity(T&&... args) {
+    unsigned e = addEntity();
+    // loopea todos los argumentos de la template ejecutando el lambda
+    ([&] { setComponent(e, args); }(), ...);
+    return e;
+  }
 
   /// @brief creates and enity and intializes it's components to represent a
   /// triangle
