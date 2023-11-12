@@ -2,9 +2,9 @@
 #include "shader_manager.hpp"
 
 ComponentManager::ComponentManager() : current_entity_{1} {
-  add_component_class<Position>();
-  add_component_class<Render>();
-  add_component_class<AI>();
+  add_component_class<Position>(ComponentListType::kSparse);
+  add_component_class<Render>(ComponentListType::kSparse);
+  add_component_class<AI>(ComponentListType::kSparse);
 }
 
 unsigned ComponentManager::addEntity() {

@@ -24,11 +24,6 @@ class ComponentManager {
 
   ~ComponentManager() = default;
 
-  /// @brief creates an entity with no components the needed components for the
-  /// entity must be inserted using setComponent
-  /// @return entity id
-  unsigned addEntity();
-
   template <typename... T>
   unsigned addEntity(T&&... args) {
     unsigned e = addEntity();
@@ -46,9 +41,14 @@ class ComponentManager {
   /// @brief adds a custom component type to be used
   /// @tparam T compoennt type
   template <typename T>
-  void add_component_class() {
-    components_.emplace(typeid(T).hash_code(),
-                        std::make_unique<ComponentList<T>>());
+  void add_component_class(ComponentListType t) {
+    if (t == ComponentListType::kSparse) {
+      components_.emplace(typeid(T).hash_code(),
+                          std::make_unique<ComponentList<T>>());
+    } else {
+      components_.emplace(typeid(T).hash_code(),
+                          std::make_unique<ComponentListCompact<T>>());
+    }
   }
 
   /// @brief sets a component for the specified entity
@@ -58,9 +58,17 @@ class ComponentManager {
   template <typename T>
   void setComponent(unsigned e, T& c) {
     auto comp_base = components_.find(typeid(T).hash_code());
-    ComponentList<T>* component_vector =
-        static_cast<ComponentList<T>*>(comp_base->second.get());
-    component_vector->components_[e - 1].emplace(std::move(c));
+    if (comp_base->second.get()->type_ == ComponentListType::kSparse) {
+      ComponentList<T>* component_vector =
+          static_cast<ComponentList<T>*>(comp_base->second.get());
+      component_vector->components_[e - 1].emplace(std::move(c));
+
+    } else {
+      ComponentListCompact<T>* component_vector =
+          static_cast<ComponentListCompact<T>*>(comp_base->second.get());
+      component_vector->components_.emplace_back(
+          std::make_pair(e, std::move(c)));
+    }
   }
 
   /// @brief retrieves a component for a specific entity
@@ -70,14 +78,18 @@ class ComponentManager {
   template <typename T>
   T* getComponent(unsigned e) {
     auto comp_base = components_.find(typeid(T).hash_code());
-    ComponentList<T>* component_vector =
-        static_cast<ComponentList<T>*>(comp_base->second.get());
-    return &component_vector->components_[e - 1].value();
+    if (comp_base->second.get()->type_ == ComponentListType::kSparse) {
+      ComponentList<T>* component_vector =
+          static_cast<ComponentList<T>*>(comp_base->second.get());
+      return &component_vector->components_[e - 1].value();
+
+    } else {
+      ComponentListCompact<T>* component_vector =
+          static_cast<ComponentListCompact<T>*>(comp_base->second.get());
+      return &component_vector->getComp(e);
+    }
   }
 
-  /// @brief retrieves all the components of the specified type
-  /// @tparam T component type
-  /// @return all T components
   template <typename T>
   ComponentList<T>& getIterator() {
     auto comp_base = components_.find(typeid(T).hash_code());
@@ -98,6 +110,11 @@ class ComponentManager {
   }
 
  private:
+  /// @brief creates an entity with no components the needed components for the
+  /// entity must be inserted using setComponent
+  /// @return entity id
+  unsigned addEntity();
+
   // map containint all component lists
   std::unordered_map<std::size_t, std::unique_ptr<componentListBase>>
       components_;
