@@ -64,8 +64,8 @@ int main(int, char**) {
         player_pos->pos.x += t_speed * Time::delta_time();
       }
 
-      CircleMoveSystem(component_manager.getAll<Position>(),
-                       component_manager.getAll<AI>());
+      CircleMoveSystem(component_manager.getIterator<Position>(),
+                       component_manager.getIterator<AI>());
       render_system(component_manager.getAll<Position>(),
                     component_manager.getAll<Render>());
 

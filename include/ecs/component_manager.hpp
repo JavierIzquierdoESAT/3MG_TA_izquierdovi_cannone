@@ -11,25 +11,9 @@
 
 #include "buffer.hpp"
 #include "default_components.hpp"
+#include "ecs/component_lists.hpp"
 #include "math/vector_2.h"
 #include "math/vector_3.h"
-
-struct component_list_base {
-  virtual void addComponent(unsigned e) = 0;
-  virtual void removeComponent(unsigned e) = 0;
-};
-
-template <typename T>
-struct component_list : component_list_base {
-  void addComponent(unsigned e) override {
-    if (e >= components_.size()) {
-      components_.emplace_back(std::optional<T>());
-    }
-  }
-  void removeComponent(unsigned e) override { components_[e - 1].reset(); }
-
-  std::vector<std::optional<T>> components_;
-};
 
 class ComponentManager {
  public:
@@ -45,6 +29,14 @@ class ComponentManager {
   /// @return entity id
   unsigned addEntity();
 
+  template <typename... T>
+  unsigned addEntity(T&&... args) {
+    unsigned e = addEntity();
+    // loopea todos los argumentos de la template ejecutando el lambda
+    ([&] { setComponent(e, args); }(), ...);
+    return e;
+  }
+
   /// @brief creates and enity and intializes it's components to represent a
   /// triangle
   /// @return entity id
@@ -56,7 +48,7 @@ class ComponentManager {
   template <typename T>
   void add_component_class() {
     components_.emplace(typeid(T).hash_code(),
-                        std::make_unique<component_list<T>>());
+                        std::make_unique<ComponentList<T>>());
   }
 
   /// @brief sets a component for the specified entity
@@ -66,8 +58,8 @@ class ComponentManager {
   template <typename T>
   void setComponent(unsigned e, T& c) {
     auto comp_base = components_.find(typeid(T).hash_code());
-    component_list<T>* component_vector =
-        static_cast<component_list<T>*>(comp_base->second.get());
+    ComponentList<T>* component_vector =
+        static_cast<ComponentList<T>*>(comp_base->second.get());
     component_vector->components_[e - 1].emplace(std::move(c));
   }
 
@@ -78,9 +70,20 @@ class ComponentManager {
   template <typename T>
   T* getComponent(unsigned e) {
     auto comp_base = components_.find(typeid(T).hash_code());
-    component_list<T>* component_vector =
-        static_cast<component_list<T>*>(comp_base->second.get());
+    ComponentList<T>* component_vector =
+        static_cast<ComponentList<T>*>(comp_base->second.get());
     return &component_vector->components_[e - 1].value();
+  }
+
+  /// @brief retrieves all the components of the specified type
+  /// @tparam T component type
+  /// @return all T components
+  template <typename T>
+  ComponentList<T>& getIterator() {
+    auto comp_base = components_.find(typeid(T).hash_code());
+    ComponentList<T>* component_vector =
+        static_cast<ComponentList<T>*>(comp_base->second.get());
+    return *component_vector;
   }
 
   /// @brief retrieves all the components of the specified type
@@ -89,8 +92,8 @@ class ComponentManager {
   template <typename T>
   std::vector<std::optional<T>>& getAll() {
     auto comp_base = components_.find(typeid(T).hash_code());
-    component_list<T>* component_vector =
-        static_cast<component_list<T>*>(comp_base->second.get());
+    ComponentList<T>* component_vector =
+        static_cast<ComponentList<T>*>(comp_base->second.get());
     return component_vector->components_;
   }
 
