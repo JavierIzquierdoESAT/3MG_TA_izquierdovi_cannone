@@ -5,7 +5,7 @@
 #include "buffer.hpp"
 #include "load_obj.hpp"
 
-Buffer* loadObj(std::string dir) {
+std::optional<Buffer> loadObj(std::string dir) {
 
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
@@ -29,10 +29,6 @@ Buffer* loadObj(std::string dir) {
         std::cerr << err << std::endl;
     }
 
-    if (!ret) {
-        return nullptr;
-    }
-
     // Loop over shapes
     for (size_t s = 0; s < shapes.size(); s++) {
         // Loop over faces(polygon)
@@ -48,6 +44,7 @@ Buffer* loadObj(std::string dir) {
                 posi.x = attrib.vertices[(size_t)3 * (size_t)idx.vertex_index + (size_t)0];
                 posi.y = attrib.vertices[(size_t)3 * (size_t)idx.vertex_index + (size_t)1];
                 posi.z = attrib.vertices[(size_t)3 * (size_t)idx.vertex_index + (size_t)2];
+                posi.Normalize();
                 pos.emplace_back(posi);
 
                 norma.x = attrib.normals[(size_t)3 * (size_t)idx.normal_index + (size_t)0];
@@ -60,8 +57,8 @@ Buffer* loadObj(std::string dir) {
                 color.z = attrib.colors[(size_t)3 * (size_t)idx.vertex_index + (size_t)2];
                 col.emplace_back(color);
 
-                uvs.x = attrib.texcoords[(size_t)2 * (size_t)idx.texcoord_index + (size_t)0];
-                uvs.y = attrib.texcoords[(size_t)2 * (size_t)idx.texcoord_index + (size_t)1];
+                uvs.x = 0;//attrib.texcoords[(size_t)2 * (size_t)idx.texcoord_index + (size_t)0];
+                    uvs.y = 0;//attrib.texcoords[(size_t)2 * (size_t)idx.texcoord_index + (size_t)1];
                 uv.emplace_back(uvs);
                 
 
@@ -74,6 +71,6 @@ Buffer* loadObj(std::string dir) {
 
     Buffer b = Buffer(pos,nor,col,uv);
 
-    return &b;
+    return b;
 
 }

@@ -2,4 +2,4 @@
 #include <iostream>
 
 
-class Buffer* loadObj(std::string dir);
+std::optional<class Buffer> loadObj(std::string dir);

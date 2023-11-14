@@ -16,17 +16,19 @@ int main(int, char**) {
 
     auto w = Window::Make(e, 640, 480, "ventana");
 
-    Buffer* obj = loadObj("../assets/javi.obj");
-    auto shade = ShaderManager::MakeShaders("../assets/col.fs", "../assets/col.vs").value();
+    auto obj = loadObj("../assets/javi.obj").value();
+    auto shade = ShaderManager::MakeShaders("../assets/obj.fs", "../assets/obj.vs").value();
 
     if (w) {
         auto& window = w.value();
 
         while (!window.isDone()) {
 
-
-            obj->bindVertexArray();
+            float dt = Time::delta_time();
+            shade.setUniformValue(DataType::FLOAT_1, &dt, "u_time");
+            obj.bindVertexArray();
             shade.useProgram();
+            glDrawArrays(GL_TRIANGLES, 0, obj.size());
             window.swap();
             e.update();
         }
