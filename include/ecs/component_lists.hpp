@@ -82,13 +82,15 @@ class ComponentListCompact : public componentListBase {
   }
 
   std::vector<std::pair<unsigned, T>>::iterator getIndex(unsigned e) {
-    return components_.begin();
-    //TODO: Make this shit work
-    //std::lower_bound(
-    //    components_.begin(), components_.end(), e,
-    //    [](const std::pair<unsigned, T>& x, const std::pair<unsigned, T>& y) {
-    //      return x.first < y.first;
-    //    });
+    //return components_.begin();
+    // TODO: Make this shit work
+    
+     return std::lower_bound(
+        components_.begin(), components_.end(), e,
+        [](const std::vector<std::pair<unsigned, T>>::value_type& x,
+           unsigned e) {
+          return x.first < e;
+        });
   }
 
   T& getComp(unsigned e) { return getIndex(e)->second; }
