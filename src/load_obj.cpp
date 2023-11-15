@@ -44,7 +44,6 @@ std::optional<Buffer> loadObj(std::string dir) {
                 posi.x = attrib.vertices[(size_t)3 * (size_t)idx.vertex_index + (size_t)0];
                 posi.y = attrib.vertices[(size_t)3 * (size_t)idx.vertex_index + (size_t)1];
                 posi.z = attrib.vertices[(size_t)3 * (size_t)idx.vertex_index + (size_t)2];
-                posi.Normalize();
                 pos.emplace_back(posi);
 
                 norma.x = attrib.normals[(size_t)3 * (size_t)idx.normal_index + (size_t)0];
