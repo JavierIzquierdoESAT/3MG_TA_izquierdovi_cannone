@@ -10,7 +10,8 @@ class Engine;
 class Triangle;
 
 enum class InputButton;
-using InputButtonMap = std::unordered_map<std::string, std::vector<InputButton>>;
+using InputButtonMap =
+    std::unordered_map<std::string, std::vector<InputButton>>;
 class InputManager;
 
 /** Handles Window */
@@ -41,8 +42,7 @@ class Window {
   /// if (w) {
   ///  auto& window = w.value();
   /// ~~~~~~~~
-  static std::optional<Window> Make(const Engine& e, int w, int h,
-                                    const char* title);
+  static Window Make(const Engine& e, int w, int h, const std::string& title);
 
   /// @brief checks if the should be closed and refreshes buffer
   /// @return true if the window should close

@@ -6,77 +6,75 @@
 #include <unordered_map>
 
 #include "Input.hpp"
+#include "ecs/component_manager.hpp"
+#include "ecs/default_systems.hpp"
 #include "engine.hpp"
 #include "shader_manager.hpp"
 #include "time.hpp"
 #include "triangle.hpp"
 
-InputButtonMap inputMap{
-    {"Up", {InputButton::W}},
-    {"Down", {InputButton::S}},
-    {"Left", {InputButton::A}},
-    {"Right", {InputButton::D}},
-};
+int WindowTutorial() {
+  Engine engine;
+  Window window = Window::Make(engine, 640, 480, "ventana");
+  while (!window.isDone()) {
+    window.swap();
+    engine.update();
+  }
+  return 0;
+}
+
+int TriangleTutorial() {
+  Engine engine;
+  Window window = Window::Make(engine, 640, 480, "ventana");
+
+  //++++++++++++++++++++++++
+  ComponentManager component_manager;
+  Position pos(0.0f, 0.0f, 0.0f);
+  ShaderManager shader_program =
+      ShaderManager::MakeShaders("../assets/col.fs", "../assets/col.vs")
+          .value();
+  Render ren =
+      Render::MakeTriangle(0.5f, Vec3(1.0f, 0.0f, 0.0f), shader_program);
+  unsigned triangle = component_manager.addEntity<Position, Render>(pos, ren);
+  //++++++++++++++++++++++++
+
+  while (!window.isDone()) {
+    //++++++++++++++++++++++++
+    RenderSystem(component_manager.getAll<Position>(),
+                 component_manager.getAll<Render>());
+    //++++++++++++++++++++++++
+
+    window.swap();
+    engine.update();
+  }
+
+  return 0;
+}
 
 int main(int, char**) {
-  Engine e;
+  // TODO: maybe we should use Engine::Make just for consistency with the window
+  Engine engine;
+  Window window = Window::Make(engine, 640, 480, "ventana");
 
-  auto w = Window::Make(e, 640, 480, "ventana");
-  if (w) {
-    auto& window = w.value();
-    InputManager i = window.addInputManager(inputMap);
+  ComponentManager component_manager;
+  Position pos(0.0f, 0.0f, 0.0f);
+  // TODO: this should not be needed just an option
+  // maybe we can use Engine to create some shader programs
+  ShaderManager shader_program =
+      ShaderManager::MakeShaders("../assets/col.fs", "../assets/col.vs")
+          .value();
+  Render ren =
+      Render::MakeTriangle(0.5f, Vec3(1.0f, 0.0f, 0.0f), shader_program);
+  unsigned triangle = component_manager.addEntity<Position, Render>(pos, ren);
 
-    auto shade = ShaderManager::MakeShaders("../assets/col.fs", "../assets/col.vs");
-   
-    float col[3] = { 1.0f,0.0f,0.0f };
-    shade->setUniformValue(DataType::FLOAT_3, col, "initialUniform");
+  while (!window.isDone()) {
+    // TODO: rename render System
+    RenderSystem(component_manager.getAll<Position>(),
+                 component_manager.getAll<Render>());
 
-    Triangle t;
-
-    float t_speed = 0.3f;
-
-    while (!window.isDone()) {
-
-      // input
-      if (i.buttonPressed("Up")) {
-        t.move(Vec3(0, t_speed * Time::delta_time(), 0));
-        col[0] = 0.0f;
-        col[1] = 0.0f;
-        col[2] = 1.0f;
-        shade->setUniformValue(DataType::FLOAT_3, col, "initialUniform");
-      }
-      if (i.buttonPressed("Down")) {
-        t.move(Vec3(0, -t_speed * Time::delta_time(), 0));
-        col[0] = 0.0f;
-        col[1] = 1.0f;
-        col[2] = 0.0f;
-        shade->setUniformValue(DataType::FLOAT_3, col, "initialUniform");
-      }
-      if (i.buttonPressed("Left")) {
-        t.move(Vec3(-t_speed * Time::delta_time(), 0, 0));
-        col[0] = 1.0f;
-        col[1] = 0.0f;
-        col[2] = 0.0f;
-        shade->setUniformValue(DataType::FLOAT_3, col, "initialUniform");
-      }
-      if (i.buttonPressed("Right")) {
-        t.move(Vec3(t_speed * Time::delta_time(), 0, 0));
-        col[0] = 1.0f;
-        col[1] = 0.0f;
-        col[2] = 1.0f;
-        shade->setUniformValue(DataType::FLOAT_3, col, "initialUniform");
-      }
-      std::cout << i.mousePositionX() << "  -  "
-                << i.mousePositionY() << std::endl;
-      // render
-      t.updateBuffers();
-      shade->useProgram();
-      paint(t);
-      window.swap();
-
-      // end frame;
-      e.update();
-    }
+    // TODO: try to make this only one call
+    window.swap();
+    engine.update();
   }
 
   return 0;
