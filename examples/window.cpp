@@ -101,7 +101,9 @@ int InputTutorial() {
 }
 
 int main(int, char**) {
-  return InputTutorial();
+  WindowTutorial();
+  TriangleTutorial();
+  InputTutorial();
 
   Engine engine;
   // TODO: maybe we don't need the make anymore
