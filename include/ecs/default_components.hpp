@@ -9,7 +9,9 @@
 #include "shader_manager.hpp"
 
 struct Position {
+  Position() : pos{Vec3(0, 0, 0)} {}
   Position(float x, float y, float z) : pos{Vec3(x, y, z)} {}
+
   Vec3 pos;
 };
 
@@ -27,12 +29,9 @@ struct Render {
         color{colors},
         uv{uvs},
         shaderProgram{sm},
-        buffer(position, normals, colors, uvs) {
-    // buffer = std::make_unique<Buffer>();
-  }
+        buffer(position, normals, colors, uvs) {}
 
   static Render MakeTriangle(float size, Vec3 color, ShaderManager& sm) {
-    
     return Render(
         {{-size, -size, 0.0f}, {0.0f, size, 0.0f}, {size, -size, 0.0f}},
         {{1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}},

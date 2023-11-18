@@ -1,9 +1,9 @@
 #include "input.hpp"
-
+#include "window.hpp"
 #include "GLFW/glfw3.h"
 
-InputManager::InputManager(GLFWwindow* w, InputButtonMap m)
-    : map_{m}, window_{w} {
+InputManager::InputManager(const Window& w, InputButtonMap m)
+    : map_{m}, window_{w.window_handle_} {
   glfwSetKeyCallback(window_, KeyCallback);
   glfwSetMouseButtonCallback(window_, MouseButtonCallback);
   glfwSetScrollCallback(window_, ScrollCallback);

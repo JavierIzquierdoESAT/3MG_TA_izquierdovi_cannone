@@ -8,7 +8,9 @@
 #include "engine.hpp"
 #include "input.hpp"
 
-Window::Window(GLFWwindow* w) : window_handle_{w} {
+Window::Window(GLFWwindow* w, Engine* e)
+    : window_handle_{w},
+      engine_{e}{
   glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -30,7 +32,7 @@ Window::~Window() {
   }
 }
 
-Window Window::Make(const Engine& e, int w, int h, const std::string& title) {
+Window Window::Make(Engine& e, int w, int h, const std::string& title) {
   GLFWwindow* wind = glfwCreateWindow(w, h, title.c_str(), NULL, NULL);
 
   const char* description;
@@ -47,17 +49,14 @@ Window Window::Make(const Engine& e, int w, int h, const std::string& title) {
     std::exit(EXIT_FAILURE);
   }
 
-  return Window{wind};
+  return Window{wind, &e};
 }
 
-void Window::swap() const {
+void Window::update() const {
   glfwSwapBuffers(window_handle_);
   glClear(GL_COLOR_BUFFER_BIT);
   InputManager::update();
+  engine_->update();
 }
 
 bool Window::isDone() const { return glfwWindowShouldClose(window_handle_); }
-
-InputManager Window::addInputManager(InputButtonMap imput_map) const {
-  return InputManager(window_handle_, imput_map);
-}

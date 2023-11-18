@@ -6,4 +6,4 @@ void Time::Update() {
   s_last_time_ = (float)glfwGetTime();
 }
 
-float Time::delta_time() { return s_delta_time_; }
+float Time::DeltaTime() { return s_delta_time_; }

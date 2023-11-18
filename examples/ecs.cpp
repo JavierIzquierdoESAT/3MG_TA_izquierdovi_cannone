@@ -22,7 +22,10 @@ int main(int, char**) {
           .value();
 
   ComponentManager component_manager;
-  unsigned player = component_manager.addTriangle(0.5f, &s, {1.0f, 0.0f, 0.0f});
+  Position pos;
+  Render ren = Render::MakeTriangle(0.5f, {1.0f, 1.0f, 0.0f}, s);
+  unsigned player =
+      component_manager.addEntity<Position, Render>(pos, ren);
 
   std::vector<unsigned int> ents;
   float trisize = 0.01f;
@@ -32,46 +35,39 @@ int main(int, char**) {
     for (int x = 0; x < width; x++) {
       float pos_x = (x - ((float)width / 2.0f)) * tridist;
       float pos_y = (y - ((float)width / 2.0f)) * tridist;
-      ents.emplace_back(
-          component_manager.addTriangle(trisize, &s, {1.0f, 1.0f, 0.0f}));
-      Position p{Vec3(pos_x, pos_y, 0.0f)};
+      Position p(pos_x, pos_y, 0.0f);
       AI ai;
-      size_t sum = y;
-      sum *= width;
-      sum += x;
-      component_manager.setComponent(ents[sum], p);
-      component_manager.setComponent(ents[sum], ai);
+      Render r = Render::MakeTriangle(trisize, {1.0f, 1.0f, 0.0f}, s);
+      ents.emplace_back(
+          component_manager.addEntity<Position, AI, Render>(p, ai, r));
     }
   }
 
-  InputManager i = window.addInputManager(inputMap);
+  InputManager i(window, inputMap);
 
   while (!window.isDone()) {
     // input
     float t_speed = 0.3f;
     Position* player_pos = component_manager.getComponent<Position>(player);
     if (i.buttonPressed("Up")) {
-      player_pos->pos.y += t_speed * Time::delta_time();
+      player_pos->pos.y += t_speed * Time::DeltaTime();
     }
     if (i.buttonPressed("Down")) {
-      player_pos->pos.y -= t_speed * Time::delta_time();
+      player_pos->pos.y -= t_speed * Time::DeltaTime();
     }
     if (i.buttonPressed("Left")) {
-      player_pos->pos.x -= t_speed * Time::delta_time();
+      player_pos->pos.x -= t_speed * Time::DeltaTime();
     }
     if (i.buttonPressed("Right")) {
-      player_pos->pos.x += t_speed * Time::delta_time();
+      player_pos->pos.x += t_speed * Time::DeltaTime();
     }
 
     CircleMoveSystem(component_manager.getIterator<Position>(),
                      component_manager.getIterator<AI>());
     RenderSystem(component_manager.getAll<Position>(),
-                  component_manager.getAll<Render>());
+                 component_manager.getAll<Render>());
 
-    s.useProgram();
-    window.swap();
-    // end frame;
-    e.update();
+    window.update();
   }
 
   return 0;
