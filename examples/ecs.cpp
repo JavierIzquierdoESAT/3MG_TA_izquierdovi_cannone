@@ -13,6 +13,16 @@ InputButtonMap inputMap{
     {"Right", {InputButton::D}},
 };
 
+struct ECSDummyComp {
+  std::string a = "dummy";
+};
+
+void DummySystem(ComponentListCompact<ECSDummyComp>& a) {
+  for (auto& [e, c] : a) {
+    std::cout << c.a;
+  }
+}
+
 int main(int, char**) {
   Engine e;
   Window window = Window::Make(e, 640, 480, "ventana");
@@ -22,10 +32,14 @@ int main(int, char**) {
           .value();
 
   ComponentManager component_manager;
+  component_manager.addComponentClass<ECSDummyComp>(
+      ComponentListType::kCompact);
+
   Position pos;
+  ECSDummyComp dummy;
   Render ren = Render::MakeTriangle(0.5f, {1.0f, 1.0f, 0.0f}, s);
-  unsigned player =
-      component_manager.addEntity<Position, Render>(pos, ren);
+  unsigned player = component_manager.addEntity<Position, Render, ECSDummyComp>(
+      pos, ren, dummy);
 
   std::vector<unsigned int> ents;
   float trisize = 0.01f;
@@ -62,6 +76,8 @@ int main(int, char**) {
       player_pos->pos.x += t_speed * Time::DeltaTime();
     }
 
+
+    DummySystem(component_manager.getCompactIterator<ECSDummyComp>());
     CircleMoveSystem(component_manager.getIterator<Position>(),
                      component_manager.getIterator<AI>());
     RenderSystem(component_manager.getAll<Position>(),

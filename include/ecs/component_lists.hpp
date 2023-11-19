@@ -83,6 +83,44 @@ class ComponentListCompact : public componentListBase {
   friend class ComponentManager;
   ComponentListCompact() : componentListBase(ComponentListType::kCompact) {}
 
+  struct Iterator {
+    using iterator_category = std::forward_iterator_tag;
+    using difference_type = std::ptrdiff_t;
+    using value_type = std::pair<unsigned, T>;
+    using pointer = std::pair<unsigned, T>*;
+    using reference = std::pair<unsigned, T>&;
+
+    Iterator(pointer ptr) : m_ptr_(ptr) {}
+
+    reference operator*() const { return *m_ptr_; }
+    pointer operator->() { return m_ptr_; }
+
+    Iterator& operator++() {
+      m_ptr_++;
+      return *this;
+    }
+    Iterator operator++(int) {
+      Iterator tmp = *this;
+      ++(*this);
+      return tmp;
+    }
+    friend bool operator==(const Iterator& a, const Iterator& b) {
+      return a.m_ptr_ == b.m_ptr_;
+    };
+    friend bool operator!=(const Iterator& a, const Iterator& b) {
+      return a.m_ptr_ != b.m_ptr_;
+    };
+
+   private:
+    pointer m_ptr_;
+  };
+
+  Iterator begin() { return Iterator(&components_[0]); };
+  Iterator end() {
+    auto it = Iterator(&components_[components_.size() - 1]);
+    it++;
+    return it;
+  }
  private:
   static bool compare(std::pair<unsigned, T>& x, unsigned e) {
     return x.first < e;
@@ -93,11 +131,16 @@ class ComponentListCompact : public componentListBase {
 
   // if the entity doesn't exist inserts a new pair
   bool setComponent(unsigned e, T& c) {
-    auto lb =
-        std::lower_bound(components_.begin(), components_.end(), e, compare);
-    if (lb->first == e) return false;
-    components_.insert(lb--, std::make_pair(e, std::move(c)));
+    if (components_.size()) {
+      auto lb =
+          std::lower_bound(components_.begin(), components_.end(), e, compare);
+      if (lb->first == e) return false;
+      components_.insert(lb--, std::make_pair(e, std::move(c)));
+    } else {
+      components_.emplace_back(std::make_pair(e, std::move(c)));
+    }
     return true;
+
   }
 
   // deletes a specific components if exists

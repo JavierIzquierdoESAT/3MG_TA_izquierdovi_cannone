@@ -41,7 +41,7 @@ class ComponentManager {
   /// @brief adds a custom component type to be used
   /// @tparam T compoennt type
   template <typename T>
-  void add_component_class(ComponentListType t) {
+  void addComponentClass(ComponentListType t) {
     if (t == ComponentListType::kSparse) {
       components_.emplace(typeid(T).hash_code(),
                           std::make_unique<ComponentList<T>>());
@@ -87,6 +87,17 @@ class ComponentManager {
           static_cast<ComponentListCompact<T>*>(comp_base->second.get());
       return component_vector->getComp(e);
     }
+  }
+
+    /// @brief retrieves complete component container
+  /// @tparam T Component type
+  /// @return container
+  template <typename T>
+  ComponentListCompact<T>& getCompactIterator() {
+    auto comp_base = components_.find(typeid(T).hash_code());
+    ComponentListCompact<T>* component_vector =
+        static_cast<ComponentListCompact<T>*>(comp_base->second.get());
+    return *component_vector;
   }
 
   /// @brief retrieves complete component container 
