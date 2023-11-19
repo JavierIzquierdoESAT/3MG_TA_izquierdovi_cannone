@@ -53,6 +53,7 @@ class ComponentList : public componentListBase {
   };
 
   Iterator begin() { return Iterator(&components_[0]); };
+  Iterator at(unsigned e) { return Iterator(&components_.at(e - 1)); }
   Iterator end() {
     auto it = Iterator(&components_[components_.size() - 1]);
     it++;
@@ -116,31 +117,44 @@ class ComponentListCompact : public componentListBase {
   };
 
   Iterator begin() { return Iterator(&components_[0]); };
+  Iterator at(unsigned e) {
+    // TODO: posible bug converting form vector iterator to ComponentListCompact
+    // iterator
+    auto lb =
+        std::lower_bound(components_.begin(), components_.end(), e, compare);
+
+    size_t pos = lb - components_.begin();
+    if (lb->first == e) return Iterator(&components_.at(pos));
+    return end();
+  }
   Iterator end() {
     auto it = Iterator(&components_[components_.size() - 1]);
     it++;
     return it;
   }
+
  private:
   static bool compare(std::pair<unsigned, T>& x, unsigned e) {
     return x.first < e;
   }
 
   // does nothing since it doesn't have to insert emptys for each entity
-  bool addEntity(unsigned e) override {return false;}
+  bool addEntity(unsigned e) override { return false; }
 
   // if the entity doesn't exist inserts a new pair
   bool setComponent(unsigned e, T& c) {
     if (components_.size()) {
       auto lb =
           std::lower_bound(components_.begin(), components_.end(), e, compare);
-      if (lb->first == e) return false;
-      components_.insert(lb--, std::make_pair(e, std::move(c)));
+      if (lb == components_.end() || lb->first != e) {
+        components_.insert(lb--, std::make_pair(e, std::move(c)));
+        return true;
+      } 
     } else {
       components_.emplace_back(std::make_pair(e, std::move(c)));
+      return true;
     }
-    return true;
-
+    return false;
   }
 
   // deletes a specific components if exists
