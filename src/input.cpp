@@ -1,9 +1,10 @@
 #include "input.hpp"
 
 #include "GLFW/glfw3.h"
+#include "window.hpp"
 
-InputManager::InputManager(GLFWwindow* w, InputButtonMap m)
-    : map_{m}, window_{w} {
+InputManager::InputManager(const Window& w, InputButtonMap m)
+    : map_{m}, window_{w.window_handle_} {
   glfwSetKeyCallback(window_, KeyCallback);
   glfwSetMouseButtonCallback(window_, MouseButtonCallback);
   glfwSetScrollCallback(window_, ScrollCallback);
@@ -38,8 +39,10 @@ bool InputManager::buttonPressed(std::string s) const {
   bool res = false;
   auto keys = findKeyState(map_, s);
   for (KeyState state : keys) {
-    if (state.pressed) res = true;
-    break;
+    if (state.pressed) {
+      res = true;
+      break;
+    }
   }
   return res;
 }

@@ -25,7 +25,7 @@ class ComponentManager {
   ~ComponentManager() = default;
 
   template <typename... T>
-  unsigned addEntity(T&&... args) {
+  unsigned addEntity(T&... args) {
     unsigned e = addEntity();
     // loops throug the template arguments executing the lambda
     ([&] { setComponent(e, args); }(), ...);
@@ -35,7 +35,7 @@ class ComponentManager {
   /// @brief creates and enity and intializes it's components to represent a
   /// triangle
   /// @return entity id
-  unsigned addTriangle(float size, class ShaderManager* sm, Vec3 color);
+  unsigned addTriangle(float size, class ShaderManager& sm, coma::Vec3 color);
   void deleteEntity(unsigned& e);
 
   /// @brief adds a custom component type to be used

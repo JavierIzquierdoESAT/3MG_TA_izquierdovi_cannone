@@ -12,7 +12,7 @@
 #define __MATRIX2_H__ 1
 
 #include "math/vector_2.h"
-
+namespace coma {
 class Mat2 {
  public:
   Mat2();
@@ -193,5 +193,5 @@ inline Vec2 Mat2::GetLine(int line) const {
 inline Vec2 Mat2::GetColum(int line) const {
   return Vec2(m[line], m[2 + line]);
 }
-
+}  // namespace coma
 #endif

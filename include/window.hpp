@@ -10,11 +10,14 @@ class Engine;
 class Triangle;
 
 enum class InputButton;
-using InputButtonMap = std::unordered_map<std::string, std::vector<InputButton>>;
+using InputButtonMap =
+    std::unordered_map<std::string, std::vector<InputButton>>;
 class InputManager;
 
-/** Handles Window */
+/// @brief Handles Window
 class Window {
+  friend class InputManager;
+
  public:
   /// @brief non copyable object
   Window(const Window&) = delete;
@@ -33,40 +36,19 @@ class Window {
   /// @param h Window height in pixels
   /// @param title Name of the window
   /// @return a Window object if the creation was succesful
-  ///
-  /// since this function returns an optional you should check if the window was
-  /// returned correctly before using it
-  /// ~~~~~~~~.cpp
-  /// auto w = Window::Make(e, 640, 480, "ventana");
-  /// if (w) {
-  ///  auto& window = w.value();
-  /// ~~~~~~~~
-  static std::optional<Window> Make(const Engine& e, int w, int h,
-                                    const char* title);
+  static Window Make(Engine& e, int w, int h, const std::string& title);
 
   /// @brief checks if the should be closed and refreshes buffer
   /// @return true if the window should close
-  ///
-  /// this should be used as the main loop exit condition
-  /// ~~~~~~~~.cpp
-  /// while (!window.isDone()) {}
-  /// ~~~~~~~~
   bool isDone() const;
 
-  /// @brief creates and returns an InputManager that will capture input for
-  /// this window
-  /// @return The InputManager object created
-  InputManager addInputManager(InputButtonMap imput_map) const;
-
   /// @brief swaps screen buffers
-  ///
-  /// it should be called at the end of every frame in order to show what was
-  /// rendered on screen
-  void swap() const;
+  void update() const;
 
  private:
-  Window(GLFWwindow* w);
+  Window(GLFWwindow* w, Engine* e);
 
   /** openGL window handle */
   GLFWwindow* window_handle_;
+  Engine* engine_;
 };

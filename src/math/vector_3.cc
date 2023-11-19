@@ -1,5 +1,5 @@
 #include "math/vector_3.h"
-
+using namespace coma;
 const Vec3 Vec3::up = Vec3(0.0f, 1.0f, 0.0f);
 const Vec3 Vec3::down = Vec3(0.0f, -1.0f, 0.0f);
 const Vec3 Vec3::right = Vec3(1.0f, 0.0f, 0.0f);

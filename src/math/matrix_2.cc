@@ -1,6 +1,6 @@
 
 #include "math/matrix_2.h"
-
+using namespace coma;
 //Constructors
 Mat2::Mat2() {
   for (int i = 0; i < 4; ++i) {

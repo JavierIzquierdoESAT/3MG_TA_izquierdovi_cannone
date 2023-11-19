@@ -6,6 +6,8 @@
 #include "math/vector_2.h"
 #include "math/vector_3.h"
 
+using namespace coma;
+
 Buffer::Buffer(const void* data, unsigned int size)
     : size_{size}, valid_{true} {
   glGenBuffers(1, &buffer_id_);

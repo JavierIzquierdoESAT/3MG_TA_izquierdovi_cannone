@@ -2,8 +2,9 @@
 #define __VEC3_H__ 1
 
 #include <math.h>
-#include "math/math_utils.h"
 
+#include "math/math_utils.h"
+namespace coma {
 class Vec3 {
  public:
   Vec3();
@@ -191,5 +192,5 @@ inline Vec3& Vec3::operator/=(float value) {
   z /= value;
   return *this;
 }
-
+}  // namespace coma
 #endif

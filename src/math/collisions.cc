@@ -1,6 +1,6 @@
 ///@author Javier Izquierdo Vicedo
 #include "math/collisions.h"
-
+using namespace coma;
 using namespace cols;
 
 //------------------------CRICLE----------------------------
