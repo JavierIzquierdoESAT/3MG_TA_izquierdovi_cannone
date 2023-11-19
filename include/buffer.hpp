@@ -1,9 +1,10 @@
 #pragma once
 
 #include <vector>
-
+namespace coma {
 class Vec2;
 class Vec3;
+}
 
 class Buffer {
  public:
@@ -17,8 +18,8 @@ class Buffer {
   Buffer& operator=(Buffer&& other) noexcept;
   Buffer(Buffer& other) noexcept;
   Buffer(const Buffer& other) = delete;
-  Buffer(std::vector<Vec3> pos, std::vector<Vec3> normal,
-         std::vector<Vec3> color, std::vector<Vec2> uv);
+  Buffer(std::vector<coma::Vec3> pos, std::vector<coma::Vec3> normal,
+         std::vector<coma::Vec3> color, std::vector<coma::Vec2> uv);
   Buffer(const void* data, unsigned int size);
 
   ~Buffer();

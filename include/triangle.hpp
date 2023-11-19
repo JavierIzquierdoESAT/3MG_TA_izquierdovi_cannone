@@ -4,10 +4,10 @@
 #include "math/vector_2.h"
 
 struct Vertex {
-  Vec3 position_;
-  Vec3 normal_;
-  Vec3 colors_;
-  Vec2 uv_;
+  coma::Vec3 position_;
+  coma::Vec3 normal_;
+  coma::Vec3 colors_;
+  coma::Vec2 uv_;
   // Vec3 normal_;
 };
 
@@ -18,18 +18,18 @@ class Triangle {
 
   Buffer data_buffer() const;
 
-  void set_color_(Vec3 color) {
+  void set_color_(coma::Vec3 color) {
     vertex_[2].colors_ = color;
   }
 
-  void move(Vec3 pos) {
+  void move(coma::Vec3 pos) {
     for (int i = 0; i < 3; i++) {
       vertex_[i].position_.x += pos.x;
       vertex_[i].position_.y += pos.y;
       vertex_[i].position_.z += pos.z;
     }
   }
-  void set_position_(Vec3 pos) {
+  void set_position_(coma::Vec3 pos) {
     for (int i = 0; i < 3; i++) {
       vertex_[i].position_ = pos;
     }

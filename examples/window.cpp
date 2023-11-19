@@ -13,6 +13,8 @@
 #include "time.hpp"
 #include "triangle.hpp"
 
+using namespace coma;
+
 int WindowTutorial() {
   Engine engine;
   Window window = Window::Make(engine, 640, 480, "ventana");
@@ -49,7 +51,6 @@ int TriangleTutorial() {
   return 0;
 }
 
-// TODO: bug second input not working
 InputButtonMap inputMap{
     {"Up", {InputButton::W, InputButton::UP}},
     {"Down", {InputButton::S, InputButton::DOWN}},
@@ -101,8 +102,8 @@ int InputTutorial() {
 }
 
 int main(int, char**) {
-  WindowTutorial();
-  TriangleTutorial();
+  //WindowTutorial();
+  //TriangleTutorial();
   InputTutorial();
 
   Engine engine;

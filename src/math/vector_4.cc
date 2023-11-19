@@ -1,5 +1,5 @@
 #include "math/vector_4.h"
-
+using namespace coma;
 const Vec4 Vec4::one = Vec4(1.0f, 1.0f, 1.0f, 1.0f);
 const Vec4 Vec4::zero = Vec4(0.0f, 0.0f, 0.0f, 0.0f);
 

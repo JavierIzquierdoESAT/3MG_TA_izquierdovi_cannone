@@ -1,6 +1,6 @@
 
 #include "math/matrix_3.h"
-
+using namespace coma;
 Mat3::Mat3() {
   for (int i = 0; i < 9; i++){
     m[i]=0;

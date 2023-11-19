@@ -1,6 +1,7 @@
 #include "input.hpp"
-#include "window.hpp"
+
 #include "GLFW/glfw3.h"
+#include "window.hpp"
 
 InputManager::InputManager(const Window& w, InputButtonMap m)
     : map_{m}, window_{w.window_handle_} {
@@ -38,8 +39,10 @@ bool InputManager::buttonPressed(std::string s) const {
   bool res = false;
   auto keys = findKeyState(map_, s);
   for (KeyState state : keys) {
-    if (state.pressed) res = true;
-    break;
+    if (state.pressed) {
+      res = true;
+      break;
+    }
   }
   return res;
 }

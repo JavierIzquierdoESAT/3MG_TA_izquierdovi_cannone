@@ -1,5 +1,5 @@
 #include "math/vector_2.h"
-
+using namespace coma;
 const Vec2 Vec2::down = Vec2(0.0f, -1.0f);
 const Vec2 Vec2::left = Vec2(-1.0f, 0.0f);
 const Vec2 Vec2::one = Vec2(1.0f, 1.0f);

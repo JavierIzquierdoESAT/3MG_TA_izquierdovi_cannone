@@ -24,7 +24,7 @@ unsigned ComponentManager::addEntity() {
 }
 
 //TODO: smelly
-unsigned ComponentManager::addTriangle(float size, ShaderManager& sp, Vec3 color) {
+unsigned ComponentManager::addTriangle(float size, ShaderManager& sp, coma::Vec3 color) {
   Position pos(0,0,0);
   Render ren = Render::MakeTriangle(size, color, sp);
   unsigned res = addEntity(pos, ren);

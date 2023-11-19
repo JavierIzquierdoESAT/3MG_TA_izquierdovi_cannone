@@ -9,10 +9,10 @@
 #include "shader_manager.hpp"
 
 struct Position {
-  Position() : pos{Vec3(0, 0, 0)} {}
-  Position(float x, float y, float z) : pos{Vec3(x, y, z)} {}
+  Position() : pos{coma::Vec3(0, 0, 0)} {}
+  Position(float x, float y, float z) : pos{coma::Vec3(x, y, z)} {}
 
-  Vec3 pos;
+  coma::Vec3 pos;
 };
 
 struct AI {
@@ -22,8 +22,9 @@ struct AI {
 
 struct Render {
   // TODO: rendermode
-  Render(std::vector<Vec3> position, std::vector<Vec3> normals,
-         std::vector<Vec3> colors, std::vector<Vec2> uvs, ShaderManager& sm)
+  Render(std::vector<coma::Vec3> position, std::vector<coma::Vec3> normals,
+         std::vector<coma::Vec3> colors, std::vector<coma::Vec2> uvs,
+         ShaderManager& sm)
       : pos{position},
         normal{normals},
         color{colors},
@@ -31,7 +32,7 @@ struct Render {
         shaderProgram{sm},
         buffer(position, normals, colors, uvs) {}
 
-  static Render MakeTriangle(float size, Vec3 color, ShaderManager& sm) {
+  static Render MakeTriangle(float size, coma::Vec3 color, ShaderManager& sm) {
     return Render(
         {{-size, -size, 0.0f}, {0.0f, size, 0.0f}, {size, -size, 0.0f}},
         {{1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f}},
@@ -44,10 +45,10 @@ struct Render {
   Render& operator=(const Render& other) {}
   // TODO: posibly useless to store
   class ShaderManager& shaderProgram;
-  std::vector<Vec3> pos;
-  std::vector<Vec3> normal;
-  std::vector<Vec3> color;
-  std::vector<Vec2> uv;
+  std::vector<coma::Vec3> pos;
+  std::vector<coma::Vec3> normal;
+  std::vector<coma::Vec3> color;
+  std::vector<coma::Vec2> uv;
 
   Buffer buffer;
 };
