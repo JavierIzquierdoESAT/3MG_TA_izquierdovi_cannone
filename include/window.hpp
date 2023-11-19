@@ -14,7 +14,7 @@ using InputButtonMap =
     std::unordered_map<std::string, std::vector<InputButton>>;
 class InputManager;
 
-/** Handles Window */
+/// @brief Handles Window
 class Window {
   friend class InputManager;
 
