@@ -10,7 +10,7 @@
 #include "ecs/component_manager.hpp"
 #include "math/vector_3.h"
 
-void render_system(std::vector<std::optional<Position>>& positions,
+void RenderSystem(std::vector<std::optional<Position>>& positions,
                    std::vector<std::optional<Render>>& render) {
   auto p = positions.begin();
   auto r = render.begin();
@@ -21,9 +21,9 @@ void render_system(std::vector<std::optional<Position>>& positions,
     auto& rv = r->value();
 
     float posToArr[3] = {pv.pos.x, pv.pos.y, pv.pos.z};
-    rv.shaderProgram->setUniformValue(DataType::FLOAT_3, posToArr, "position");
+    rv.shaderProgram.setUniformValue(DataType::FLOAT_3, posToArr, "position");
     float colToArr[3] = {rv.color[0].x, rv.color[0].y, rv.color[0].z};
-    rv.shaderProgram->setUniformValue(DataType::FLOAT_3, colToArr,
+    rv.shaderProgram.setUniformValue(DataType::FLOAT_3, colToArr,
                                       "initialUniform");
 
     rv.buffer.bindVertexArray();
