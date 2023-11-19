@@ -10,8 +10,8 @@ class componentListBase {
   const ComponentListType type_;
 
  protected:
-  virtual void addComponent(unsigned e) = 0;
-  virtual void removeComponent(unsigned e) = 0;
+  virtual bool addEntity(unsigned e) = 0;
+  virtual bool removeComponent(unsigned e) = 0;
 };
 
 template <typename T>
@@ -60,12 +60,20 @@ class ComponentList : public componentListBase {
   }
 
  private:
-  void addComponent(unsigned e) override {
+  bool addEntity(unsigned e) override {
     if (e >= components_.size()) {
       components_.emplace_back(std::optional<T>());
+      return true;
     }
+    return false;
   }
-  void removeComponent(unsigned e) override { components_[e - 1].reset(); }
+  bool removeComponent(unsigned e) override {
+    if (e > 0 && e < components_.size()) {
+      components_[e - 1].reset();
+      return true;
+    }
+    return false;
+  }
   std::vector<std::optional<T>> components_;
 };
 
@@ -76,24 +84,39 @@ class ComponentListCompact : public componentListBase {
   ComponentListCompact() : componentListBase(ComponentListType::kCompact) {}
 
  private:
-  void addComponent(unsigned e) override {}
-  void removeComponent(
-      unsigned e) override { /*components_.erase(getIndex(e));*/
+  static bool compare(std::pair<unsigned, T>& x, unsigned e) {
+    return x.first < e;
   }
 
-  std::vector<std::pair<unsigned, T>>::iterator getIndex(unsigned e) {
-    //return components_.begin();
-    // TODO: Make this shit work
-    
-     return std::lower_bound(
-        components_.begin(), components_.end(), e,
-        [](const std::vector<std::pair<unsigned, T>>::value_type& x,
-           unsigned e) {
-          return x.first < e;
-        });
+  // does nothing since it doesn't have to insert emptys for each entity
+  bool addEntity(unsigned e) override {return false;}
+
+  // if the entity doesn't exist inserts a new pair
+  bool setComponent(unsigned e, T& c) {
+    auto lb =
+        std::lower_bound(components_.begin(), components_.end(), e, compare);
+    if (lb->first == e) return false;
+    components_.insert(lb--, std::make_pair(e, std::move(c)));
+    return true;
   }
 
-  T& getComp(unsigned e) { return getIndex(e)->second; }
+  // deletes a specific components if exists
+  bool removeComponent(unsigned e) override {
+    auto lb =
+        std::lower_bound(components_.begin(), components_.end(), e, compare);
+    if (lb->first == e) {
+      components_.erase(lb);
+      return true;
+    }
+    return false;
+  }
+
+  T* getComp(unsigned e) {
+    auto lb =
+        std::lower_bound(components_.begin(), components_.end(), e, compare);
+    if (lb->first == e) return &lb->second;
+    return nullptr;
+  }
 
   std::vector<std::pair<unsigned, T>> components_;
 };

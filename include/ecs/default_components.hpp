@@ -41,8 +41,8 @@ struct Render {
   }
 
   Render(Render&&) = default;
+  Render& operator=(const Render&& other) {return *this;};
 
-  Render& operator=(const Render& other) {}
   // TODO: posibly useless to store
   class ShaderManager& shaderProgram;
   std::vector<coma::Vec3> pos;

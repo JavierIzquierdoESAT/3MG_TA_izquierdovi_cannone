@@ -18,7 +18,7 @@ unsigned ComponentManager::addEntity() {
   }
 
   for (auto& it : components_) {
-    it.second->addComponent(res);
+    it.second->addEntity(res);
   }
   return res;
 }

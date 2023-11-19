@@ -32,10 +32,10 @@ class ComponentManager {
     return e;
   }
 
-  /// @brief creates and enity and intializes it's components to represent a
-  /// triangle
-  /// @return entity id
   unsigned addTriangle(float size, class ShaderManager& sm, coma::Vec3 color);
+  
+  /// @brief deltes an Entity from the system
+  /// @param e Entity to delete  
   void deleteEntity(unsigned& e);
 
   /// @brief adds a custom component type to be used
@@ -66,8 +66,7 @@ class ComponentManager {
     } else {
       ComponentListCompact<T>* component_vector =
           static_cast<ComponentListCompact<T>*>(comp_base->second.get());
-      component_vector->components_.emplace_back(
-          std::make_pair(e, std::move(c)));
+      component_vector->setComponent(e, c);
     }
   }
 
@@ -86,10 +85,13 @@ class ComponentManager {
     } else {
       ComponentListCompact<T>* component_vector =
           static_cast<ComponentListCompact<T>*>(comp_base->second.get());
-      return &component_vector->getComp(e);
+      return component_vector->getComp(e);
     }
   }
 
+  /// @brief retrieves complete component container 
+  /// @tparam T Component type
+  /// @return container
   template <typename T>
   ComponentList<T>& getIterator() {
     auto comp_base = components_.find(typeid(T).hash_code());
