@@ -8,9 +8,7 @@
 #include "engine.hpp"
 #include "input.hpp"
 
-Window::Window(GLFWwindow* w, Engine* e)
-    : window_handle_{w},
-      engine_{e}{
+Window::Window(GLFWwindow* w, Engine* e) : window_handle_{w}, engine_{e} {
   glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -18,11 +16,13 @@ Window::Window(GLFWwindow* w, Engine* e)
   glewInit();
 }
 
-Window::Window(Window& w) : window_handle_{w.window_handle_} {
+Window::Window(Window& w)
+    : window_handle_{w.window_handle_}, engine_{w.engine_} {
   w.window_handle_ = NULL;
 }
 
-Window::Window(Window&& w) noexcept : window_handle_{w.window_handle_} {
+Window::Window(Window&& w) noexcept
+    : window_handle_{w.window_handle_}, engine_{w.engine_} {
   w.window_handle_ = NULL;
 }
 
@@ -45,7 +45,8 @@ Window Window::Make(Engine& e, int w, int h, const std::string& title) {
     // GLFW_API_UNAVAILABLE GLFW_VERSION_UNAVAILABLE GLFW_PLATFORM_ERROR.
     // user hardware and/or driver errors
     // GLFW_FORMAT_UNAVAILABLE the requested pixel format is not supported.
-    std::cout << "Unexpected error: " << description << std::endl;
+    std::cout << "Unexpected error: " << code << " - " << description
+              << std::endl;
     std::exit(EXIT_FAILURE);
   }
 

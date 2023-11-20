@@ -9,6 +9,8 @@ class componentListBase {
   componentListBase(ComponentListType t) : type_{t} {}
   const ComponentListType type_;
 
+  virtual ~componentListBase() = default;
+
  protected:
   virtual bool addEntity(unsigned e) = 0;
   virtual bool removeComponent(unsigned e) = 0;
@@ -139,7 +141,7 @@ class ComponentListCompact : public componentListBase {
   }
 
   // does nothing since it doesn't have to insert emptys for each entity
-  bool addEntity(unsigned e) override { return false; }
+  bool addEntity(unsigned) override { return false; }
 
   // if the entity doesn't exist inserts a new pair
   bool setComponent(unsigned e, T& c) {
