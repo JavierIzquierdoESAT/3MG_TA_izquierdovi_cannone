@@ -32,10 +32,8 @@ class ComponentManager {
     return e;
   }
 
-  unsigned addTriangle(float size, class ShaderManager& sm, coma::Vec3 color);
-  
   /// @brief deltes an Entity from the system
-  /// @param e Entity to delete  
+  /// @param e Entity to delete
   void deleteEntity(unsigned& e);
 
   /// @brief adds a custom component type to be used
@@ -89,7 +87,7 @@ class ComponentManager {
     }
   }
 
-    /// @brief retrieves complete component container
+  /// @brief retrieves complete component container
   /// @tparam T Component type
   /// @return container
   template <typename T>
@@ -100,7 +98,7 @@ class ComponentManager {
     return *component_vector;
   }
 
-  /// @brief retrieves complete component container 
+  /// @brief retrieves complete component container
   /// @tparam T Component type
   /// @return container
   template <typename T>
@@ -129,7 +127,7 @@ class ComponentManager {
   unsigned addEntity();
 
   // map containint all component lists
-  std::unordered_map<std::size_t, std::unique_ptr<componentListBase>>
+  std::unordered_map<std::size_t, std::unique_ptr<ComponentListBase>>
       components_;
 
   // marks the positions where entities have been freed so that they can be

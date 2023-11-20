@@ -23,14 +23,6 @@ unsigned ComponentManager::addEntity() {
   return res;
 }
 
-//TODO: smelly
-unsigned ComponentManager::addTriangle(float size, ShaderManager& sp, coma::Vec3 color) {
-  Position pos(0,0,0);
-  Render ren = Render::MakeTriangle(size, color, sp);
-  unsigned res = addEntity(pos, ren);
-  return res;
-}
-
 void ComponentManager::deleteEntity(unsigned& e) {
   for (auto& it : components_) {
     it.second->removeComponent(e);

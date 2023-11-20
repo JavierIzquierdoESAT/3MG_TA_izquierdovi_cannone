@@ -2,14 +2,14 @@
 
 enum class ComponentListType { kCompact, kSparse };
 
-class componentListBase {
+class ComponentListBase {
  public:
   friend class ComponentManager;
 
-  componentListBase(ComponentListType t) : type_{t} {}
+  ComponentListBase(ComponentListType t) : type_{t} {}
   const ComponentListType type_;
 
-  virtual ~componentListBase() = default;
+  virtual ~ComponentListBase() = default;
 
  protected:
   virtual bool addEntity(unsigned e) = 0;
@@ -17,10 +17,10 @@ class componentListBase {
 };
 
 template <typename T>
-class ComponentList : public componentListBase {
+class ComponentList : public ComponentListBase {
  public:
   friend class ComponentManager;
-  ComponentList() : componentListBase(ComponentListType::kSparse) {}
+  ComponentList() : ComponentListBase(ComponentListType::kSparse) {}
 
   struct Iterator {
     using iterator_category = std::forward_iterator_tag;
@@ -81,10 +81,10 @@ class ComponentList : public componentListBase {
 };
 
 template <typename T>
-class ComponentListCompact : public componentListBase {
+class ComponentListCompact : public ComponentListBase {
  public:
   friend class ComponentManager;
-  ComponentListCompact() : componentListBase(ComponentListType::kCompact) {}
+  ComponentListCompact() : ComponentListBase(ComponentListType::kCompact) {}
 
   struct Iterator {
     using iterator_category = std::forward_iterator_tag;
