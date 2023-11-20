@@ -143,15 +143,13 @@ class ComponentListCompact : public componentListBase {
 
   // if the entity doesn't exist inserts a new pair
   bool setComponent(unsigned e, T& c) {
-    if (components_.size()) {
-      auto lb =
-          std::lower_bound(components_.begin(), components_.end(), e, compare);
-      if (lb == components_.end() || lb->first != e) {
-        components_.insert(lb--, std::make_pair(e, std::move(c)));
-        return true;
-      } 
-    } else {
+    auto lb =
+        std::lower_bound(components_.begin(), components_.end(), e, compare);
+    if (lb == components_.end()) {
       components_.emplace_back(std::make_pair(e, std::move(c)));
+      return true;
+    } else if (lb->first != e) {
+      components_.insert(lb, std::make_pair(e, std::move(c)));
       return true;
     }
     return false;

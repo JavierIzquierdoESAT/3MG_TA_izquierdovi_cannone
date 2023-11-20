@@ -105,12 +105,18 @@ int main(int, char**) {
   unsigned p2 =
       createPlayer(coma::Vec3(+0.5f, +0.5f, 0.0f),
                    {"2Up", "2Down", "2Left", "2Right"}, s, component_manager);
+  
+  component_manager.deleteEntity(p1);
+
   unsigned p3 =
       createPlayer(coma::Vec3(-0.5f, -0.5f, 0.0f),
                    {"3Up", "3Down", "3Left", "3Right"}, s, component_manager);
   unsigned p4 =
       createPlayer(coma::Vec3(+0.5f, -0.5f, 0.0f),
                    {"4Up", "4Down", "4Left", "4Right"}, s, component_manager);
+   p1 =
+      createPlayer(coma::Vec3(-0.5f, +0.5f, 0.0f),
+                   {"1Up", "1Down", "1Left", "1Right"}, s, component_manager);
 
   std::vector<unsigned int> ents;
   float trisize = 0.01f;
@@ -147,7 +153,6 @@ int main(int, char**) {
     //  player_pos->pos.x += t_speed * Time::DeltaTime();
     //}
 
-    // DummySystem(component_manager.getCompactIterator<ECSDummyComp>());
     InputMoveSystem(component_manager.getCompactIterator<Movement>(),
                     component_manager.getCompactIterator<InputMovement>(), i);
     MoveSystem(component_manager.getIterator<Position>(),
