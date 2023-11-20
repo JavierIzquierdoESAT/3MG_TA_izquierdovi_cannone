@@ -42,7 +42,7 @@ class ComponentManager {
   void addComponentClass(ComponentListType t) {
     if (t == ComponentListType::kSparse) {
       components_.emplace(typeid(T).hash_code(),
-                          std::make_unique<ComponentList<T>>());
+                          std::make_unique<ComponentListSparse<T>>());
     } else {
       components_.emplace(typeid(T).hash_code(),
                           std::make_unique<ComponentListCompact<T>>());
@@ -57,8 +57,8 @@ class ComponentManager {
   void setComponent(unsigned e, T& c) {
     auto comp_base = components_.find(typeid(T).hash_code());
     if (comp_base->second.get()->type_ == ComponentListType::kSparse) {
-      ComponentList<T>* component_vector =
-          static_cast<ComponentList<T>*>(comp_base->second.get());
+      ComponentListSparse<T>* component_vector =
+          static_cast<ComponentListSparse<T>*>(comp_base->second.get());
       component_vector->components_[e - 1].emplace(std::move(c));
 
     } else {
@@ -76,8 +76,8 @@ class ComponentManager {
   T* getComponent(unsigned e) {
     auto comp_base = components_.find(typeid(T).hash_code());
     if (comp_base->second.get()->type_ == ComponentListType::kSparse) {
-      ComponentList<T>* component_vector =
-          static_cast<ComponentList<T>*>(comp_base->second.get());
+      ComponentListSparse<T>* component_vector =
+          static_cast<ComponentListSparse<T>*>(comp_base->second.get());
       return &component_vector->components_[e - 1].value();
 
     } else {
@@ -102,10 +102,10 @@ class ComponentManager {
   /// @tparam T Component type
   /// @return container
   template <typename T>
-  ComponentList<T>& getIterator() {
+  ComponentListSparse<T>& getIterator() {
     auto comp_base = components_.find(typeid(T).hash_code());
-    ComponentList<T>* component_vector =
-        static_cast<ComponentList<T>*>(comp_base->second.get());
+    ComponentListSparse<T>* component_vector =
+        static_cast<ComponentListSparse<T>*>(comp_base->second.get());
     return *component_vector;
   }
 
@@ -115,8 +115,8 @@ class ComponentManager {
   template <typename T>
   std::vector<std::optional<T>>& getAll() {
     auto comp_base = components_.find(typeid(T).hash_code());
-    ComponentList<T>* component_vector =
-        static_cast<ComponentList<T>*>(comp_base->second.get());
+    ComponentListSparse<T>* component_vector =
+        static_cast<ComponentListSparse<T>*>(comp_base->second.get());
     return component_vector->components_;
   }
 

@@ -63,7 +63,7 @@ void InputMoveSystem(ComponentListCompact<Movement>& mov,
   }
 }
 
-void MoveSystem(ComponentList<Position>& pos,
+void MoveSystem(ComponentListSparse<Position>& pos,
                 ComponentListCompact<Movement>& mov) {
   for (auto& [e, mcmp] : mov) {
     if (pos.at(e)->has_value()) {

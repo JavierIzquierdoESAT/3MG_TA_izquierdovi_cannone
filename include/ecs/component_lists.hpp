@@ -17,10 +17,10 @@ class ComponentListBase {
 };
 
 template <typename T>
-class ComponentList : public ComponentListBase {
+class ComponentListSparse : public ComponentListBase {
  public:
   friend class ComponentManager;
-  ComponentList() : ComponentListBase(ComponentListType::kSparse) {}
+  ComponentListSparse() : ComponentListBase(ComponentListType::kSparse) {}
 
   struct Iterator {
     using iterator_category = std::forward_iterator_tag;
