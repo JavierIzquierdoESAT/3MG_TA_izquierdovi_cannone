@@ -30,4 +30,4 @@ void Triangle::updateBuffers() {
   data_buffer_.bindVertexArray();
 }
 
-void paint(Triangle& t) { glDrawArrays(GL_TRIANGLES, 0, 3); }
+void paint(Triangle&) { glDrawArrays(GL_TRIANGLES, 0, 3); }

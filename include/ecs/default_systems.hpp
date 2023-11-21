@@ -34,8 +34,8 @@ void RenderSystem(std::vector<std::optional<Position>>& positions,
   assert(r == render.end());
 }
 
-void CircleMoveSystem(ComponentList<Position>& positions,
-                      ComponentList<AI>& ai_cmp) {
+void CircleMoveSystem(ComponentListSparse<Position>& positions,
+                      ComponentListSparse<AI>& ai_cmp) {
   auto p_it = positions.begin();
   auto ai_it = ai_cmp.begin();
   for (; p_it != positions.end() && ai_it != ai_cmp.end(); ++p_it, ++ai_it) {

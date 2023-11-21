@@ -49,7 +49,7 @@ class Buffer {
   /// @param offset specifie the position og the generic vertex attribute in the
   /// array
   void enableVertexArray(const unsigned int index, const unsigned int size,
-                         const unsigned int stride, const unsigned int offset);
+                         const unsigned int stride, const unsigned long long offset);
   /// @brief Get the buffer id
   /// @return the buffer id
   unsigned int buffer_id() const;

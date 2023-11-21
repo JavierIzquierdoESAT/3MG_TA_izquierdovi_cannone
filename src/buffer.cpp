@@ -109,10 +109,11 @@ void Buffer::uploadData(const void* data, unsigned int size,
 void Buffer::enableVertexArray(const unsigned int index,
                                const unsigned int size,
                                const unsigned int stride,
-                               const unsigned int offset) {
+                               const unsigned long long offset) {
   // TODO: void* cast warning fix
   glEnableVertexAttribArray(index);
-  glVertexAttribPointer(index, size, GL_FLOAT, GL_FALSE, stride, (const void*)offset);
+
+  glVertexAttribPointer(index, size, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const void*>(offset));
 }
 
 unsigned int Buffer::buffer_id() const { return buffer_id_; }

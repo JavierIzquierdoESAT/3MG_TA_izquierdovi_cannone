@@ -2,9 +2,9 @@
 #include "shader_manager.hpp"
 
 ComponentManager::ComponentManager() : current_entity_{1} {
-  add_component_class<Position>();
-  add_component_class<Render>();
-  add_component_class<AI>();
+  addComponentClass<Position>(ComponentListType::kSparse);
+  addComponentClass<Render>(ComponentListType::kSparse);
+  addComponentClass<AI>(ComponentListType::kSparse);
 }
 
 unsigned ComponentManager::addEntity() {
@@ -18,16 +18,8 @@ unsigned ComponentManager::addEntity() {
   }
 
   for (auto& it : components_) {
-    it.second->addComponent(res);
+    it.second->addEntity(res);
   }
-  return res;
-}
-
-//TODO: smelly
-unsigned ComponentManager::addTriangle(float size, ShaderManager& sp, coma::Vec3 color) {
-  Position pos(0,0,0);
-  Render ren = Render::MakeTriangle(size, color, sp);
-  unsigned res = addEntity(pos, ren);
   return res;
 }
 

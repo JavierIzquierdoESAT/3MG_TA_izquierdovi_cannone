@@ -9,8 +9,8 @@ InputManager::InputManager(const Window& w, InputButtonMap m)
   glfwSetMouseButtonCallback(window_, MouseButtonCallback);
   glfwSetScrollCallback(window_, ScrollCallback);
   glfwSetCursorPosCallback(window_, CursorCallback);
-  for (auto it : m) {
-    for (auto key : it.second) {
+  for (auto& it : m) {
+    for (auto& key : it.second) {
       s_mapped_buttons.emplace(
           std::pair<InputButton, KeyState>{key, KeyState()});
     }
@@ -21,8 +21,10 @@ bool InputManager::buttonDown(std::string s) const {
   bool res = false;
   auto keys = findKeyState(map_, s);
   for (KeyState state : keys) {
-    if (state.pushed) res = true;
-    break;
+    if (state.pushed) {
+      res = true;
+      break;
+    }
   }
   return res;
 }
@@ -30,8 +32,10 @@ bool InputManager::buttonUp(std::string s) const {
   bool res = false;
   auto keys = findKeyState(map_, s);
   for (KeyState state : keys) {
-    if (state.released) res = true;
-    break;
+    if (state.released) {
+      res = true;
+      break;
+    }
   }
   return res;
 }
@@ -73,19 +77,17 @@ void InputManager::update() {
   glfwPollEvents();
 }
 
-void InputManager::ScrollCallback(GLFWwindow* window, double xoffset,
-                                  double yoffset) {
+void InputManager::ScrollCallback(GLFWwindow*, double, double yoffset) {
   int button = yoffset > 0 ? 8 : 9;
   GenericButtonCallback(button, GLFW_PRESS);
 }
 
-void InputManager::MouseButtonCallback(GLFWwindow* window, int button,
-                                       int action, int mods) {
+void InputManager::MouseButtonCallback(GLFWwindow*, int button, int action,
+                                       int) {
   GenericButtonCallback(button, action);
 }
 
-void InputManager::KeyCallback(GLFWwindow* window, int key, int scancode,
-                               int action, int mods) {
+void InputManager::KeyCallback(GLFWwindow*, int key, int, int action, int) {
   GenericButtonCallback(key, action);
 }
 
@@ -108,8 +110,7 @@ void InputManager::GenericButtonCallback(int button, int action) {
     s_modified_keys.push_back(&keyState);
   }
 }
-void InputManager::CursorCallback(GLFWwindow* window, double xpos,
-                                  double ypos) {
+void InputManager::CursorCallback(GLFWwindow*, double xpos, double ypos) {
   mouse_x_ = (float)xpos;
   mouse_y_ = (float)ypos;
 }

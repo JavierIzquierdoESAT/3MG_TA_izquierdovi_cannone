@@ -41,8 +41,16 @@ struct Render {
   }
 
   Render(Render&&) = default;
+  Render& operator=(const Render&& other) noexcept { 
+    shaderProgram = other.shaderProgram;
+    pos = other.pos;
+    normal = other.normal;
+    color = other.color;
+    uv = other.uv;
+    //TODO: possible bug I would still need the buffer move
+    return *this; 
+};
 
-  Render& operator=(const Render& other) {}
   // TODO: posibly useless to store
   class ShaderManager& shaderProgram;
   std::vector<coma::Vec3> pos;
