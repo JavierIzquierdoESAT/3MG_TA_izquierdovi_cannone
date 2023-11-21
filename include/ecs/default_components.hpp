@@ -6,6 +6,7 @@
 #include "buffer.hpp"
 #include "math/vector_2.h"
 #include "math/vector_3.h"
+#include "math/matrix_4.h"
 #include "shader_manager.hpp"
 
 struct Position {
@@ -18,6 +19,26 @@ struct Position {
 struct AI {
   unsigned counter = 0;
   bool right = false;
+};
+
+struct Material {
+  Buffer mesh;    // will be Mesh class
+  Buffer indices; // will be Index class
+
+  //probably handled with bitmasks
+  bool is_visible;
+  bool is_transparent;
+
+  std::array<Material*, 4> children;
+
+  //Transform* t;
+};
+struct Transform {
+  //coma::Vec3 position = {0.0f, 0.0f, 0.0f};
+  //coma::Vec3 Rotation = {0.0f, 0.0f, 0.0f};
+  //coma::Vec3 Scale = {1.0f, 1.0f, 1.0f};
+
+  coma::Mat4 t;
 };
 
 struct Render {
