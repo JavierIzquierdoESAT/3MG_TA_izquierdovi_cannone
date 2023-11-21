@@ -5,7 +5,13 @@ layout (location = 1) in vec3 aNor;
 layout (location = 2) in vec3 aCol;
 layout (location = 3) in vec3 aUV;
 out vec3 color;
-uniform float u_time;
+
+
+out vec3 pos;
+out vec3 normal;
+
+uniform float time;
+
 
 mat4 Model() {
   return mat4(1.0, 0.0, 0.0, 0.0,
@@ -29,7 +35,7 @@ mat4 InitAsEscalado(float ex, float ey, float ez) {
 }
 
 mat4 InitAsRatationX(float angle) {
-  return mat4(0.0, 0.0, 0.0, 0.0,
+  return mat4(1.0, 0.0, 0.0, 0.0,
               0.0, cos(angle), sin(angle), 0.0,
               0.0, -sin(angle), cos(angle), 0.0,
               0.0, 0.0, 0.0, 1.0);
@@ -37,7 +43,7 @@ mat4 InitAsRatationX(float angle) {
 
 mat4 InitAsRatationY(float angle) {
   return mat4(cos(angle), 0.0, -sin(angle), 0.0,
-              0.0, 0.0, 0.0, 0.0,
+              0.0, 1.0, 0.0, 0.0,
               sin(angle), 0.0, cos(angle), 0.0,
               0.0, 0.0, 0.0, 1.0);
 }
@@ -45,7 +51,7 @@ mat4 InitAsRatationY(float angle) {
 mat4 InitAsRatationZ(float angle) {
   return mat4(cos(angle), sin(angle), 0.0, 0.0,
               -sin(angle), cos(angle), 0.0, 0.0,
-              0.0, 0.0, 0.0, 0.0,
+              0.0, 0.0, 1.0, 0.0,
               0.0, 0.0, 0.0, 1.0);
 }
 
@@ -79,10 +85,16 @@ mat4 Projection(float fv,float zn, float zf){
 
 
 void main(){
-  mat4 viw = ViewMatrix( vec3(0.0,0.0,0.0) ,vec3(30.0,5.0,0.0));
+
+  mat4 viw = ViewMatrix( vec3(0.0,0.0,0.0) ,vec3(40.0,0.0,0.0));
   float fv = 90.0 * 3.14 / 180.0;
   mat4 porj = Projection(fv,1,100);
-  mat4 rot = InitAsRatationY((u_time* -0.001));
+  mat4 rot = InitAsRatationX(5);
+  mat4 rot2 = InitAsRatationZ(1.25);
   mat4 model = Model();
-  gl_Position = porj * viw * model  * vec4(aPos, 1.0);
+  mat4 m =  model * (rot * rot2);
+  gl_Position = porj * viw  * m * vec4(aPos, 1.0);
+
+  normal = (m * vec4(aNor,0)).xyz;
+  pos = (m * vec4(aPos,1)).xyz;
 }

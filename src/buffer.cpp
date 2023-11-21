@@ -10,8 +10,8 @@ Buffer::Buffer(const void* data, unsigned int size)
     : size_{size}, valid_{true} {
   glGenBuffers(1, &buffer_id_);
   bindBuffer(Target::kTarget_Vertex_Data);
-  glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW);
-  glGenVertexArrays(1, &vertex_array_id_);
+  glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+  
 }
 
 Buffer::Buffer(std::vector<Vec3> pos, std::vector<Vec3> normal,
