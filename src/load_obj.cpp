@@ -38,39 +38,43 @@ std::vector<Buffer> loadObj(std::string dir) {
         uv.clear();
         col.clear();
         size_t index_offset = 0;
-        for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
-            int fv = shapes[s].mesh.num_face_vertices[f];
+        //for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
+            //int fv = shapes[s].mesh.num_face_vertices[f];
 
             // Loop over vertices in the face.
-            for (size_t v = 0; v < fv; v++) {
+            for (size_t v = 0; v < attrib.vertices.size()/3; v++) {
                 // access to vertex
-                tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
+               // tinyobj::index_t idx = shapes[s].mesh.indices[index_offset];
 
-                posi.x = attrib.vertices[(size_t)3 * (size_t)idx.vertex_index + (size_t)0];
-                posi.y = attrib.vertices[(size_t)3 * (size_t)idx.vertex_index + (size_t)1];
-                posi.z = attrib.vertices[(size_t)3 * (size_t)idx.vertex_index + (size_t)2];
+                posi.x = attrib.vertices[(size_t)3 * (size_t)v + (size_t)0];
+                posi.y = attrib.vertices[(size_t)3 * (size_t)v + (size_t)1];
+                posi.z = attrib.vertices[(size_t)3 * (size_t)v + (size_t)2];
                 pos.emplace_back(posi);
 
-                norma.x = attrib.normals[(size_t)3 * (size_t)idx.normal_index + (size_t)0];
-                norma.y = attrib.normals[(size_t)3 * (size_t)idx.normal_index + (size_t)1];
-                norma.z = attrib.normals[(size_t)3 * (size_t)idx.normal_index + (size_t)2];
+                
+                /*norma.x = attrib.normals[(size_t)3 * (size_t)v + (size_t)0];
+                norma.y = attrib.normals[(size_t)3 * (size_t)v + (size_t)1];
+                norma.z = attrib.normals[(size_t)3 * (size_t)v + (size_t)2];
+     
                 nor.emplace_back(norma);
 
-                color.x = attrib.colors[(size_t)3 * (size_t)idx.vertex_index + (size_t)0];
-                color.y = attrib.colors[(size_t)3 * (size_t)idx.vertex_index + (size_t)1];
-                color.z = attrib.colors[(size_t)3 * (size_t)idx.vertex_index + (size_t)2];
+                color.x = attrib.colors[(size_t)3 * (size_t)v+ (size_t)0];
+                color.y = attrib.colors[(size_t)3 * (size_t)v + (size_t)1];
+                color.z = attrib.colors[(size_t)3 * (size_t)v + (size_t)2];
                 col.emplace_back(color);
 
-                uvs.x = attrib.texcoords[(size_t)2 * (size_t)idx.texcoord_index + (size_t)0];
-                uvs.y = attrib.texcoords[(size_t)2 * (size_t)idx.texcoord_index + (size_t)1];
-                uv.emplace_back(uvs);
+                
+               uvs.x = attrib.texcoords[(size_t)2 * (size_t)v + (size_t)0];
+               uvs.y = attrib.texcoords[(size_t)2 * (size_t)v + (size_t)1];
+      
+                uv.emplace_back(uvs);*/
                 
 
             }
-            index_offset += fv;
+            //index_offset += fv;
 
 
-        }
+        //}
         Buffer b = Buffer(pos,nor,col,uv);
         bb.emplace_back(b);
        
@@ -89,7 +93,7 @@ std::vector<Buffer> loadObjIndex(std::string dir) {
     std::vector<tinyobj::material_t> materials;
 
     std::vector<Buffer> bb;
-    std::vector<int> indx;
+    std::vector<unsigned> indx;
 
 
     std::string err;
@@ -103,6 +107,7 @@ std::vector<Buffer> loadObjIndex(std::string dir) {
     // Loop over shapes
     for (size_t s = 0; s < shapes.size(); s++) {
         // Loop over faces(polygon)
+  
         indx.clear();
         size_t index_offset = 0;
         for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
@@ -113,7 +118,7 @@ std::vector<Buffer> loadObjIndex(std::string dir) {
                 // access to vertex
                 tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
 
-                indx.emplace_back(idx.vertex_index);
+                indx.emplace_back((unsigned)idx.vertex_index);
                 //indx.push_back(idx.normal_index);
                 //indx.push_back(idx.texcoord_index);
 
@@ -125,7 +130,7 @@ std::vector<Buffer> loadObjIndex(std::string dir) {
 
 
         }
-        Buffer b = Buffer(&indx[0], indx.size());
+        Buffer b = Buffer(indx.data(), indx.size());
         bb.emplace_back(b);
     }
 
