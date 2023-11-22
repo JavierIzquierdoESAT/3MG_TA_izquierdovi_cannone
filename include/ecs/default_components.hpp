@@ -4,9 +4,9 @@
 #include <vector>
 
 #include "buffer.hpp"
+#include "math/matrix_4.h"
 #include "math/vector_2.h"
 #include "math/vector_3.h"
-#include "math/matrix_4.h"
 #include "shader_manager.hpp"
 
 struct Position {
@@ -21,22 +21,28 @@ struct AI {
   bool right = false;
 };
 
-struct Material {
-  Buffer mesh;    // will be Mesh class
-  Buffer indices; // will be Index class
+struct TreeNode {
+   //check order
+  TreeNode* parent;
+  std::array<TreeNode*, 4> children;
+};
 
-  //probably handled with bitmasks
+struct Material {
+  Buffer mesh;     // will be Mesh class
+  Buffer indices;  // will be Index class
+
+  // probably handled with bitmasks
   bool is_visible;
   bool is_transparent;
 
   std::array<Material*, 4> children;
 
-  //Transform* t;
+  // Transform* t;
 };
 struct Transform {
-  //coma::Vec3 position = {0.0f, 0.0f, 0.0f};
-  //coma::Vec3 Rotation = {0.0f, 0.0f, 0.0f};
-  //coma::Vec3 Scale = {1.0f, 1.0f, 1.0f};
+  // coma::Vec3 position = {0.0f, 0.0f, 0.0f};
+  // coma::Vec3 Rotation = {0.0f, 0.0f, 0.0f};
+  // coma::Vec3 Scale = {1.0f, 1.0f, 1.0f};
 
   coma::Mat4 t;
 };
@@ -62,15 +68,15 @@ struct Render {
   }
 
   Render(Render&&) = default;
-  Render& operator=(const Render&& other) noexcept { 
+  Render& operator=(const Render&& other) noexcept {
     shaderProgram = other.shaderProgram;
     pos = other.pos;
     normal = other.normal;
     color = other.color;
     uv = other.uv;
-    //TODO: possible bug I would still need the buffer move
-    return *this; 
-};
+    // TODO: possible bug I would still need the buffer move
+    return *this;
+  };
 
   // TODO: posibly useless to store
   class ShaderManager& shaderProgram;
