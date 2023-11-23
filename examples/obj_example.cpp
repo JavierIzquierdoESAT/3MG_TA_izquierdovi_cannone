@@ -66,13 +66,13 @@ short int order[] = {
 int main(int, char**) {
     Engine e;
 
-    //glCullFace(GL_FRONT_AND_BACK);
+    glCullFace(GL_FRONT_AND_BACK);
     //glEnable(GL_DEPTH_TEST);
     
 
     auto w = Window::Make(e, 640, 480, "ventana");
-    auto obj = Buffer(pos, nor, col, uv); // loadObj("../assets/javi.obj");
-    auto idxobj = Buffer(order, sizeof(order)); // loadObjIndex("../assets/javi.obj");
+    auto obj = /*Buffer(pos, nor, col, uv); */ loadObj("../assets/javi.obj");
+    auto idxobj = /*Buffer(order, sizeof(order));*/ loadObjIndex("../assets/javi.obj");
     auto shade = ShaderManager::MakeShaders("../assets/obj.fs", "../assets/obj.vs").value();
     float t = 0;
     if (w) {
@@ -85,14 +85,14 @@ int main(int, char**) {
 
             for (int i = 0; i < obj.size(); i++) {
                 
-                obj.bindBuffer(Buffer::Target::kTarget_Vertex_Data);
-                obj.bindVertexArray();
-                idxobj.bindBuffer(Buffer::Target::kTarget_Elements);
+                obj[i].bindBuffer(Buffer::Target::kTarget_Vertex_Data);
+                obj[i].bindVertexArray();
+                idxobj[i].bindBuffer(Buffer::Target::kTarget_Elements);
 
                 shade.useProgram();
                 //glDrawArrays(GL_TRIANGLES, 0, obj[i].size());
                 glDrawElements(GL_TRIANGLES, 3*4, GL_UNSIGNED_SHORT, 0);
-                glBindVertexArray(0);
+                //glBindVertexArray(0);
             }
             t+=Time::delta_time();
             window.swap();

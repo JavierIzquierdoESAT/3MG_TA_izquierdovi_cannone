@@ -51,23 +51,41 @@ std::vector<Buffer> loadObj(std::string dir) {
                 posi.z = attrib.vertices[(size_t)3 * (size_t)v + (size_t)2];
                 pos.emplace_back(posi);
 
-                
-                /*norma.x = attrib.normals[(size_t)3 * (size_t)v + (size_t)0];
-                norma.y = attrib.normals[(size_t)3 * (size_t)v + (size_t)1];
-                norma.z = attrib.normals[(size_t)3 * (size_t)v + (size_t)2];
+                if (!attrib.normals.empty()) {
+                    norma.x = attrib.normals[(size_t)3 * (size_t)v + (size_t)0];
+                    norma.y = attrib.normals[(size_t)3 * (size_t)v + (size_t)1];
+                    norma.z = attrib.normals[(size_t)3 * (size_t)v + (size_t)2];
+                }
+                else {
+                    norma.x = 0;
+                    norma.y = 0;
+                    norma.z = 0;
+                }
      
                 nor.emplace_back(norma);
 
-                color.x = attrib.colors[(size_t)3 * (size_t)v+ (size_t)0];
-                color.y = attrib.colors[(size_t)3 * (size_t)v + (size_t)1];
-                color.z = attrib.colors[(size_t)3 * (size_t)v + (size_t)2];
+                if (!attrib.colors.empty()) {
+                    color.x = attrib.colors[(size_t)3 * (size_t)v + (size_t)0];
+                    color.y = attrib.colors[(size_t)3 * (size_t)v + (size_t)1];
+                    color.z = attrib.colors[(size_t)3 * (size_t)v + (size_t)2];
+                }
+                else {
+                    color.x = 0;
+                    color.y = 0;
+                    color.z = 0;
+                }
                 col.emplace_back(color);
 
-                
-               uvs.x = attrib.texcoords[(size_t)2 * (size_t)v + (size_t)0];
-               uvs.y = attrib.texcoords[(size_t)2 * (size_t)v + (size_t)1];
+                if (!attrib.texcoords.empty()) {
+                    uvs.x = attrib.texcoords[(size_t)2 * (size_t)v + (size_t)0];
+                    uvs.y = attrib.texcoords[(size_t)2 * (size_t)v + (size_t)1];
+                }
+                else {
+                    uvs.x = 0;
+                    uvs.y = 0;
+                }
       
-                uv.emplace_back(uvs);*/
+                uv.emplace_back(uvs);
                 
 
             }
@@ -93,7 +111,7 @@ std::vector<Buffer> loadObjIndex(std::string dir) {
     std::vector<tinyobj::material_t> materials;
 
     std::vector<Buffer> bb;
-    std::vector<unsigned> indx;
+    std::vector< short int> indx;
 
 
     std::string err;
@@ -117,8 +135,8 @@ std::vector<Buffer> loadObjIndex(std::string dir) {
             for (size_t v = 0; v < fv; v++) {
                 // access to vertex
                 tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
-
-                indx.emplace_back((unsigned)idx.vertex_index);
+                 short int i = (short int)idx.vertex_index;
+                indx.emplace_back(i);
                 //indx.push_back(idx.normal_index);
                 //indx.push_back(idx.texcoord_index);
 
@@ -130,12 +148,12 @@ std::vector<Buffer> loadObjIndex(std::string dir) {
 
 
         }
-        Buffer b = Buffer(indx.data(), indx.size());
+        Buffer b = Buffer(static_cast<void*>(indx.data()), indx.size() * sizeof(short int));
         bb.emplace_back(b);
     }
 
     
-
+    
     return bb;
 
 }
