@@ -37,14 +37,9 @@ std::vector<Buffer> loadObj(std::string dir) {
         nor.clear();
         uv.clear();
         col.clear();
-        size_t index_offset = 0;
-        //for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
-            //int fv = shapes[s].mesh.num_face_vertices[f];
 
-            // Loop over vertices in the face.
+
             for (size_t v = 0; v < attrib.vertices.size()/3; v++) {
-                // access to vertex
-               // tinyobj::index_t idx = shapes[s].mesh.indices[index_offset];
 
                 posi.x = attrib.vertices[(size_t)3 * (size_t)v + (size_t)0];
                 posi.y = attrib.vertices[(size_t)3 * (size_t)v + (size_t)1];
@@ -89,10 +84,7 @@ std::vector<Buffer> loadObj(std::string dir) {
                 
 
             }
-            //index_offset += fv;
 
-
-        //}
         Buffer b = Buffer(pos,nor,col,uv);
         bb.emplace_back(b);
        

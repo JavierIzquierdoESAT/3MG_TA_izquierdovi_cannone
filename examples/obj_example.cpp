@@ -71,8 +71,8 @@ int main(int, char**) {
     
 
     auto w = Window::Make(e, 640, 480, "ventana");
-    auto obj = /*Buffer(pos, nor, col, uv); */ loadObj("../assets/javi.obj");
-    auto idxobj = /*Buffer(order, sizeof(order));*/ loadObjIndex("../assets/javi.obj");
+    auto obj = /*Buffer(pos, nor, col, uv); */ loadObj("../assets/javi2.obj");
+    auto idxobj = /*Buffer(order, sizeof(order));*/ loadObjIndex("../assets/javi2.obj");
     auto shade = ShaderManager::MakeShaders("../assets/obj.fs", "../assets/obj.vs").value();
     float t = 0;
     if (w) {
@@ -91,8 +91,8 @@ int main(int, char**) {
 
                 shade.useProgram();
                 //glDrawArrays(GL_TRIANGLES, 0, obj[i].size());
-                glDrawElements(GL_TRIANGLES, 3*4, GL_UNSIGNED_SHORT, 0);
-                //glBindVertexArray(0);
+                glDrawElements(GL_TRIANGLES, idxobj[i].size()/sizeof(short int), GL_UNSIGNED_SHORT, 0);
+                glBindVertexArray(0);
             }
             t+=Time::delta_time();
             window.swap();

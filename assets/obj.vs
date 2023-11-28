@@ -86,11 +86,11 @@ mat4 Projection(float fv,float zn, float zf){
 
 void main(){
 
-  mat4 viw = ViewMatrix( vec3(0.0,0.0,0.0) ,vec3(10.0,0.0,0.0));
+  mat4 viw = ViewMatrix( vec3(0.0,0.0,0.0) ,vec3(50.0,0.0,0.0));
   float fv = 90.0 * 3.14 / 180.0;
   mat4 porj = Projection(fv,1,100);
   mat4 rot = InitAsRatationY(time * -1 ) ;
-  mat4 rot2 = InitAsRatationZ(1.25);
+  mat4 rot2 = InitAsRatationX(-1.5);
   mat4 model = Model();
   mat4 m =  model * rot;
   gl_Position = porj * viw  * m * vec4(aPos, 1.0);
