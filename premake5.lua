@@ -255,3 +255,18 @@ project"TestECS"
     debugargs { _MAIN_SCRIPT_DIR .. "/examples/data" }
 
     files "examples/ecs.cpp"
+
+project"TestOBJ"
+
+    kind "ConsoleApp"
+    language "C++"
+    targetdir "build/%{prj.name}/%{cfg.buildcfg}"
+    includedirs "include"
+    links "Motor"
+
+    conan_config_exec("Debug")
+    conan_config_exec("Release")
+    conan_config_exec("RelWithDebInfo")
+    debugargs { _MAIN_SCRIPT_DIR .. "/examples/data" }
+
+    files "examples/obj_example.cpp"
