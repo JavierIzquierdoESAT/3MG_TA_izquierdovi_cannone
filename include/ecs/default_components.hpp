@@ -23,8 +23,8 @@ struct AI {
 
 struct TreeNode {
    //check order
-  TreeNode* parent;
-  std::array<TreeNode*, 4> children;
+  unsigned  parent;
+  std::array<unsigned, 4> children;
 };
 
 struct Material {
