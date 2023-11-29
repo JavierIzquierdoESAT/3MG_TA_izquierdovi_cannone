@@ -22,13 +22,18 @@ void RenderSystem(std::vector<std::optional<Position>>& positions,
 
     float posToArr[3] = {pv.pos.x, pv.pos.y, pv.pos.z};
     rv.shaderProgram.setUniformValue(DataType::FLOAT_3, posToArr, "position");
-    float colToArr[3] = {rv.color[0].x, rv.color[0].y, rv.color[0].z};
+    float colToArr[3] = {1,0,1};
     rv.shaderProgram.setUniformValue(DataType::FLOAT_3, colToArr,
                                       "initialUniform");
 
+    rv.buffer.bindBuffer(Buffer::Target::kTarget_Vertex_Data);
     rv.buffer.bindVertexArray();
+    rv.index_buffer.bindBuffer(Buffer::Target::kTarget_Elements);
+
     // TODO: parametrize indices
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawElements(GL_TRIANGLES, rv.index_buffer.size() / sizeof(short int), GL_UNSIGNED_SHORT, 0);
+    //glBindVertexArray(0);
+    //glDrawArrays(GL_TRIANGLES, 0, 3);
     // Render
   }
   assert(r == render.end());

@@ -3,14 +3,19 @@
 #include <array>
 #include <iostream>
 #include <string>
+#include <vector>
+#include <optional>
 
 #include "math/vector_3.h"
 #include "math/vector_2.h"
+#include "ecs/component_manager.hpp"
+#include "ecs/default_systems.hpp"
 #include "engine.hpp"
 #include "buffer.hpp"
 #include "shader_manager.hpp"
 #include "time.hpp"
 #include "load_obj.hpp"
+#include "jobsystem.hpp"
 
 
 std::vector<coma::Vec3> pos{
@@ -65,15 +70,34 @@ short int order[] = {
 
 int main(int, char**) {
     Engine e;
-
-    glCullFace(GL_FRONT_AND_BACK);
-    //glEnable(GL_DEPTH_TEST);
-    
+    ComponentManager component_manager;
+    JobSystem j;
+    std::vector<std::future<std::optional<Mesh>>> resultado;
 
     auto w = Window::Make(e, 640, 480, "ventana");
-    auto obj = /*Buffer(pos, nor, col, uv); */ loadObj("../assets/javi.obj");
-    auto idxobj = /*Buffer(order, sizeof(order));*/ loadObjIndex("../assets/javi.obj");
     auto shade = ShaderManager::MakeShaders("../assets/obj.fs", "../assets/obj.vs").value();
+    std::vector<Render> r;
+    std::string s = "../assets/javi.obj";
+    resultado.push_back(
+        std::move(j.addTask( Mesh::loadObj, s) ) );
+
+    int count = 0;
+    while (true) {
+        for (auto& a : resultado) {
+            if (a.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
+                r = a.get().value().createBuffers(shade);
+                count++;
+            }
+        }
+        if (count == resultado.size()) break;
+        count = 0;
+    }
+    
+    Position p(0.0f, 0.0f, 0.0f);
+    AI ai;
+    for (int i = 0; i < r.size(); i++) {
+        component_manager.addEntity<Position, AI, Render>(p, ai, r[i]);
+    }
     float t = 0;
 
 
@@ -82,17 +106,8 @@ int main(int, char**) {
 
             shade.setUniformValue(DataType::FLOAT_1, &t, "time");
 
-            for (int i = 0; i < obj.size(); i++) {
-                
-                obj[i].bindBuffer(Buffer::Target::kTarget_Vertex_Data);
-                obj[i].bindVertexArray();
-                idxobj[i].bindBuffer(Buffer::Target::kTarget_Elements);
-
-                shade.useProgram();
-                //glDrawArrays(GL_TRIANGLES, 0, obj[i].size());
-                glDrawElements(GL_TRIANGLES, idxobj[i].size()/sizeof(short int), GL_UNSIGNED_SHORT, 0);
-                glBindVertexArray(0);
-            }
+            RenderSystem(component_manager.getAll<Position>(),
+                component_manager.getAll<Render>());
             t += Time::DeltaTime();
             w.update();
         }
