@@ -77,26 +77,35 @@ int main(int, char**) {
     auto w = Window::Make(e, 640, 480, "ventana");
     auto shade = ShaderManager::MakeShaders("../assets/obj.fs", "../assets/obj.vs").value();
     std::vector<Render> r;
+    std::vector<Mesh> m;
     std::string s = "../assets/javi.obj";
-    resultado.push_back(
+    std::string s2 = "../assets/javi2.obj";
+   resultado.push_back(
         std::move(j.addTask( Mesh::loadObj, s) ) );
+    resultado.push_back(
+        std::move(j.addTask(Mesh::loadObj, s2)));
 
     int count = 0;
-    while (true) {
+    bool finish = false;
+    while (!finish) {
         for (auto& a : resultado) {
-            if (a.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
-                r = a.get().value().createBuffers(shade);
-                count++;
+            if (a.valid()) {
+                if (a.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
+                    m.push_back(a.get().value());
+                    count++;
+                }
             }
         }
-        if (count == resultado.size()) break;
-        count = 0;
+        if (count == resultado.size()) finish = true;
     }
     
     Position p(0.0f, 0.0f, 0.0f);
     AI ai;
-    for (int i = 0; i < r.size(); i++) {
-        component_manager.addEntity<Position, AI, Render>(p, ai, r[i]);
+    for (int x = 0; x < m.size(); x++) {
+        r = m[x].createBuffers(shade);
+        for (int i = 0; i < r.size(); i++) {
+            component_manager.addEntity<Position, AI, Render>(p, ai, r[i]);
+        }
     }
     float t = 0;
 

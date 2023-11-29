@@ -9,7 +9,7 @@
 
 class Mesh {
 public:
-    
+    Mesh() = default;
     ~Mesh() = default;
 
     static std::optional<Mesh> loadObj(std::string dir);
@@ -20,6 +20,6 @@ public:
     std::vector<tinyobj::material_t> materials_;
 
 private:
-    Mesh();
+    
 
 };

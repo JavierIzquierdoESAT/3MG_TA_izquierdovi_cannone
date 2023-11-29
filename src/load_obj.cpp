@@ -1,5 +1,4 @@
 #include <iostream>
-#include "buffer.hpp"
 #include "load_obj.hpp"
 #include "shader_manager.hpp"
 #include "ecs/default_components.hpp"
