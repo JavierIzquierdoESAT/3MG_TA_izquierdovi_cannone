@@ -90,7 +90,7 @@ workspace "Motor"
     filter {}
 
 
-project "MathLibrary"
+project "LibMath"
 
     kind "StaticLib"
     targetdir "build/%{cfg.buildcfg}"
@@ -103,7 +103,7 @@ project "MathLibrary"
             "src/math/*.cc"
     }
 
-project "Motor"
+project "LibEngine"
 
     kind "StaticLib"
     targetdir "build/%{cfg.buildcfg}"
@@ -123,7 +123,92 @@ project "Motor"
             "src/**.cpp"
     }
 
-project"Window"
+project"DemoWindow"
+
+    kind "ConsoleApp"
+    language "C++"
+    targetdir "build/%{prj.name}/%{cfg.buildcfg}"
+    includedirs "include"
+    links "Motor"
+    warnings "High"
+
+    conan_config_exec("Debug")
+    conan_config_exec("Release")
+    conan_config_exec("RelWithDebInfo")
+    debugargs { _MAIN_SCRIPT_DIR .. "/examples/data" }
+
+    files "examples/demo_window.cpp"
+
+project"DemoDraw"
+
+    kind "ConsoleApp"
+    language "C++"
+    targetdir "build/%{prj.name}/%{cfg.buildcfg}"
+    includedirs "include"
+    links "Motor"
+    warnings "High"
+
+    conan_config_exec("Debug")
+    conan_config_exec("Release")
+    conan_config_exec("RelWithDebInfo")
+    debugargs { _MAIN_SCRIPT_DIR .. "/examples/data" }
+
+    files "examples/demo_draw.cpp"
+
+project"DemoInput"
+
+    kind "ConsoleApp"
+    language "C++"
+    targetdir "build/%{prj.name}/%{cfg.buildcfg}"
+    includedirs "include"
+    links "Motor"
+    warnings "High"
+
+    conan_config_exec("Debug")
+    conan_config_exec("Release")
+    conan_config_exec("RelWithDebInfo")
+    debugargs { _MAIN_SCRIPT_DIR .. "/examples/data" }
+
+    files "examples/demo_input.cpp"
+
+project"DemoECS"
+
+    kind "ConsoleApp"
+    language "C++"
+    targetdir "build/%{prj.name}/%{cfg.buildcfg}"
+    includedirs "include"
+    links "Motor"
+    warnings "High"
+
+    conan_config_exec("Debug")
+    conan_config_exec("Release")
+    conan_config_exec("RelWithDebInfo")
+    debugargs { _MAIN_SCRIPT_DIR .. "/examples/data" }
+
+    files "examples/demo_ecs.cpp"
+
+project"DemoObj"
+
+    kind "ConsoleApp"
+    language "C++"
+    targetdir "build/%{prj.name}/%{cfg.buildcfg}"
+    includedirs "include"
+    links "Motor"
+    warnings "High"
+
+    conan_config_exec("Debug")
+    conan_config_exec("Release")
+    conan_config_exec("RelWithDebInfo")
+    debugargs { _MAIN_SCRIPT_DIR .. "/examples/data" }
+
+    files "examples/demo_obj.cpp"
+
+
+
+
+
+
+project"TutorialBasics"
 
     kind "ConsoleApp"
     language "C++"
@@ -139,7 +224,7 @@ project"Window"
 
     files "examples/window.cpp"
 
-  project"MultyThread"
+project"TestMultyThread"
 
       kind "ConsoleApp"
       language "C++"
@@ -155,7 +240,7 @@ project"Window"
 
       files "examples/multythread_test.cpp"
 
-project"ECS"
+project"TestECS"
 
     kind "ConsoleApp"
     language "C++"
