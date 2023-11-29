@@ -1,9 +1,10 @@
 #pragma once
 
 #include <vector>
-
+namespace coma {
 class Vec2;
 class Vec3;
+}
 
 class Buffer {
  public:
@@ -13,12 +14,12 @@ class Buffer {
   };
 
   Buffer() = delete;
-  Buffer(Buffer&& other);
-  Buffer& operator=(Buffer&& other);
-  Buffer(Buffer& other);
+  Buffer(Buffer&& other) noexcept;
+  Buffer& operator=(Buffer&& other) noexcept;
+  Buffer(Buffer& other) noexcept;
   Buffer(const Buffer& other) = delete;
-  Buffer(std::vector<Vec3> pos, std::vector<Vec3> normal,
-         std::vector<Vec3> color, std::vector<Vec2> uv);
+  Buffer(std::vector<coma::Vec3> pos, std::vector<coma::Vec3> normal,
+         std::vector<coma::Vec3> color, std::vector<coma::Vec2> uv);
   Buffer(const void* data, unsigned int size);
 
   ~Buffer();
@@ -48,7 +49,7 @@ class Buffer {
   /// @param offset specifie the position og the generic vertex attribute in the
   /// array
   void enableVertexArray(const unsigned int index, const unsigned int size,
-                         const unsigned int stride, const unsigned int offset);
+                         const unsigned int stride, const unsigned long long offset);
   /// @brief Get the buffer id
   /// @return the buffer id
   unsigned int buffer_id() const;

@@ -1,6 +1,6 @@
 
 #include "math/matrix_4.h"
-
+using namespace coma;
 Mat4::Mat4() {
 	for (int i = 0; i < 16; ++i) {
 		m[i] = 0;

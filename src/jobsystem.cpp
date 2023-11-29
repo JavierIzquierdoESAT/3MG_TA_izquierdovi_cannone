@@ -2,7 +2,7 @@
 
 JobSystem::JobSystem() : stop_{false} {
   auto worker_count = std::thread::hardware_concurrency();
-  for (int i = 0; i != worker_count; i++) {
+  for (unsigned i = 0; i != worker_count; i++) {
     workers_.emplace_back(std::thread(&JobSystem::work, this));
   }
   std::cout << worker_count << std::endl;

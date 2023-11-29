@@ -96,6 +96,7 @@ project "MathLibrary"
     targetdir "build/%{cfg.buildcfg}"
     includedirs "include"
     conan_config_lib()
+    warnings "High"
 
     files {
             "include/math/*.h",
@@ -112,6 +113,7 @@ project "Motor"
     pchheader "stdafx.hpp"
     pchsource "src/stdafx.cpp"
     forceincludes { "stdafx.hpp" }
+    warnings "High"
 
     files {
             "premake5.lua",
@@ -128,6 +130,7 @@ project"Window"
     targetdir "build/%{prj.name}/%{cfg.buildcfg}"
     includedirs "include"
     links "Motor"
+    warnings "High"
 
     conan_config_exec("Debug")
     conan_config_exec("Release")
@@ -143,6 +146,7 @@ project"Window"
       targetdir "build/%{prj.name}/%{cfg.buildcfg}"
       includedirs "include"
       links "Motor"
+      warnings "High"
 
       conan_config_exec("Debug")
       conan_config_exec("Release")
@@ -158,6 +162,7 @@ project"ECS"
     targetdir "build/%{prj.name}/%{cfg.buildcfg}"
     includedirs "include"
     links "Motor"
+    warnings "High"
 
     conan_config_exec("Debug")
     conan_config_exec("Release")

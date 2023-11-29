@@ -174,7 +174,7 @@ class InputManager {
   /// @brief creates and binds an input map
   /// @param w window handle reference
   /// @param m InputButtonMap to bind
-  InputManager(GLFWwindow* window, InputButtonMap m);
+  InputManager(const Window& window, InputButtonMap m);
 
 
   //TODO: try to make this only accessible to the window

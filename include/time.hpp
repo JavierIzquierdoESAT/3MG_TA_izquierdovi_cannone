@@ -8,8 +8,8 @@ class Time {
   ~Time() = delete;
 
   /// @brief retrieves duration of the last frame
-  /// @return duration of the last frame aka: delta_time
-  static float delta_time();
+  /// @return duration of the last frame aka: DeltaTime
+  static float DeltaTime();
 
  private:
   friend Engine;
