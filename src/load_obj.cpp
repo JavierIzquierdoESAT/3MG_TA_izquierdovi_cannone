@@ -12,15 +12,15 @@ std::vector<Buffer> loadObj(std::string dir) {
     std::vector<tinyobj::material_t> materials;
 
     std::vector<Buffer> bb;
-    std::vector<Vec3> pos;
-    std::vector<Vec3> nor;
-    std::vector<Vec3> col;
-    std::vector<Vec2> uv;
+    std::vector<coma::Vec3> pos;
+    std::vector<coma::Vec3> nor;
+    std::vector<coma::Vec3> col;
+    std::vector<coma::Vec2> uv;
 
-    Vec3 posi;
-    Vec3 norma;
-    Vec3 color;
-    Vec2 uvs;
+    coma::Vec3 posi;
+    coma::Vec3 norma;
+    coma::Vec3 color;
+    coma::Vec2 uvs;
 
     std::string err;
     std::string war;

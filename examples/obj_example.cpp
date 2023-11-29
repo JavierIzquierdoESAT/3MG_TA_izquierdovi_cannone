@@ -13,7 +13,7 @@
 #include "load_obj.hpp"
 
 
-std::vector<Vec3> pos{
+std::vector<coma::Vec3> pos{
     //  position  //        //    normals   //       // UV   //      //       Color      //
     /*P1*/     {-1.0f * 10,  -1.0f * 10, 0.7f * 10},
     /*P2*/      {0.0f * 10,  1.0f * 10, 0.0f * 10},
@@ -23,7 +23,7 @@ std::vector<Vec3> pos{
 
 };
 
-std::vector<Vec3> nor{
+std::vector<coma::Vec3> nor{
     //  position  //        //    normals   //       // UV   //      //       Color      //
     /*P1*/     {-1.0f,  1.0f, 1.0f},
     /*P2*/      {1.0f,  1.0f, 1.0f},
@@ -33,7 +33,7 @@ std::vector<Vec3> nor{
 
 };
 
-std::vector<Vec2> uv{
+std::vector<coma::Vec2> uv{
     //  position  //        //    normals   //       // UV   //      //       Color      //
     /*P1*/     { 0.0f, 1.0f},
     /*P2*/      { 1.0f, 1.0f},
@@ -42,7 +42,7 @@ std::vector<Vec2> uv{
 
 };
 
-std::vector<Vec3> col{
+std::vector<coma::Vec3> col{
     //  position  //        //    normals   //       // UV   //      //       Color      //
     /*P1*/     {1.0f, 0.0f, 0.0f},
     /*P2*/      {1.0f, 0.0f, 0.0f},
@@ -71,14 +71,13 @@ int main(int, char**) {
     
 
     auto w = Window::Make(e, 640, 480, "ventana");
-    auto obj = /*Buffer(pos, nor, col, uv); */ loadObj("../assets/javi2.obj");
-    auto idxobj = /*Buffer(order, sizeof(order));*/ loadObjIndex("../assets/javi2.obj");
+    auto obj = /*Buffer(pos, nor, col, uv); */ loadObj("../assets/javi.obj");
+    auto idxobj = /*Buffer(order, sizeof(order));*/ loadObjIndex("../assets/javi.obj");
     auto shade = ShaderManager::MakeShaders("../assets/obj.fs", "../assets/obj.vs").value();
     float t = 0;
-    if (w) {
-        auto& window = w.value();
 
-        while (!window.isDone()) {
+
+        while (!w.isDone()) {
            
 
             shade.setUniformValue(DataType::FLOAT_1, &t, "time");
@@ -94,11 +93,10 @@ int main(int, char**) {
                 glDrawElements(GL_TRIANGLES, idxobj[i].size()/sizeof(short int), GL_UNSIGNED_SHORT, 0);
                 glBindVertexArray(0);
             }
-            t+=Time::delta_time();
-            window.swap();
-            e.update();
+            t += Time::DeltaTime();
+            w.update();
         }
-    }
+    
 
     return 0;
 }
