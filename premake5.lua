@@ -69,7 +69,7 @@ workspace "Motor"
    architecture "x64"
    cppdialect "c++20"
    location "build"
-   startproject "MathLibrary"
+   startproject "DemoWindow"
 
    filter "configurations:Debug"
            defines { "DEBUG" }
@@ -108,7 +108,7 @@ project "LibEngine"
     kind "StaticLib"
     targetdir "build/%{cfg.buildcfg}"
     includedirs "include"
-    links "MathLibrary"
+    links "LibMath"
     conan_config_lib()
     pchheader "stdafx.hpp"
     pchsource "src/stdafx.cpp"
@@ -129,7 +129,7 @@ project"DemoWindow"
     language "C++"
     targetdir "build/%{prj.name}/%{cfg.buildcfg}"
     includedirs "include"
-    links "Motor"
+    links "LibEngine"
     warnings "High"
 
     conan_config_exec("Debug")
@@ -145,7 +145,7 @@ project"DemoDraw"
     language "C++"
     targetdir "build/%{prj.name}/%{cfg.buildcfg}"
     includedirs "include"
-    links "Motor"
+    links "LibEngine"
     warnings "High"
 
     conan_config_exec("Debug")
@@ -161,7 +161,7 @@ project"DemoInput"
     language "C++"
     targetdir "build/%{prj.name}/%{cfg.buildcfg}"
     includedirs "include"
-    links "Motor"
+    links "LibEngine"
     warnings "High"
 
     conan_config_exec("Debug")
@@ -177,7 +177,7 @@ project"DemoECS"
     language "C++"
     targetdir "build/%{prj.name}/%{cfg.buildcfg}"
     includedirs "include"
-    links "Motor"
+    links "LibEngine"
     warnings "High"
 
     conan_config_exec("Debug")
@@ -193,7 +193,7 @@ project"DemoObj"
     language "C++"
     targetdir "build/%{prj.name}/%{cfg.buildcfg}"
     includedirs "include"
-    links "Motor"
+    links "LibEngine"
     warnings "High"
 
     conan_config_exec("Debug")
@@ -214,7 +214,7 @@ project"TutorialBasics"
     language "C++"
     targetdir "build/%{prj.name}/%{cfg.buildcfg}"
     includedirs "include"
-    links "Motor"
+    links "LibEngine"
     warnings "High"
 
     conan_config_exec("Debug")
@@ -230,7 +230,7 @@ project"TestMultyThread"
       language "C++"
       targetdir "build/%{prj.name}/%{cfg.buildcfg}"
       includedirs "include"
-      links "Motor"
+      links "LibEngine"
       warnings "High"
 
       conan_config_exec("Debug")
@@ -246,7 +246,7 @@ project"TestECS"
     language "C++"
     targetdir "build/%{prj.name}/%{cfg.buildcfg}"
     includedirs "include"
-    links "Motor"
+    links "LibEngine"
     warnings "High"
 
     conan_config_exec("Debug")
@@ -262,7 +262,7 @@ project"TestOBJ"
     language "C++"
     targetdir "build/%{prj.name}/%{cfg.buildcfg}"
     includedirs "include"
-    links "Motor"
+    links "LibEngine"
 
     conan_config_exec("Debug")
     conan_config_exec("Release")
