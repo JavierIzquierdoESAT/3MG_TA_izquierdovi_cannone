@@ -125,11 +125,11 @@ int main(int, char**) {
       for (int x = 0; x < width; x++) {
           float pos_x = (x - ((float)width / 2.0f)) * tridist;
           float pos_y = (y - ((float)width / 2.0f)) * tridist;
-          Position pos(pos_x, pos_y,0.0f );
-          AI ai;
+          Position posi(pos_x, pos_y,0.0f );
+          AI aia;
           r = m[0].createBuffers(shade);
           for (int i = 0; i < r.size(); i++) {
-              component_manager.addEntity<Position, AI, Render>(pos, ai, r[i]);
+              component_manager.addEntity<Position, AI, Render>(posi, aia, r[i]);
           }
 
       }
