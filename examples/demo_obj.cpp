@@ -70,11 +70,15 @@ int main(int, char**) {
   std::vector<Mesh> m;
 
   // add 2 obj in the job system
-  std::string s = "../assets/javi.obj";
-  std::string s2 = "../assets/javi.obj";
+  std::string obj1 = "../assets/obj/pollo.obj";
+  std::string obj3 = "../assets/obj/stool.obj";
+  std::string obj4 = "../assets/obj/sword_shield.obj";
+  std::string obj5 = "../assets/obj/torch.obj";
 
-  resultado.push_back(std::move(j.addTask(Mesh::loadObj, s)));
-  resultado.push_back(std::move(j.addTask(Mesh::loadObj, s2)));
+  resultado.push_back(std::move(j.addTask(Mesh::loadObj, obj1)));
+  resultado.push_back(std::move(j.addTask(Mesh::loadObj, obj3)));
+  resultado.push_back(std::move(j.addTask(Mesh::loadObj, obj4)));
+  resultado.push_back(std::move(j.addTask(Mesh::loadObj, obj5)));
 
   // wait for futures to be returned
   int count = 0;
