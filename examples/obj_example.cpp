@@ -17,9 +17,8 @@
 #include "load_obj.hpp"
 #include "jobsystem.hpp"
 
-
+//data for a 3D printable figure
 std::vector<coma::Vec3> pos{
-    //  position  //        //    normals   //       // UV   //      //       Color      //
     /*P1*/     {-1.0f * 10,  -1.0f * 10, 0.7f * 10},
     /*P2*/      {0.0f * 10,  1.0f * 10, 0.0f * 10},
     /*P3*/      {0.0f * 10, -1.0f * 10, -1.0f * 10}, 
@@ -29,7 +28,6 @@ std::vector<coma::Vec3> pos{
 };
 
 std::vector<coma::Vec3> nor{
-    //  position  //        //    normals   //       // UV   //      //       Color      //
     /*P1*/     {-1.0f,  1.0f, 1.0f},
     /*P2*/      {1.0f,  1.0f, 1.0f},
     /*P3*/      {1.0f, -1.0f, 1.0f}, 
@@ -39,7 +37,6 @@ std::vector<coma::Vec3> nor{
 };
 
 std::vector<coma::Vec2> uv{
-    //  position  //        //    normals   //       // UV   //      //       Color      //
     /*P1*/     { 0.0f, 1.0f},
     /*P2*/      { 1.0f, 1.0f},
     /*P3*/      {1.0f,  0.0f},
@@ -48,7 +45,6 @@ std::vector<coma::Vec2> uv{
 };
 
 std::vector<coma::Vec3> col{
-    //  position  //        //    normals   //       // UV   //      //       Color      //
     /*P1*/     {1.0f, 0.0f, 0.0f},
     /*P2*/      {1.0f, 0.0f, 0.0f},
     /*P3*/      {1.0f, 0.0f, 0.0f}, 
@@ -78,13 +74,18 @@ int main(int, char**) {
     auto shade = ShaderManager::MakeShaders("../assets/obj.fs", "../assets/obj.vs").value();
     std::vector<Render> r;
     std::vector<Mesh> m;
+
+    //add 2 obj in the job system
     std::string s = "../assets/javi.obj";
     std::string s2 = "../assets/javi2.obj";
+
    resultado.push_back(
         std::move(j.addTask( Mesh::loadObj, s) ) );
     resultado.push_back(
         std::move(j.addTask(Mesh::loadObj, s2)));
 
+
+    //wait for futures to be returned
     int count = 0;
     bool finish = false;
     while (!finish) {
@@ -99,6 +100,7 @@ int main(int, char**) {
         if (count == resultado.size()) finish = true;
     }
     
+    //add the meshes of the OBJ to the ecs
     Position p(0.0f, 0.0f, 0.0f);
     AI ai;
     for (int x = 0; x < m.size(); x++) {
@@ -115,6 +117,7 @@ int main(int, char**) {
 
             shade.setUniformValue(DataType::FLOAT_1, &t, "time");
 
+            //render the obj
             RenderSystem(component_manager.getAll<Position>(),
                 component_manager.getAll<Render>());
             t += Time::DeltaTime();
