@@ -54,8 +54,8 @@ void CircleMoveSystem(ComponentListSparse<Position>& positions,
       aiv.counter = 0;
     }
     if (aiv.right)
-      pv.pos.x += 0.005f;
+      pv.pos.x += 0.05f;
     else
-      pv.pos.x -= 0.005f;
+      pv.pos.x -= 0.05f;
   }
 }
