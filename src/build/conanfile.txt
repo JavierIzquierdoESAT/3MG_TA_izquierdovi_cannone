@@ -2,6 +2,7 @@
 glfw/3.3.8
 glew/2.2.0
 stb/cci.20220909
+tinyobjloader/2.0.0-rc10
 
 [generators]
 premake
