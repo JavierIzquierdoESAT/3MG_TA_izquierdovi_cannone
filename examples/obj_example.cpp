@@ -77,7 +77,7 @@ int main(int, char**) {
 
     //add 2 obj in the job system
     std::string s = "../assets/javi.obj";
-    std::string s2 = "../assets/javi2.obj";
+    std::string s2 = "../assets/javi.obj";
 
    resultado.push_back(
         std::move(j.addTask( Mesh::loadObj, s) ) );
