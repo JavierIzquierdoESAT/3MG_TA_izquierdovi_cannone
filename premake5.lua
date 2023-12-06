@@ -64,12 +64,12 @@ function conan_config_lib()
 end
 
 
-workspace "Motor"
+workspace "CopperfieldEngine"
    configurations { "Debug",  "Release", "RelWithDebInfo" }
    architecture "x64"
    cppdialect "c++20"
    location "build"
-   startproject "DemoWindow"
+   startproject "DemoObj"
 
    filter "configurations:Debug"
            defines { "DEBUG" }

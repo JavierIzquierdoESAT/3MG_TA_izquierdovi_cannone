@@ -51,44 +51,60 @@ std::vector<Render> Mesh::createBuffers(ShaderManager& sh) {
     size_t index_offset = 0;
 
     for (size_t v = 0; v < attrib_.vertices.size() / 3; v++) {
-      posi.x = attrib_.vertices[(size_t)3 * (size_t)v + (size_t)0];
-      posi.y = attrib_.vertices[(size_t)3 * (size_t)v + (size_t)1];
-      posi.z = attrib_.vertices[(size_t)3 * (size_t)v + (size_t)2];
-      pos.emplace_back(posi);
+        posi.x = attrib_.vertices[(size_t)3 * (size_t)v + (size_t)0];
+        posi.y = attrib_.vertices[(size_t)3 * (size_t)v + (size_t)1];
+        posi.z = attrib_.vertices[(size_t)3 * (size_t)v + (size_t)2];
+        pos.emplace_back(posi);
+    }
+      
 
       if (!attrib_.normals.empty()) {
-        norma.x = attrib_.normals[(size_t)3 * (size_t)v + (size_t)0];
-        norma.y = attrib_.normals[(size_t)3 * (size_t)v + (size_t)1];
-        norma.z = attrib_.normals[(size_t)3 * (size_t)v + (size_t)2];
+          for (size_t v = 0; v < attrib_.normals.size() / 3; v++) {
+              norma.x = attrib_.normals[(size_t)3 * (size_t)v + (size_t)0];
+              norma.y = attrib_.normals[(size_t)3 * (size_t)v + (size_t)1];
+              norma.z = attrib_.normals[(size_t)3 * (size_t)v + (size_t)2];
+              nor.emplace_back(norma);
+          }
       } else {
         norma.x = 0;
         norma.y = 0;
         norma.z = 0;
+        nor.emplace_back(norma);
       }
 
-      nor.emplace_back(norma);
+      
 
       if (!attrib_.colors.empty()) {
-        color.x = attrib_.colors[(size_t)3 * (size_t)v + (size_t)0];
-        color.y = attrib_.colors[(size_t)3 * (size_t)v + (size_t)1];
-        color.z = attrib_.colors[(size_t)3 * (size_t)v + (size_t)2];
+          for (size_t v = 0; v < attrib_.colors.size() / 3; v++) {
+              color.x = attrib_.colors[(size_t)3 * (size_t)v + (size_t)0];
+              color.y = attrib_.colors[(size_t)3 * (size_t)v + (size_t)1];
+              color.z = attrib_.colors[(size_t)3 * (size_t)v + (size_t)2];
+              col.emplace_back(color);
+          }
       } else {
         color.x = 0;
         color.y = 0;
         color.z = 0;
+        col.emplace_back(color);
       }
-      col.emplace_back(color);
+      
 
       if (!attrib_.texcoords.empty()) {
-        uvs.x = attrib_.texcoords[(size_t)2 * (size_t)v + (size_t)0];
-        uvs.y = attrib_.texcoords[(size_t)2 * (size_t)v + (size_t)1];
+          for (size_t v = 0; v < attrib_.texcoords.size() / 2; v++) {
+              uvs.x = attrib_.texcoords[(size_t)2 * (size_t)v + (size_t)0];
+              uvs.y = attrib_.texcoords[(size_t)2 * (size_t)v + (size_t)1];
+              uv.emplace_back(uvs);
+          }
+
+         
       } else {
         uvs.x = 0;
         uvs.y = 0;
+        uv.emplace_back(uvs);
       }
 
-      uv.emplace_back(uvs);
-    }
+      
+ 
 
     for (size_t f = 0; f < shapes_[s].mesh.num_face_vertices.size(); f++) {
       int fv = shapes_[s].mesh.num_face_vertices[f];
