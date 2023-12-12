@@ -148,11 +148,12 @@ SoundSource::SoundSource(SoundSource& other) noexcept
       pitch_{other.pitch_},
       pos_{other.pos_[0], other.pos_[1], other.pos_[2]},
       speed_{other.speed_[0], other.speed_[1], other.speed_[2]},
-      destructible_{false},
+      destructible_{true},
       loop_{other.loop_},
       start_{other.start_},
       stop_{other.stop_},
       isPlaying_{other.isPlaying_} {
+  
   other.destructible_ = false;
 }
 
@@ -163,7 +164,7 @@ SoundSource::SoundSource(SoundSource&& other) noexcept
       pitch_{other.pitch_},
       pos_{other.pos_[0], other.pos_[1], other.pos_[2]},
       speed_{other.speed_[0], other.speed_[1], other.speed_[2]},
-      destructible_{false},
+      destructible_{true},
       loop_{other.loop_},
       start_{other.start_},
       stop_{other.stop_},

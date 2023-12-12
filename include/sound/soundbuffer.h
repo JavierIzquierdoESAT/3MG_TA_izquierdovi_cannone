@@ -2,6 +2,7 @@
 #include "AL/al.h"
 #include "AL/alc.h"
 #include <string>
+#include <optional>
 
 /*
 * Struct that holds the RIFF data of the Wave file.
@@ -37,28 +38,26 @@ struct WAVE_Data {
 };
 
 
+
 class SoundBuffer {
+ public:
+  static std::optional<SoundBuffer> MakeBuffer(const std::string filename);
+  SoundBuffer(SoundBuffer&& b);
+  SoundBuffer(const SoundBuffer& b) = default;
+  ALuint getBuffer();
+  int Fequency();
+  int Size();
+  int Format();
+  ~SoundBuffer();
 
-public:
+  bool active_;
 
-    static SoundBuffer* MakeBuffer(const std::string filename);
-    SoundBuffer(SoundBuffer&& b);
-    ALuint getBuffer();
-    int Fequency();
-    int Size();
-    int Format();
-    ~SoundBuffer();
+ private:
+  SoundBuffer();
 
-    bool active_;
-private:
-    SoundBuffer();
-
-    ALuint buffer_;
-    ALsizei size_;
-    ALsizei frequency_;
-    ALenum format_;
-    std::string name_;
-
-
-
+  ALuint buffer_;
+  ALsizei size_;
+  ALsizei frequency_;
+  ALenum format_;
+  std::string name_;
 };

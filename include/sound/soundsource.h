@@ -11,7 +11,8 @@ class SoundSource {
   SoundSource(std::string name, ALfloat pos[3], ALfloat speed[3],
               float gain = 1.0f, float pitch = 1.0f);
   ~SoundSource();
-  SoundSource(const SoundSource& other) = delete;
+  SoundSource(const SoundSource& other);
+  SoundSource& operator=(const SoundSource& src) = default;
   SoundSource(SoundSource& other) noexcept;
   SoundSource(SoundSource&& other) noexcept;
 

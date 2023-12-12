@@ -1,16 +1,16 @@
 #include "sound/soundbuffer.h"
 
-SoundBuffer* SoundBuffer::MakeBuffer(const std::string filename) {
-  SoundBuffer* b = new SoundBuffer();
+std::optional<SoundBuffer> SoundBuffer::MakeBuffer(const std::string filename) {
+  SoundBuffer b;
   // Local Declarations
   FILE* soundFile = NULL;
   WAVE_Format wave_format;
   RIFF_Header riff_header;
   WAVE_Data wave_data;
   unsigned char* data;
-  b->name_ = filename;
+  b.name_ = filename;
   soundFile = fopen(filename.c_str(), "rb");
-  if (!soundFile) return nullptr;
+  if (!soundFile) return b;
 
   // Read in the first chunk into the struct
   fread(&riff_header, sizeof(RIFF_Header), 1, soundFile);
@@ -21,7 +21,7 @@ SoundBuffer* SoundBuffer::MakeBuffer(const std::string filename) {
       (riff_header.format[0] != 'W' || riff_header.format[1] != 'A' ||
        riff_header.format[2] != 'V' || riff_header.format[3] != 'E')) {
     fclose(soundFile);
-    return nullptr;
+    return b;
   }
 
   // Read in the 2nd chunk for the wave info
@@ -30,7 +30,7 @@ SoundBuffer* SoundBuffer::MakeBuffer(const std::string filename) {
   if (wave_format.subChunkID[0] != 'f' || wave_format.subChunkID[1] != 'm' ||
       wave_format.subChunkID[2] != 't' || wave_format.subChunkID[3] != ' ') {
     fclose(soundFile);
-    return nullptr;
+    return b;
   }
 
   // check for extra parameters;
@@ -42,7 +42,7 @@ SoundBuffer* SoundBuffer::MakeBuffer(const std::string filename) {
   if (wave_data.subChunkID[0] != 'd' || wave_data.subChunkID[1] != 'a' ||
       wave_data.subChunkID[2] != 't' || wave_data.subChunkID[3] != 'a') {
     fclose(soundFile);
-    return nullptr;
+    return b;
   }
 
   // Allocate memory for data
@@ -51,28 +51,28 @@ SoundBuffer* SoundBuffer::MakeBuffer(const std::string filename) {
   // Read in the sound data into the soundData variable
   if (!fread(data, wave_data.subChunk2Size, 1, soundFile)) {
     fclose(soundFile);
-    return nullptr;
+    return b;
   }
 
   // Now we set the variables that we passed in with the
   // data from the structs
-  b->size_ = wave_data.subChunk2Size;
-  b->frequency_ = wave_format.sampleRate;
+  b.size_ = wave_data.subChunk2Size;
+  b.frequency_ = wave_format.sampleRate;
   // The format is worked out by looking at the number of
   // channels and the bits per sample.
   if (wave_format.numChannels == 1) {
     if (wave_format.bitsPerSample == 8)
-      b->format_ = AL_FORMAT_MONO8;
+      b.format_ = AL_FORMAT_MONO8;
     else if (wave_format.bitsPerSample == 16)
-      b->format_ = AL_FORMAT_MONO16;
+      b.format_ = AL_FORMAT_MONO16;
   } else if (wave_format.numChannels == 2) {
     if (wave_format.bitsPerSample == 8)
-      b->format_ = AL_FORMAT_STEREO8;
+      b.format_ = AL_FORMAT_STEREO8;
     else if (wave_format.bitsPerSample == 16)
-      b->format_ = AL_FORMAT_STEREO16;
+      b.format_ = AL_FORMAT_STEREO16;
   }
   // create our openAL buffer and check for success
-  alGenBuffers(1, &b->buffer_);
+  alGenBuffers(1, &b.buffer_);
   /*if (alGetError() != AL_NO_ERROR) {
 
       return nullptr;
@@ -80,20 +80,21 @@ SoundBuffer* SoundBuffer::MakeBuffer(const std::string filename) {
 
   // now we put our data into the openAL buffer and
   // check for success
-  alBufferData(b->buffer_, b->format_, (void*)data, b->size_, b->frequency_);
+  alBufferData(b.buffer_, b.format_, (void*)data, b.size_, b.frequency_);
 
   // clean up and return true if successful
   fclose(soundFile);
   delete[] data;
-  return b;
+  return std::move(b);
 }
 
 SoundBuffer::SoundBuffer(SoundBuffer&& b)
     : buffer_{b.buffer_},
-      active_{false},
+      active_{true},
+      frequency_{b.frequency_},
       format_{b.format_},
-      size_{b.size_},
-      frequency_{b.format_} {
+      size_{b.size_} {
+  b.buffer_ = 0;
   b.active_ = false;
 }
 
@@ -106,7 +107,7 @@ int SoundBuffer::Size() { return size_; }
 int SoundBuffer::Format() { return format_; }
 
 SoundBuffer::SoundBuffer()
-    : active_{true}, buffer_{0}, format_{0}, size_{0}, frequency_{0} {}
+    : buffer_{0}, active_{true}, frequency_{0}, format_{0}, size_{0} {}
 
 SoundBuffer::~SoundBuffer() {
   if (!active_) {

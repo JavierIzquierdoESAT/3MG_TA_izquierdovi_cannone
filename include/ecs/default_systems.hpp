@@ -62,6 +62,16 @@ void SoundSystem(ComponentListCompact<AudioSource> &audio,
     }
 }
 
+void UnbindSoundSystem(ComponentListCompact<AudioSource>& audio) {
+  for (auto& [e, audio_comp] : audio) {
+    
+    audio_comp.src.unbindSound();
+    
+  }
+}
+
+
+
 void CircleMoveSystem(ComponentListSparse<Position>& positions,
                       ComponentListSparse<AI>& ai_cmp) {
   auto p_it = positions.begin();
