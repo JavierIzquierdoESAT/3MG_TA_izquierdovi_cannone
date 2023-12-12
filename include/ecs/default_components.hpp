@@ -7,6 +7,7 @@
 #include "math/vector_2.h"
 #include "math/vector_3.h"
 #include "shader_manager.hpp"
+#include "sound/soundsource.h"
 
 struct Position {
   Position() : pos{coma::Vec3(0, 0, 0)} {}
@@ -18,6 +19,15 @@ struct Position {
 struct AI {
   unsigned counter = 0;
   bool right = false;
+};
+
+struct AudioSource {
+  AudioSource(std::string name, ALfloat pos[3] ,
+              ALfloat speed[3],
+              float gain = 1.0f, float pitch = 1.0f)
+      : src(name, &pos[0], &speed[0], gain, pitch) {}
+
+    SoundSource src;
 };
 
 struct Render {

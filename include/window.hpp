@@ -45,6 +45,8 @@ class Window {
   /// @brief swaps screen buffers
   void update() const;
 
+  GLFWwindow* const GetWindow() { return window_handle_; }
+
  private:
   Window(GLFWwindow* w, Engine* e);
 

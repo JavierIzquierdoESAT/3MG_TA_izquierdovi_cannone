@@ -39,6 +39,29 @@ void RenderSystem(std::vector<std::optional<Position>>& positions,
   assert(r == render.end());
 }
 
+void SoundSystem(ComponentListCompact<AudioSource> &audio,
+                 ComponentListSparse<Position>& positions) {
+
+    for (auto& [e, audio_comp] : audio) {
+
+      if (positions.at(e)->has_value()) {
+
+         Position& pos_comp = positions.at(e)->value();
+        audio_comp.src.setPos(&pos_comp.pos.x);
+        
+        if (!audio_comp.src.isPlaying() && audio_comp.src.start_) {
+          audio_comp.src.Play();
+        }
+
+        if (audio_comp.src.isPlaying() && audio_comp.src.stop_) {
+          audio_comp.src.Stop();
+        }
+
+      }
+
+    }
+}
+
 void CircleMoveSystem(ComponentListSparse<Position>& positions,
                       ComponentListSparse<AI>& ai_cmp) {
   auto p_it = positions.begin();

@@ -103,12 +103,26 @@ project "LibMath"
             "src/math/*.cc"
     }
 
+project "LibSound"
+
+    kind "StaticLib"
+    targetdir "build/%{cfg.buildcfg}"
+    includedirs "include"
+    conan_config_lib()
+    warnings "High"
+
+    files {
+            "include/sound/*.h",
+            "src/sound/*.cpp"
+    }
+
 project "LibEngine"
 
     kind "StaticLib"
     targetdir "build/%{cfg.buildcfg}"
     includedirs "include"
     links "LibMath"
+    links "LibSound"
     conan_config_lib()
     pchheader "stdafx.hpp"
     pchsource "src/stdafx.cpp"
