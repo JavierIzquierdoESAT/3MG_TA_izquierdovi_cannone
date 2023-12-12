@@ -8,12 +8,17 @@
 #include "engine.hpp"
 #include "input.hpp"
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw_gl3.h"
+
 Window::Window(GLFWwindow* w, Engine* e) : window_handle_{w}, engine_{e} {
   glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwMakeContextCurrent(w);
   glewInit();
+ 
+
 }
 
 Window::Window(Window& w)
@@ -34,6 +39,7 @@ Window::~Window() {
 
 Window Window::Make(Engine& e, int w, int h, const std::string& title) {
   GLFWwindow* wind = glfwCreateWindow(w, h, title.c_str(), NULL, NULL);
+
 
   const char* description;
   int code = glfwGetError(&description);

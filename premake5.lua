@@ -103,6 +103,19 @@ project "LibMath"
             "src/math/*.cc"
     }
 
+project "Imgui"
+
+    kind "StaticLib"
+    targetdir "build/%{cfg.buildcfg}"
+    includedirs "include"
+    conan_config_lib()
+    warnings "High"
+
+    files {
+            "include/imgui/*.h",
+            "src/imgui/*.cpp"
+    }
+
 project "LibSound"
 
     kind "StaticLib"
@@ -121,6 +134,7 @@ project "LibEngine"
     kind "StaticLib"
     targetdir "build/%{cfg.buildcfg}"
     includedirs "include"
+    links "Imgui"
     links "LibMath"
     links "LibSound"
     conan_config_lib()
@@ -284,3 +298,18 @@ project"TestOBJ"
     debugargs { _MAIN_SCRIPT_DIR .. "/examples/data" }
 
     files "examples/obj_example.cpp"
+
+project"TestSound"
+
+    kind "ConsoleApp"
+    language "C++"
+    targetdir "build/%{prj.name}/%{cfg.buildcfg}"
+    includedirs "include"
+    links "LibEngine"
+
+    conan_config_exec("Debug")
+    conan_config_exec("Release")
+    conan_config_exec("RelWithDebInfo")
+    debugargs { _MAIN_SCRIPT_DIR .. "/examples/data" }
+
+    files "examples/sound_example.cpp"

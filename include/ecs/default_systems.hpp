@@ -10,6 +10,9 @@
 #include "ecs/component_manager.hpp"
 #include "math/vector_3.h"
 
+#include "imgui/imgui.h"
+
+
 void RenderSystem(std::vector<std::optional<Position>>& positions,
                    std::vector<std::optional<Render>>& render) {
   auto p = positions.begin();
@@ -45,6 +48,19 @@ void SoundSystem(ComponentListCompact<AudioSource> &audio,
     for (auto& [e, audio_comp] : audio) {
 
       if (positions.at(e)->has_value()) {
+
+        { 
+         ImGui::PushID(e);
+          ImGui::Text(audio_comp.src.Name().c_str());
+          if(ImGui::Button("Stop")) {
+            audio_comp.src.stop_ = true;
+          }
+          if (ImGui::Button("Play")) {
+            audio_comp.src.start_ = true;
+            audio_comp.src.stop_ = false;
+          }
+          ImGui::PopID();
+        }
 
          Position& pos_comp = positions.at(e)->value();
         audio_comp.src.setPos(&pos_comp.pos.x);
