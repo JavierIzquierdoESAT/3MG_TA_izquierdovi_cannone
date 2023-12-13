@@ -78,7 +78,7 @@ void SoundSystem(ComponentListCompact<AudioSource> &audio,
             audio_comp.src.setGain(aux_gain);
 
             float aux_pitch = audio_comp.src.Pitch();
-            ImGui::SliderFloat("Pitch", &aux_pitch, 0.0f, 1.0f, "%.3f");
+            ImGui::SliderFloat("Pitch", &aux_pitch, 0.0f, 2.0f, "%.3f");
             audio_comp.src.setPitch(aux_pitch);
 
             float* aux_pos = &pos_comp.pos.x;
