@@ -49,20 +49,54 @@ void SoundSystem(ComponentListCompact<AudioSource> &audio,
 
       if (positions.at(e)->has_value()) {
 
+        Position& pos_comp = positions.at(e)->value();
+
         { 
-         ImGui::PushID(e);
-          ImGui::Text(audio_comp.src.Name().c_str());
-          if(ImGui::Button("Stop")) {
-            audio_comp.src.stop_ = true;
+          ImGui::Begin("Sound");
+          ImGui::PushID(e);
+          bool open = ImGui::CollapsingHeader(audio_comp.src.Name().c_str());
+          if (open) {
+            // ImGui::Text(audio_comp.src.Name().c_str());
+            if (ImGui::Button("Stop")) {
+              audio_comp.src.stop_ = true;
+            }
+            ImGui::SameLine();
+
+            if (ImGui::Button("Play")) {
+              audio_comp.src.start_ = true;
+              audio_comp.src.stop_ = false;
+            }
+
+            bool muted = audio_comp.src.Gain() == 0;
+            if (ImGui::Checkbox("Mute", &muted)) {
+              muted ? audio_comp.src.setGain(0.0f)
+                    : audio_comp.src.setGain(1.0f);
+            }
+
+            float aux_gain = audio_comp.src.Gain();
+            ImGui::SliderFloat("Gain", &aux_gain, 0.0f, 1.0f, "%.3f");
+            audio_comp.src.setGain(aux_gain);
+
+            float aux_pitch = audio_comp.src.Pitch();
+            ImGui::SliderFloat("Pitch", &aux_pitch, 0.0f, 1.0f, "%.3f");
+            audio_comp.src.setPitch(aux_pitch);
+
+            float* aux_pos = &pos_comp.pos.x;
+            ImGui::SliderFloat3("Position", aux_pos, -100.0f, 100.0f);
+
+
+            bool loop = audio_comp.src.Loop();
+            if (ImGui::Checkbox("Loop", &loop)) {
+              audio_comp.src.setLoop(loop);
+            }
           }
-          if (ImGui::Button("Play")) {
-            audio_comp.src.start_ = true;
-            audio_comp.src.stop_ = false;
-          }
+
           ImGui::PopID();
+
+          ImGui::End();
         }
 
-         Position& pos_comp = positions.at(e)->value();
+         
         audio_comp.src.setPos(&pos_comp.pos.x);
         
         if (!audio_comp.src.isPlaying() && audio_comp.src.start_) {
