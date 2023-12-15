@@ -11,4 +11,6 @@ class Engine {
   void update();
 
  private:
+  struct ALCdevice* device_;
+  struct ALCcontext* ctx_;
 };

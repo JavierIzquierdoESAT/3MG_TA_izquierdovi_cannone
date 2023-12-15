@@ -2,11 +2,19 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "AL/al.h"
+#include "AL/alc.h"
 
 #include "time.hpp"
 
-Engine::Engine() { glfwInit(); }
+Engine::Engine() { glfwInit(); 
+    device_ = alcOpenDevice(NULL);
+  ctx_ = alcCreateContext(device_, NULL);
+  alcMakeContextCurrent(ctx_);
+}
 
-Engine::~Engine() { glfwTerminate(); }
+Engine::~Engine() { 
+  alcCloseDevice(device_);
+  glfwTerminate(); }
 
 void Engine::update() { Time::Update(); }
