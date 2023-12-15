@@ -74,12 +74,12 @@ int main(int, char**) {
     if (count == resultado.size()) break;
     count = 0;
   }
-
+  
   std::cout << glfwGetTime() - start << std::endl;
 
   for (auto& a : resultado) {
     std::cout << a.get()->texture_;
   }
-
+  b.set_stop(true);
   return 0;
 }

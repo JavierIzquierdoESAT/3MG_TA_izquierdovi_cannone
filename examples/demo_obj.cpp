@@ -162,5 +162,7 @@ int main(int, char**) {
     w.update();
   }
 
+    j.set_stop(true);
+
   return 0;
 }
