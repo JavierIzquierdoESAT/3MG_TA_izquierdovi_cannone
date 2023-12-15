@@ -14,7 +14,9 @@ Engine::Engine() { glfwInit();
 }
 
 Engine::~Engine() { 
+  
+  glfwTerminate(); 
   alcCloseDevice(device_);
-  glfwTerminate(); }
+}
 
 void Engine::update() { Time::Update(); }

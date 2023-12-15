@@ -11,26 +11,26 @@
 #include "input.hpp"
 
 Window::Window(GLFWwindow* w, Engine* e)
-    : window_handle_{w}, engine_{e} {
+    : window_handle_{w}, engine_{e}, io_{nullptr} {
   glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwMakeContextCurrent(w);
   glewInit();
   ImGui::CreateContext();
-  ImGuiIO& io_ = ImGui::GetIO();
+  io_ = &ImGui::GetIO();
   (void)io_;
   ImGui_ImplGlfwGL3_Init(w, true);
   ImGui::StyleColorsDark();
 }
 
 Window::Window(Window& w)
-    : window_handle_{w.window_handle_}, engine_{w.engine_} {
+    : window_handle_{w.window_handle_}, engine_{w.engine_}, io_{w.io_} {
   w.window_handle_ = NULL;
 }
 
 Window::Window(Window&& w) noexcept
-    : window_handle_{w.window_handle_}, engine_{w.engine_}{
+    : window_handle_{w.window_handle_}, engine_{w.engine_}, io_{w.io_} {
   w.window_handle_ = NULL;
 }
 
@@ -64,10 +64,12 @@ Window Window::Make(Engine& e, int w, int h, const std::string& title) {
 }
 
 void Window::update() const {
-  ImGui::Render();
-  ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
+
   glfwSwapBuffers(window_handle_);
+  ImGui::Render();
+  //ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
   glClear(GL_COLOR_BUFFER_BIT);
+
   InputManager::update();
   engine_->update();
 }

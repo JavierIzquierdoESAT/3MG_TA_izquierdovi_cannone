@@ -53,6 +53,6 @@ class Window {
   /** openGL window handle */
   GLFWwindow* window_handle_;
   Engine* engine_;
-  //struct ImGuiIO& io_;
+  struct ImGuiIO* io_;
   
 };
