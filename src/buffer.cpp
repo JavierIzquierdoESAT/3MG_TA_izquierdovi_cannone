@@ -110,7 +110,6 @@ void Buffer::enableVertexArray(const unsigned int index,
                                const unsigned int size,
                                const unsigned int stride,
                                const unsigned long long offset) {
-  // TODO: void* cast warning fix
   glEnableVertexAttribArray(index);
 
   glVertexAttribPointer(index, size, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<const void*>(offset));

@@ -13,8 +13,7 @@ class ShaderManager {
  public:
 
   ~ShaderManager();
-
-  //TODO: Create a Make for this class and follow RAII 
+  
   static std::optional<ShaderManager> MakeShaders(const std::string& file_fragment, const std::string& file_vertex);
 
   /// @brief attaches a shader object to a program object
@@ -22,8 +21,7 @@ class ShaderManager {
 
   /// @brief installs a program object as part of current rendering state
   void useProgram();
-
-  // TODO: This function isn't implemented
+  
   void setUniformValue(DataType dt, const float* number, const std::string& uniform_name);
 
  private:
