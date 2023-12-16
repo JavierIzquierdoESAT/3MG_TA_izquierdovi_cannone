@@ -44,6 +44,7 @@ class Window {
 
   /// @brief swaps screen buffers
   void update() const;
+  void renderImgui() const;
 
   GLFWwindow* const GetWindow() { return window_handle_; }
 

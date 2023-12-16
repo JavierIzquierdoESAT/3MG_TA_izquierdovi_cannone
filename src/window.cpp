@@ -65,13 +65,18 @@ Window Window::Make(Engine& e, int w, int h, const std::string& title) {
 
 void Window::update() const {
 
-  glfwSwapBuffers(window_handle_);
+    
   ImGui::Render();
-  //ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
+  glfwSwapBuffers(window_handle_);
   glClear(GL_COLOR_BUFFER_BIT);
 
   InputManager::update();
   engine_->update();
+}
+
+void Window::renderImgui() const {
+  ImGui::Render();
+  ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 bool Window::isDone() const {

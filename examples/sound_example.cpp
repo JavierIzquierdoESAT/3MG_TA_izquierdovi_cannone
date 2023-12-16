@@ -10,6 +10,7 @@
 
 #include "window.hpp"
 #include "engine.hpp"
+#include "imgui/imgui_impl_glfw_gl3.h"
 
 
 int main(int argv, char** args) {
@@ -64,15 +65,16 @@ int main(int argv, char** args) {
     while (!window.isDone()) {
 
         
-        glClear(GL_COLOR_BUFFER_BIT);
+      
         
         //Use the system to set the status od the audio comps
         SoundSystem(component_manager.getCompactIterator<AudioSource>(),
                     component_manager.getIterator<Position>());
 
 
-
+        window.renderImgui();
         window.update();
+    
     }
 
     //unbid all the buffers from the sources before delete
