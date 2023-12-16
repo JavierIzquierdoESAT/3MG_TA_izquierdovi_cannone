@@ -6,7 +6,7 @@
 #include "time.hpp"
 #include "window.hpp"
 
-InputButtonMap inputMap{
+InputButtonMap g_input_map{
     {"1Up", {InputButton::W}},      {"1Down", {InputButton::S}},
     {"1Left", {InputButton::A}},    {"1Right", {InputButton::D}},
 
@@ -133,7 +133,7 @@ int main(int, char**) {
     }
   }
 
-  InputManager i(window, inputMap);
+  InputManager i(window, g_input_map);
 
   while (!window.isDone()) {
     InputMoveSystem(component_manager.getCompactIterator<Movement>(),
