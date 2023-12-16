@@ -51,7 +51,7 @@ int TriangleTutorial() {
   return 0;
 }
 
-InputButtonMap inputMap{
+InputButtonMap g_input_map{
     {"Up", {InputButton::W, InputButton::UP}},
     {"Down", {InputButton::S, InputButton::DOWN}},
     {"Left", {InputButton::A, InputButton::LEFT}},
@@ -62,7 +62,7 @@ int InputTutorial() {
   Engine engine;
   Window window = Window::Make(engine, 640, 480, "ventana");
   //++++++++++++++++++++++++
-  InputManager input(window, inputMap);
+  InputManager input(window, g_input_map);
   //++++++++++++++++++++++++
 
   ComponentManager component_manager;
@@ -109,7 +109,7 @@ int main(int, char**) {
   Engine engine;
   // TODO: maybe we don't need the make anymore
   Window window = Window::Make(engine, 640, 480, "ventana");
-  InputManager input(window, inputMap);
+  InputManager input(window, g_input_map);
 
   ComponentManager component_manager;
   Position pos(0.0f, 0.0f, 0.0f);
