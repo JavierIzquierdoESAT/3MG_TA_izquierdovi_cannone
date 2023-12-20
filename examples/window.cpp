@@ -36,7 +36,7 @@ int TriangleTutorial() {
           .value();
   Render ren =
       Render::MakeTriangle(0.5f, Vec3(1.0f, 0.0f, 0.0f), shader_program);
-  unsigned triangle = component_manager.addEntity<Position, Render>(pos, ren);
+  component_manager.addEntity<Position, Render>(pos, ren);
   //++++++++++++++++++++++++
 
   while (!window.isDone()) {
