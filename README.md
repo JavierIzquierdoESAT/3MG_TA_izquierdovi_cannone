@@ -12,3 +12,7 @@ with that you can open build/CopperfieldEngine.sln with visual studio.
 in there, you can hit the play button or f5 and a demo window should appear.  
 you can also right click on any of the other demos and click on "set as startup project", then hit the play button or f5 to see it.  
 (the Demo projects are the ones to be evaluated)
+
+## Documentation
+The engine usage documentation can be found at https://copperfield-engine-docs.web.app
+the documentation is still an early work in progress.
