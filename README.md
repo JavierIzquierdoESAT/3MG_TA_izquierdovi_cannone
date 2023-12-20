@@ -14,5 +14,5 @@ you can also right click on any of the other demos and click on "set as startup 
 (the Demo projects are the ones to be evaluated)
 
 ## Documentation
-The engine usage documentation can be found at https://copperfield-engine-docs.web.app
+The engine usage documentation can be found at https://copperfield-engine-docs.web.app  
 the documentation is still an early work in progress.
