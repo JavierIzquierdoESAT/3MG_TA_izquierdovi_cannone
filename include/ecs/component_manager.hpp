@@ -15,6 +15,7 @@
 #include "math/vector_2.h"
 #include "math/vector_3.h"
 
+/// @brief Abstracto for component usage
 class ComponentManager {
  public:
   /// @brief
