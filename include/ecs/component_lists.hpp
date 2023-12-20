@@ -1,27 +1,51 @@
 #pragma once
 
-enum class ComponentListType { kCompact, kSparse };
+/// @brief type of container
+enum class ComponentListType {
+  kCompact,  ///< for compoenents used by few entities
+  kSparse    ///< for compnents that are used by most entities
+};
 
+/// @brief Interface for the different Component containers
 class ComponentListBase {
  public:
   friend class ComponentManager;
 
+  /// @brief
+  /// @param t
   ComponentListBase(ComponentListType t) : type_{t} {}
+
+  /// @brief type of container used
   const ComponentListType type_;
 
   virtual ~ComponentListBase() = default;
 
  protected:
+  /// @brief performs needed operations on the container when adding entities 
+  /// to the program
+  /// @param e entity id
+  /// @return true if the opertions were succesful
   virtual bool addEntity(unsigned e) = 0;
+
+  /// @brief performs needed operations on the container when deleting entities
+  /// @param e entity id
+  /// @return true if the opertions were succesful
   virtual bool removeComponent(unsigned e) = 0;
 };
 
+/// @brief Container for compnents that are used by most entities
+/// 
+/// all of these containers will have the same size, wich will be number of
+/// entities, this means that there will be a blank for entities that dont use 
+/// this component type, wasting performance when iterating them
+/// @tparam T Component to store
 template <typename T>
 class ComponentListSparse : public ComponentListBase {
  public:
   friend class ComponentManager;
   ComponentListSparse() : ComponentListBase(ComponentListType::kSparse) {}
 
+  /// @brief provides an stardat way of iterating the container
   struct Iterator {
     using iterator_category = std::forward_iterator_tag;
     using difference_type = std::ptrdiff_t;
@@ -80,12 +104,18 @@ class ComponentListSparse : public ComponentListBase {
   std::vector<std::optional<T>> components_;
 };
 
+/// @brief Container for compoenents used by few entities
+/// 
+/// this container has a slower access to each of component while iterating 
+/// throug them, but elements will always have a component
+/// @tparam T Component to store
 template <typename T>
 class ComponentListCompact : public ComponentListBase {
  public:
   friend class ComponentManager;
   ComponentListCompact() : ComponentListBase(ComponentListType::kCompact) {}
 
+  /// @brief provides an stardat way of iterating the container
   struct Iterator {
     using iterator_category = std::forward_iterator_tag;
     using difference_type = std::ptrdiff_t;
@@ -117,8 +147,14 @@ class ComponentListCompact : public ComponentListBase {
    private:
     pointer m_ptr_;
   };
-
+  
+  /// @brief get the first element of the container
+  /// @return iterator
   Iterator begin() { return Iterator(&components_[0]); };
+
+  /// @brief get the component of a specific entity
+  /// @param e entity to retrieve the component from
+  /// @return iterator or end() if not found
   Iterator at(unsigned e) {
     // TODO: posible bug converting form vector iterator to ComponentListCompact
     // iterator
@@ -129,6 +165,8 @@ class ComponentListCompact : public ComponentListBase {
     if (lb->first == e) return Iterator(&components_.at(pos));
     return end();
   }
+  /// @brief get the last element + 1 (the element cannot be used)
+  /// @return iterator
   Iterator end() {
     auto it = Iterator(&components_[components_.size() - 1]);
     it++;

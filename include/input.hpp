@@ -7,7 +7,7 @@
 struct GLFWwindow;
 class Window;
 
-/// @enum allowed input buttons
+/// allowed input buttons
 enum class InputButton {
   UNKNOWN = -1,
 

@@ -6,7 +6,6 @@
 #include <optional>
 #include "tiny_obj_loader.h"
 
-
 class Mesh {
 public:
     Mesh() = default;
