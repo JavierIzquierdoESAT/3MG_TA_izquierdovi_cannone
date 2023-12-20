@@ -11,7 +11,6 @@
 #include "engine.hpp"
 #include "shader_manager.hpp"
 #include "time.hpp"
-#include "triangle.hpp"
 
 using namespace coma;
 
