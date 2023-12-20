@@ -9,15 +9,20 @@
 #include "shader_manager.hpp"
 #include "sound/soundsource.h"
 
+///@brief Component storing position in world
 struct Position {
   Position() : pos{coma::Vec3(0, 0, 0)} {}
   Position(float x, float y, float z) : pos{coma::Vec3(x, y, z)} {}
 
+  /// @brief current position in world
   coma::Vec3 pos;
 };
 
+/// @brief Component used for performing automated movement
 struct AI {
+  /// @brief iterations moved in the same direction
   unsigned counter = 0;
+  /// @brief direction currently moving to
   bool right = false;
 };
 
@@ -57,9 +62,10 @@ struct Render {
     return *this;
   };
 
-  // TODO: posibly useless to store
+  /// @brief shaders to use while renderign this entity
   class ShaderManager& shaderProgram;
-
+  /// @brief GPU buffer storing vertex positions, normals and uvs
   Buffer buffer;
+  /// @brief GPU buffer containing the order in which to paint the vercices
   Buffer index_buffer;
 };

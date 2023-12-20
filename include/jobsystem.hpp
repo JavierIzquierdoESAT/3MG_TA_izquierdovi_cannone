@@ -6,6 +6,7 @@
 #include <queue>
 #include <thread>
 
+/// @brief Manages multithread tasks
 class JobSystem {
  public:
   JobSystem();
