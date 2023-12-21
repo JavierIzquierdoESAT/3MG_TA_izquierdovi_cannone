@@ -1,4 +1,6 @@
 #pragma once
+#include "component_manager.hpp"
+#include "component_manager.hpp"
 
 /// @brief type of container
 enum class ComponentListType {
@@ -145,10 +147,10 @@ public:
     }
     friend bool operator==(const Iterator& a, const Iterator& b) {
       return a.m_ptr_ == b.m_ptr_;
-    };
+    }
     friend bool operator!=(const Iterator& a, const Iterator& b) {
       return a.m_ptr_ != b.m_ptr_;
-    };
+    }
 
   private:
     pointer m_ptr_;
@@ -156,7 +158,7 @@ public:
 
   /// @brief get the first element of the container
   /// @return iterator
-  Iterator begin() { return Iterator(&components_[0]); };
+  Iterator begin() { return Iterator(&components_[0]); }
 
   /// @brief get the component of a specific entity
   /// @param e entity to retrieve the component from
@@ -222,40 +224,43 @@ private:
   std::vector<std::pair<unsigned, T>> components_;
 };
 
-template <typename T, typename U>
+template <class... Types>
 class ComponentIterator {
 public:
-  ComponentIterator(ComponentListSparse<T>& tone, ComponentListSparse<U>& ttwo)
-    : cone_(tone),
-      ctwo_(ttwo),
-      tone_(tone.begin()),
-      ttwo_(ttwo.begin()),
-      current_(nullptr) {}
+  ComponentIterator(Types&... list)
+    : lists(std::make_tuple(list...)) {}
 
-  bool next() {
-    for (; tone_ != cone_.end() && ttwo_ != ctwo_.end();
-           ++tone_, ++ttwo_) {
-      if (!tone_->has_value() || !ttwo_->has_value()) continue;
-      current_ = std::make_pair(tone_->value(), ttwo_->value());
-      return true;
+  // ComponentIterator(ComponentListSparse<T>& tone, ComponentListSparse<U>& ttwo)
+  //   : cone_(tone),
+  //     ctwo_(ttwo),
+  //     tone_(tone.begin()),
+  //     ttwo_(ttwo.begin()),
+  //     current_(nullptr) {}
 
-    }
-    return nullptr;
-  }
-  std::pair<T&, U&>& value() {
-    return current_.value();
-  }
-  T& first() {
-    return current_.value().first();
-  }
-  U& second() {
-    return current_.value().second();
-  }
+  // bool next() {
+  //   std::apply([](auto& list...) -> ComponentIterator{
+  //     
+  //   }, lists);
+  //   for (; tone_ != cone_.end() && ttwo_ != ctwo_.end();
+  //          ++tone_, ++ttwo_) {
+  //     if (!tone_->has_value() || !ttwo_->has_value()) continue;
+  //     current_ = std::make_pair(tone_->value(), ttwo_->value());
+  //     return true;
+  //
+  //   }
+  //   return nullptr;
+  // }
+  // std::pair<T&, U&>& value() {
+  //   return current_.value();
+  // }
+  // T& first() {
+  //   return current_.value().first();
+  // }
+  // U& second() {
+  //   return current_.value().second();
+  // }
 
 private:
-  ComponentListSparse<T>* cone_;
-  ComponentListSparse<T>* ctwo_;
-  typename ComponentListSparse<T>::Iterator tone_;
-  typename ComponentListSparse<U>::Iterator ttwo_;
-  std::optional<std::pair<T&, U&>> current_;
+  std::tuple<Types&&...> lists;
+  //std::tuple<Types& ...> current;
 };

@@ -110,6 +110,14 @@ class ComponentManager {
     return *component_vector;
   }
 
+  template <typename T>
+  ComponentList<T>& getList() {
+    auto comp_base = components_.find(typeid(T).hash_code());
+    ComponentList<T>* component_vector =
+        static_cast<ComponentList<T>*>(comp_base->second.get());
+    return *component_vector;
+  }
+
   /// @brief retrieves all the components of the specified type
   /// @tparam T component type
   /// @return all T components

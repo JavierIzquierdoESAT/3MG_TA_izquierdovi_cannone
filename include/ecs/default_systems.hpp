@@ -42,19 +42,19 @@ void RenderSystem(std::vector<std::optional<Position>>& positions,
 
 void CircleMoveSystem(ComponentListSparse<Position>& positions,
                       ComponentListSparse<AI>& ai_cmp) {
-  ComponentIterator<Position, AI> it(positions, ai_cmp);
-  while (it.next()) {
-    auto& pv = it.first();
-    auto& aiv = it.second();
-
-    aiv.counter++;
-    if (aiv.counter > 20) {
-      aiv.right = !aiv.right;
-      aiv.counter = 0;
-    }
-    if (aiv.right)
-      pv.pos.x += 0.05f;
-    else
-      pv.pos.x -= 0.05f;
-  }
+  ComponentIterator it(positions, ai_cmp);
+  // while (it.next()) {
+  //   auto& pv = it.first();
+  //   auto& aiv = it.second();
+  //
+  //   aiv.counter++;
+  //   if (aiv.counter > 20) {
+  //     aiv.right = !aiv.right;
+  //     aiv.counter = 0;
+  //   }
+  //   if (aiv.right)
+  //     pv.pos.x += 0.05f;
+  //   else
+  //     pv.pos.x -= 0.05f;
+  // }
 }
