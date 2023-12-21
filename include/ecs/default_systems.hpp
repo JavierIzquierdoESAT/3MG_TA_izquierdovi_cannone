@@ -11,7 +11,7 @@
 #include "math/vector_3.h"
 
 void RenderSystem(std::vector<std::optional<Position>>& positions,
-                   std::vector<std::optional<Render>>& render) {
+                  std::vector<std::optional<Render>>& render) {
   auto p = positions.begin();
   auto r = render.begin();
 
@@ -22,16 +22,17 @@ void RenderSystem(std::vector<std::optional<Position>>& positions,
 
     float posToArr[3] = {pv.pos.x, pv.pos.y, pv.pos.z};
     rv.shaderProgram.setUniformValue(DataType::FLOAT_3, posToArr, "position");
-    float colToArr[3] = {1,0,1};
+    float colToArr[3] = {1, 0, 1};
     rv.shaderProgram.setUniformValue(DataType::FLOAT_3, colToArr,
-                                      "initialUniform");
+                                     "initialUniform");
 
     rv.buffer.bindBuffer(Buffer::Target::kTarget_Vertex_Data);
     rv.buffer.bindVertexArray();
     rv.index_buffer.bindBuffer(Buffer::Target::kTarget_Elements);
 
     // TODO: parametrize indices
-    glDrawElements(GL_TRIANGLES, rv.index_buffer.size() / sizeof(short int), GL_UNSIGNED_SHORT, 0);
+    glDrawElements(GL_TRIANGLES, rv.index_buffer.size() / sizeof(short int),
+                   GL_UNSIGNED_SHORT, 0);
     //glBindVertexArray(0);
     //glDrawArrays(GL_TRIANGLES, 0, 3);
     // Render
@@ -41,12 +42,10 @@ void RenderSystem(std::vector<std::optional<Position>>& positions,
 
 void CircleMoveSystem(ComponentListSparse<Position>& positions,
                       ComponentListSparse<AI>& ai_cmp) {
-  auto p_it = positions.begin();
-  auto ai_it = ai_cmp.begin();
-  for (; p_it != positions.end() && ai_it != ai_cmp.end(); ++p_it, ++ai_it) {
-    if (!p_it->has_value() || !ai_it->has_value()) continue;
-    auto& pv = p_it->value();
-    auto& aiv = ai_it->value();
+  ComponentIterator<Position, AI> it(positions, ai_cmp);
+  while (it.next()) {
+    auto& pv = it.first();
+    auto& aiv = it.second();
 
     aiv.counter++;
     if (aiv.counter > 20) {

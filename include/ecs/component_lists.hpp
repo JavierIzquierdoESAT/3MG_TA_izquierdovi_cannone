@@ -8,7 +8,7 @@ enum class ComponentListType {
 
 /// @brief Interface for the different Component containers
 class ComponentListBase {
- public:
+public:
   friend class ComponentManager;
 
   /// @brief
@@ -20,7 +20,7 @@ class ComponentListBase {
 
   virtual ~ComponentListBase() = default;
 
- protected:
+protected:
   /// @brief performs needed operations on the container when adding entities 
   /// to the program
   /// @param e entity id
@@ -33,6 +33,12 @@ class ComponentListBase {
   virtual bool removeComponent(unsigned e) = 0;
 };
 
+template <typename T>
+class ComponentList : public ComponentListBase {
+public:
+  ComponentList(ComponentListType t) : ComponentListBase(t) {}
+};
+
 /// @brief Container for compnents that are used by most entities
 /// 
 /// all of these containers will have the same size, wich will be number of
@@ -40,10 +46,10 @@ class ComponentListBase {
 /// this component type, wasting performance when iterating them
 /// @tparam T Component to store
 template <typename T>
-class ComponentListSparse : public ComponentListBase {
- public:
+class ComponentListSparse : public ComponentList<T> {
+public:
   friend class ComponentManager;
-  ComponentListSparse() : ComponentListBase(ComponentListType::kSparse) {}
+  ComponentListSparse() : ComponentList<T>(ComponentListType::kSparse) {}
 
   /// @brief provides an stardat way of iterating the container
   struct Iterator {
@@ -74,7 +80,7 @@ class ComponentListSparse : public ComponentListBase {
       return a.m_ptr_ != b.m_ptr_;
     };
 
-   private:
+  private:
     pointer m_ptr_;
   };
 
@@ -86,7 +92,7 @@ class ComponentListSparse : public ComponentListBase {
     return it;
   }
 
- private:
+private:
   bool addEntity(unsigned e) override {
     if (e >= components_.size()) {
       components_.emplace_back(std::optional<T>());
@@ -110,10 +116,10 @@ class ComponentListSparse : public ComponentListBase {
 /// throug them, but elements will always have a component
 /// @tparam T Component to store
 template <typename T>
-class ComponentListCompact : public ComponentListBase {
- public:
+class ComponentListCompact : public ComponentList<T> {
+public:
   friend class ComponentManager;
-  ComponentListCompact() : ComponentListBase(ComponentListType::kCompact) {}
+  ComponentListCompact() : ComponentList<T>(ComponentListType::kCompact) {}
 
   /// @brief provides an stardat way of iterating the container
   struct Iterator {
@@ -144,10 +150,10 @@ class ComponentListCompact : public ComponentListBase {
       return a.m_ptr_ != b.m_ptr_;
     };
 
-   private:
+  private:
     pointer m_ptr_;
   };
-  
+
   /// @brief get the first element of the container
   /// @return iterator
   Iterator begin() { return Iterator(&components_[0]); };
@@ -173,7 +179,7 @@ class ComponentListCompact : public ComponentListBase {
     return it;
   }
 
- private:
+private:
   static bool compare(std::pair<unsigned, T>& x, unsigned e) {
     return x.first < e;
   }
@@ -214,4 +220,42 @@ class ComponentListCompact : public ComponentListBase {
   }
 
   std::vector<std::pair<unsigned, T>> components_;
+};
+
+template <typename T, typename U>
+class ComponentIterator {
+public:
+  ComponentIterator(ComponentListSparse<T>& tone, ComponentListSparse<U>& ttwo)
+    : cone_(tone),
+      ctwo_(ttwo),
+      tone_(tone.begin()),
+      ttwo_(ttwo.begin()),
+      current_(nullptr) {}
+
+  bool next() {
+    for (; tone_ != cone_.end() && ttwo_ != ctwo_.end();
+           ++tone_, ++ttwo_) {
+      if (!tone_->has_value() || !ttwo_->has_value()) continue;
+      current_ = std::make_pair(tone_->value(), ttwo_->value());
+      return true;
+
+    }
+    return nullptr;
+  }
+  std::pair<T&, U&>& value() {
+    return current_.value();
+  }
+  T& first() {
+    return current_.value().first();
+  }
+  U& second() {
+    return current_.value().second();
+  }
+
+private:
+  ComponentListSparse<T>* cone_;
+  ComponentListSparse<T>* ctwo_;
+  typename ComponentListSparse<T>::Iterator tone_;
+  typename ComponentListSparse<U>::Iterator ttwo_;
+  std::optional<std::pair<T&, U&>> current_;
 };
