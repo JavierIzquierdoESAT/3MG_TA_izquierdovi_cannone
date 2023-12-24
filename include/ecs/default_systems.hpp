@@ -44,18 +44,19 @@ void CircleMoveSystem(ComponentListSparse<Position>& positions,
                       ComponentListSparse<AI>& ai_cmp) {
   ComponentIterator it(positions, ai_cmp);
    while (it.next()) {
-      Position& p = it.get<ComponentListSparse<Position>::Iterator>().operator*().value();
+      Position& pv = it.get<ComponentListSparse<Position>::Iterator>().operator*().value();
+     AI& aiv = it.get<ComponentListSparse<AI>::Iterator>().operator*().value();
   //   auto& pv = it.first();
   //   auto& aiv = it.second();
   //
-  //   aiv.counter++;
-  //   if (aiv.counter > 20) {
-  //     aiv.right = !aiv.right;
-  //     aiv.counter = 0;
-  //   }
-  //   if (aiv.right)
-  //     pv.pos.x += 0.05f;
-  //   else
-  //     pv.pos.x -= 0.05f;
+  aiv.counter++;
+  if (aiv.counter > 20) {
+    aiv.right = !aiv.right;
+    aiv.counter = 0;
+  }
+  if (aiv.right)
+    pv.pos.x += 0.05f;
+  else
+    pv.pos.x -= 0.05f;
    }
 }
