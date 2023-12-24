@@ -52,9 +52,10 @@ class ComponentListSparse : public ComponentList<T> {
 public:
   friend class ComponentManager;
   ComponentListSparse() : ComponentList<T>(ComponentListType::kSparse) {}
-
+  using ComponentType = T;
   /// @brief provides an stardat way of iterating the container
   struct Iterator {
+    using inner_type = T;
     using iterator_category = std::forward_iterator_tag;
     using difference_type = std::ptrdiff_t;
     using value_type = std::optional<T>;
@@ -122,7 +123,7 @@ class ComponentListCompact : public ComponentList<T> {
 public:
   friend class ComponentManager;
   ComponentListCompact() : ComponentList<T>(ComponentListType::kCompact) {}
-
+  using ComponentType = T;
   /// @brief provides an stardat way of iterating the container
   struct Iterator {
     using iterator_category = std::forward_iterator_tag;
@@ -137,7 +138,7 @@ public:
     pointer operator->() { return m_ptr_; }
 
     Iterator& operator++() {
-      m_ptr_++;
+      ++m_ptr_;
       return *this;
     }
     Iterator operator++(int) {
@@ -177,7 +178,7 @@ public:
   /// @return iterator
   Iterator end() {
     auto it = Iterator(&components_[components_.size() - 1]);
-    it++;
+    ++it;
     return it;
   }
 
@@ -228,39 +229,53 @@ template <class... Types>
 class ComponentIterator {
 public:
   ComponentIterator(Types&... list)
-    : lists(std::make_tuple(list...)) {}
-
-  // ComponentIterator(ComponentListSparse<T>& tone, ComponentListSparse<U>& ttwo)
-  //   : cone_(tone),
-  //     ctwo_(ttwo),
-  //     tone_(tone.begin()),
-  //     ttwo_(ttwo.begin()),
-  //     current_(nullptr) {}
-
-  // bool next() {
-  //   std::apply([](auto& list...) -> ComponentIterator{
-  //     
-  //   }, lists);
-  //   for (; tone_ != cone_.end() && ttwo_ != ctwo_.end();
-  //          ++tone_, ++ttwo_) {
-  //     if (!tone_->has_value() || !ttwo_->has_value()) continue;
-  //     current_ = std::make_pair(tone_->value(), ttwo_->value());
-  //     return true;
-  //
-  //   }
-  //   return nullptr;
-  // }
-  // std::pair<T&, U&>& value() {
-  //   return current_.value();
-  // }
-  // T& first() {
-  //   return current_.value().first();
-  // }
-  // U& second() {
-  //   return current_.value().second();
-  // }
+    : lists_(std::make_tuple(list...)),
+      iterators_(std::make_tuple(list.begin()...)) {}
+  
+  bool next() {
+    auto all_in_range = [](auto&... its) {
+      return (true && ... && (its != nullptr));
+    };
+    auto add_to_iterator = [](auto&... its) {
+      (++its, ...);
+    };
+    auto all_have_value = [](auto&... its) {
+      return (true && ... && its->has_value());
+    };
+    
+    while(std::apply(all_in_range, iterators_)) {
+      if(std::apply(all_have_value, iterators_))
+        return true;
+      std::apply(add_to_iterator, iterators_);
+    }
+    return false;
+  }
+  template <typename T>
+  const auto& get() const {
+    return std::get<T>(iterators_);
+  }
 
 private:
-  std::tuple<Types&&...> lists;
-  //std::tuple<Types& ...> current;
+  std::tuple<Types&&...> lists_;
+  std::tuple<typename Types::Iterator...> iterators_;
 };
+
+
+// bool next() {
+//   auto all_in_range = [](auto&... its, auto&... lists) {
+//     return (true && ... && (its != lists.end()));
+//   };
+//   auto add_to_iterator = [](auto&... its) {
+//     (++its, ...);
+//   };
+//   auto all_have_value = [](auto&... its) {
+//     return (true && ... && its->has_value());
+//   };
+//   std::apply(all_in_range, iterators_)
+//   while(std::apply(all_in_range, iterators_)) {
+//     if(std::apply(all_have_value, iterators_))
+//       return true;
+//     std::apply(add_to_iterator, iterators_);
+//   }
+//   return false;
+// }
