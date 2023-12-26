@@ -81,8 +81,12 @@ public:
     friend bool operator!=(const Iterator& a, const Iterator& b) {
       return a.m_ptr_ != b.m_ptr_;
     };
-    pointer current(){return m_ptr_;};
+    pointer current() { return m_ptr_; };
     pointer end() { return m_end_; };
+    T& component() const {
+      return m_ptr_->value();
+    }
+
   private:
     pointer m_ptr_;
     pointer m_end_;
@@ -267,32 +271,23 @@ public:
     return false;
   }
 
-  template <typename T>
-  const T& get() const {
-    return std::get<T>(iterators_);
+  auto get() const {
+    return std::apply(
+        [](auto&... its) {
+          return std::make_tuple(std::ref(its.component())...);
+        },
+        iterators_);
+    //return std::make_tuple(std::ref(std::get<0>(iterators_).component()));
+
+    // auto tuple = std::apply(
+    //     [](auto&... its) {
+    //       return std::make_tuple(std::ref(its.component())...);
+    //     },
+    //     iterators_);
+    // return tuple;
   }
 
 private:
   std::tuple<Types&&...> lists_;
   std::tuple<typename Types::Iterator...> iterators_;
 };
-
-
-// bool next() {
-//   auto all_in_range = [](auto&... its, auto&... lists) {
-//     return (true && ... && (its != lists.end()));
-//   };
-//   auto add_to_iterator = [](auto&... its) {
-//     (++its, ...);
-//   };
-//   auto all_have_value = [](auto&... its) {
-//     return (true && ... && its->has_value());
-//   };
-//   std::apply(all_in_range, iterators_)
-//   while(std::apply(all_in_range, iterators_)) {
-//     if(std::apply(all_have_value, iterators_))
-//       return true;
-//     std::apply(add_to_iterator, iterators_);
-//   }
-//   return false;
-// }

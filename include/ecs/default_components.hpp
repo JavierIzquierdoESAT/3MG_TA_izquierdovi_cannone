@@ -13,6 +13,11 @@ struct Position {
   Position() : pos{coma::Vec3(0, 0, 0)} {}
   Position(float x, float y, float z) : pos{coma::Vec3(x, y, z)} {}
 
+  Position(const Position& p):
+  pos{p.pos} {
+    std::cout<<"huh?";
+  }
+
   /// @brief current position in world
   coma::Vec3 pos;
 };

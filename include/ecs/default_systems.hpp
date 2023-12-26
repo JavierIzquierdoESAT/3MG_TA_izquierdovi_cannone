@@ -43,20 +43,16 @@ void RenderSystem(std::vector<std::optional<Position>>& positions,
 void CircleMoveSystem(ComponentListSparse<Position>& positions,
                       ComponentListSparse<AI>& ai_cmp) {
   ComponentIterator it(positions, ai_cmp);
-   while (it.next()) {
-      Position& pv = it.get<ComponentListSparse<Position>::Iterator>().operator*().value();
-     AI& aiv = it.get<ComponentListSparse<AI>::Iterator>().operator*().value();
-  //   auto& pv = it.first();
-  //   auto& aiv = it.second();
-  //
-  aiv.counter++;
-  if (aiv.counter > 20) {
-    aiv.right = !aiv.right;
-    aiv.counter = 0;
+  while (it.next()) {
+    auto [pv, aiv] = it.get();
+    aiv.counter++;
+    if (aiv.counter > 20) {
+      aiv.right = !aiv.right;
+      aiv.counter = 0;
+    }
+    if (aiv.right)
+      pv.pos.x += 0.05f;
+    else
+      pv.pos.x -= 0.05f;
   }
-  if (aiv.right)
-    pv.pos.x += 0.05f;
-  else
-    pv.pos.x -= 0.05f;
-   }
 }
