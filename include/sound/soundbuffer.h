@@ -42,7 +42,7 @@ struct WAVE_Data {
 class SoundBuffer {
  public:
   static std::optional<SoundBuffer> MakeBuffer(const std::string filename);
-  SoundBuffer(SoundBuffer&& b);
+  SoundBuffer(SoundBuffer&& b) noexcept;
   SoundBuffer(const SoundBuffer& b) = default;
   ALuint getBuffer();
   int Fequency();

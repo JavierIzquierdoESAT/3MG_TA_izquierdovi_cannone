@@ -9,7 +9,7 @@ std::optional<SoundBuffer> SoundBuffer::MakeBuffer(const std::string filename) {
   WAVE_Data wave_data;
   unsigned char* data;
   b.name_ = filename;
-  soundFile = fopen(filename.c_str(), "rb");
+  fopen_s(&soundFile, filename.c_str(),"rb");
   if (!soundFile) return b;
 
   // Read in the first chunk into the struct
@@ -88,7 +88,7 @@ std::optional<SoundBuffer> SoundBuffer::MakeBuffer(const std::string filename) {
   return std::move(b);
 }
 
-SoundBuffer::SoundBuffer(SoundBuffer&& b)
+SoundBuffer::SoundBuffer(SoundBuffer&& b) noexcept
     : buffer_{b.buffer_},
       active_{true},
       frequency_{b.frequency_},
