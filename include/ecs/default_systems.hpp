@@ -13,6 +13,7 @@
 
 inline void RenderSystem(std::vector<std::optional<Position>>& positions,
                   std::vector<std::optional<Render>>& render) {
+  auto start = std::chrono::system_clock::now();
   auto p = positions.begin();
   auto r = render.begin();
 
@@ -38,6 +39,9 @@ inline void RenderSystem(std::vector<std::optional<Position>>& positions,
     //glDrawArrays(GL_TRIANGLES, 0, 3);
     // Render
   }
+  auto end = std::chrono::system_clock::now();
+  std::chrono::nanoseconds elapsed = end - start;
+  std::cout << elapsed.count() <<"Render Loop" << '\n';
   assert(r == render.end());
 }
 
@@ -60,5 +64,5 @@ inline void CircleMoveSystem(ComponentListSparse<Position>& positions,
   }
   auto end = std::chrono::system_clock::now();
   std::chrono::nanoseconds elapsed = end - start;
-  std::cout << elapsed.count() <<"?" << '\n';
+  std::cout << elapsed.count() <<"AI Loop" << '\n';
 }

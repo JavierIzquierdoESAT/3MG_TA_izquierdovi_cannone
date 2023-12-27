@@ -148,7 +148,7 @@ public:
     using pointer = std::pair<unsigned, T>*;
     using reference = std::pair<unsigned, T>&;
 
-    Iterator(pointer ptr) : m_ptr_(ptr) {}
+    Iterator(pointer ptr, bool ends = false) : m_ptr_(ptr), valid_{ends}{}
 
     reference operator*() const { return *m_ptr_; }
     pointer operator->() { return m_ptr_; }
@@ -168,10 +168,17 @@ public:
     friend bool operator!=(const Iterator& a, const Iterator& b) {
       return a.m_ptr_ != b.m_ptr_;
     }
-    int pos() const { return 0; }
+    int pos() const { return m_ptr_->first; };
+    bool valid() const {
+      return valid_;
+    }
+    T& component() const {
+      return m_ptr_->second;
+    }
 
   private:
     pointer m_ptr_;
+    bool valid_;
   };
 
   /// @brief get the first element of the container
@@ -196,7 +203,7 @@ public:
   /// @brief get the last element + 1 (the element cannot be used)
   /// @return iterator
   Iterator end() {
-    auto it = Iterator(&components_[components_.size() - 1]);
+    auto it = Iterator(&components_[components_.size() - 1], true);
     ++it;
     return it;
   }
@@ -257,10 +264,11 @@ public:
       return (true && ... && lists->at(main_it_.pos()).valid());
     };
     auto it_end = main_list_->end();
-    ++main_it_;
+    
     while (main_it_ != it_end) {
       if (main_it_.valid()) {
         if (std::apply(all_exists, lists_)) {
+          ++main_it_;
           return true;
         }
       }
@@ -272,7 +280,7 @@ public:
     return std::apply(
         [this](auto&... lists) {
           return std::make_tuple(std::ref(main_it_.component()),
-                                 std::ref(lists->at(main_it_.pos()).component())
+                                 std::ref(lists->at(main_it_.pos()-1).component())
                                  ...);
         },
         lists_);

@@ -129,11 +129,14 @@ class ComponentManager {
     return component_vector->components_;
   }
 
- private:
+
   /// @brief creates an entity with no components the needed components for the
   /// entity must be inserted using setComponent
   /// @return entity id
   unsigned addEntity();
+
+ private:
+
 
   // map containint all component lists
   std::unordered_map<std::size_t, std::unique_ptr<ComponentListBase>>
