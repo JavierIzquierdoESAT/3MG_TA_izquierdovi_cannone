@@ -61,18 +61,20 @@ public:
     using pointer = std::optional<T>*;    // or also value_type*
     using reference = std::optional<T>&;  // or also value_type&
 
-    Iterator(pointer ptr, pointer e) : m_ptr_(ptr), m_end_(e) {}
+    Iterator(pointer ptr, int pos) : m_ptr_(ptr), pos_(pos) {}
 
     reference operator*() const { return *m_ptr_; }
     pointer operator->() { return m_ptr_; }
 
     Iterator& operator++() {
       ++m_ptr_;
+      ++pos_;
       return *this;
     }
     Iterator operator++(int) {
       Iterator tmp = *this;
       ++(*this);
+      ++this->pos_;
       return tmp;
     }
     friend bool operator==(const Iterator& a, const Iterator& b) {
@@ -81,27 +83,30 @@ public:
     friend bool operator!=(const Iterator& a, const Iterator& b) {
       return a.m_ptr_ != b.m_ptr_;
     };
-    pointer current() { return m_ptr_; };
-    pointer end() { return m_end_; };
+
+    int pos() const { return pos_; };
+    bool valid() {
+      return m_ptr_->has_value();
+    }
     T& component() const {
       return m_ptr_->value();
     }
 
   private:
     pointer m_ptr_;
-    pointer m_end_;
+    int pos_;
   };
 
   Iterator begin() {
-    return Iterator(&components_[0], &components_[components_.size() - 1]);
+    return Iterator(&components_[0], 1);
   };
   Iterator at(unsigned e) {
     return Iterator(&components_.at(e - 1),
-                    &components_[components_.size() - 1]);
+                    e);
   }
   Iterator end() {
     auto it = Iterator(&components_[components_.size() - 1],
-                       &components_[components_.size() - 1]);
+                       components_.size());
     ++it;
     return it;
   }
@@ -143,7 +148,7 @@ public:
     using pointer = std::pair<unsigned, T>*;
     using reference = std::pair<unsigned, T>&;
 
-    Iterator(pointer ptr, pointer e) : m_ptr_(ptr), m_end_(e) {}
+    Iterator(pointer ptr) : m_ptr_(ptr) {}
 
     reference operator*() const { return *m_ptr_; }
     pointer operator->() { return m_ptr_; }
@@ -163,18 +168,16 @@ public:
     friend bool operator!=(const Iterator& a, const Iterator& b) {
       return a.m_ptr_ != b.m_ptr_;
     }
-
-    pointer end() { return m_end_; };
+    int pos() const { return 0; }
 
   private:
     pointer m_ptr_;
-    pointer m_end_;
   };
 
   /// @brief get the first element of the container
   /// @return iterator
   Iterator begin() {
-    return Iterator(&components_[0], &components_[components_.size() - 1]);
+    return Iterator(&components_[0]);
   }
 
   /// @brief get the component of a specific entity
@@ -187,15 +190,13 @@ public:
 
     size_t pos = lb - components_.begin();
     if (lb->first == e)
-      return Iterator(&components_.at(pos),
-                      &components_[components_.size() - 1]);
+      return Iterator(&components_.at(pos));
     return end();
   }
   /// @brief get the last element + 1 (the element cannot be used)
   /// @return iterator
   Iterator end() {
-    auto it = Iterator(&components_[components_.size() - 1],
-                       &components_[components_.size() - 1]);
+    auto it = Iterator(&components_[components_.size() - 1]);
     ++it;
     return it;
   }
@@ -243,51 +244,42 @@ private:
   std::vector<std::pair<unsigned, T>> components_;
 };
 
-template <class... Types>
+template <typename T, typename... Types>
 class ComponentIterator {
 public:
-  ComponentIterator(Types&... list)
-    : lists_(std::make_tuple(list...)),
-      iterators_(std::make_tuple(list.begin()...)) {}
+  ComponentIterator(T& main, Types&... list)
+    : lists_(std::make_tuple(&list...)),
+      main_list_(&main),
+      main_it_(main.begin()) {}
 
   bool next() {
-    auto all_in_range = [](auto&... its) {
-      return (true && ... && (its.current() <= its.end()));
+    auto all_exists = [this](auto&... lists) -> bool {
+      return (true && ... && lists->at(main_it_.pos()).valid());
     };
-    auto add_to_iterator = [](auto&... its) {
-      (++its, ...);
-    };
-    auto all_have_value = [](auto&... its) {
-      return (true && ... && its->has_value());
-    };
-
-    while (std::apply(all_in_range, iterators_)) {
-      if (std::apply(all_have_value, iterators_)) {
-        std::apply(add_to_iterator, iterators_);
-        return true;
+    auto it_end = main_list_->end();
+    ++main_it_;
+    while (main_it_ != it_end) {
+      if (main_it_.valid()) {
+        if (std::apply(all_exists, lists_)) {
+          return true;
+        }
       }
-      std::apply(add_to_iterator, iterators_);
+      ++main_it_;
     }
     return false;
   }
-
   auto get() const {
     return std::apply(
-        [](auto&... its) {
-          return std::make_tuple(std::ref(its.component())...);
+        [this](auto&... lists) {
+          return std::make_tuple(std::ref(main_it_.component()),
+                                 std::ref(lists->at(main_it_.pos()).component())
+                                 ...);
         },
-        iterators_);
-    //return std::make_tuple(std::ref(std::get<0>(iterators_).component()));
-
-    // auto tuple = std::apply(
-    //     [](auto&... its) {
-    //       return std::make_tuple(std::ref(its.component())...);
-    //     },
-    //     iterators_);
-    // return tuple;
+        lists_);
   }
 
 private:
-  std::tuple<Types&&...> lists_;
-  std::tuple<typename Types::Iterator...> iterators_;
+  std::tuple<Types*...> lists_;
+  T* main_list_;
+  typename T::Iterator main_it_;
 };

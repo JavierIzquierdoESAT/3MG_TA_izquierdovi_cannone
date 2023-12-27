@@ -1,6 +1,7 @@
 #pragma once
 
 #include <assert.h>
+#include <chrono>
 
 #include <optional>
 #include <ranges>
@@ -10,12 +11,12 @@
 #include "ecs/component_manager.hpp"
 #include "math/vector_3.h"
 
-void RenderSystem(std::vector<std::optional<Position>>& positions,
+inline void RenderSystem(std::vector<std::optional<Position>>& positions,
                   std::vector<std::optional<Render>>& render) {
   auto p = positions.begin();
   auto r = render.begin();
 
-  for (; p != positions.end(); p++, r++) {
+  for (; p != positions.end(); ++p, ++r) {
     if (!p->has_value() || !r->has_value()) continue;
     auto& pv = p->value();
     auto& rv = r->value();
@@ -40,8 +41,10 @@ void RenderSystem(std::vector<std::optional<Position>>& positions,
   assert(r == render.end());
 }
 
-void CircleMoveSystem(ComponentListSparse<Position>& positions,
-                      ComponentListSparse<AI>& ai_cmp) {
+inline void CircleMoveSystem(ComponentListSparse<Position>& positions,
+                      ComponentListSparse<AI>& ai_cmp)  {
+
+  auto start = std::chrono::system_clock::now();
   ComponentIterator it(positions, ai_cmp);
   while (it.next()) {
     auto [pv, aiv] = it.get();
@@ -55,4 +58,7 @@ void CircleMoveSystem(ComponentListSparse<Position>& positions,
     else
       pv.pos.x -= 0.05f;
   }
+  auto end = std::chrono::system_clock::now();
+  std::chrono::nanoseconds elapsed = end - start;
+  std::cout << elapsed.count() <<"?" << '\n';
 }

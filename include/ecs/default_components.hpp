@@ -15,7 +15,7 @@ struct Position {
 
   Position(const Position& p):
   pos{p.pos} {
-    std::cout<<"huh?";
+//    std::cout<<"huh?";
   }
 
   /// @brief current position in world
