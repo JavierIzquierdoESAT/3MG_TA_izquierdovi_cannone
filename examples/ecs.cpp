@@ -26,6 +26,7 @@ void CompactHard(ComponentListCompact<CompactTest1>& c1,
     auto mcmp_it = c2.at(e);
     if (mcmp_it != c2.end()) {
       auto& mcmp = mcmp_it->second;
+      mcmp.a=0.0f;
     }
   }
   auto end = std::chrono::system_clock::now();
@@ -38,6 +39,8 @@ void CompactEasy(ComponentListCompact<CompactTest1>& c1,
   ComponentIterator it(c1, c2);
   while (it.next()) {
     auto [pv, aiv] = it.get();
+    pv.a = 0.0f;
+    aiv.a = 0.0f;
   }
   auto end = std::chrono::system_clock::now();
   std::chrono::nanoseconds elapsed = end - start;
@@ -49,6 +52,8 @@ void MixedEasy(ComponentListCompact<CompactTest1>& c1,
   ComponentIterator it(c1, c2);
   while (it.next()) {
     auto [pv, aiv] = it.get();
+    pv.a = 0.0f;
+    aiv.a = 0.0f;
   }
   auto end = std::chrono::system_clock::now();
   std::chrono::nanoseconds elapsed = end - start;
@@ -60,6 +65,7 @@ void MixedHard(ComponentListCompact<CompactTest1>& c1,
   for (auto& [e, mcmp] : c1) {
     if (c2.at(e)->has_value()) {
       auto& pcmp = c2.at(e)->value();
+      pcmp.a = 0.0f;
     }
   }
   auto end = std::chrono::system_clock::now();
@@ -72,6 +78,8 @@ void SparseEasy(ComponentListSparse<SparseTest1>& c1,
   ComponentIterator it(c1, c2);
   while (it.next()) {
     auto [pv, aiv] = it.get();
+    pv.a = 0.0f;
+    aiv.a = 0.0f;
   }
   auto end = std::chrono::system_clock::now();
   std::chrono::nanoseconds elapsed = end - start;
@@ -86,6 +94,8 @@ void SparseHard(ComponentListSparse<SparseTest1>& c1,
     if (!p_it->has_value() || !ai_it->has_value()) continue;
     auto& pv = p_it->value();
     auto& aiv = ai_it->value();
+    pv.a = 0.0f;
+    aiv.a = 0.0f;
   }
   auto end = std::chrono::system_clock::now();
   std::chrono::nanoseconds elapsed = end - start;
@@ -120,47 +130,43 @@ struct Movement {
 void InputMoveSystem(ComponentListCompact<Movement>& mov,
                      ComponentListCompact<InputMovement>& input,
                      const InputManager& i) {
-
-  for (auto& [e, icmp] : input) {
-    auto mcmp_it = mov.at(e);
-    if (mcmp_it != mov.end()) {
-      auto& mcmp = mcmp_it->second;
-      mcmp.dir = coma::Vec2(0.0f, 0.0f);
-      int count = 0;
-      for (const std::string& action : icmp.actions) {
-        if (i.buttonPressed(action)) {
-          switch (count) {
-            case 0:
-              mcmp.dir.y++;
-              break;
-            case 1:
-              mcmp.dir.y--;
-              break;
-            case 2:
-              mcmp.dir.x--;
-              break;
-            case 3:
-              mcmp.dir.x++;
-              break;
-            default:
-              break;
-          }
+  ComponentIterator it(mov, input);
+  while (it.next()) {
+    auto [mcmp, icmp] = it.get();
+    mcmp.dir = coma::Vec2(0.0f, 0.0f);
+    int count = 0;
+    for (const std::string& action : icmp.actions) {
+      if (i.buttonPressed(action)) {
+        switch (count) {
+          case 0:
+            mcmp.dir.y++;
+          break;
+          case 1:
+            mcmp.dir.y--;
+          break;
+          case 2:
+            mcmp.dir.x--;
+          break;
+          case 3:
+            mcmp.dir.x++;
+          break;
+          default:
+            break;
         }
-        count++;
       }
+      count++;
     }
   }
 }
 
 void MoveSystem(ComponentListSparse<Position>& pos,
                 ComponentListCompact<Movement>& mov) {
-  for (auto& [e, mcmp] : mov) {
-    if (pos.at(e)->has_value()) {
-      Position& pcmp = pos.at(e)->value();
+  ComponentIterator it(mov, pos);
+  while (it.next()) {
+    auto [mcmp, pcmp] = it.get();
       coma::Vec3 dir = coma::Vec3(mcmp.dir.x, mcmp.dir.y, 0.0f);
       dir *= (mcmp.speed * Time::DeltaTime());
       pcmp.pos += dir;
-    }
   }
 }
 

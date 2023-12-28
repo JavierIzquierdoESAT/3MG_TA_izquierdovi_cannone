@@ -1,6 +1,5 @@
 #pragma once
-#include "component_manager.hpp"
-#include "component_manager.hpp"
+
 
 /// @brief type of container
 enum class ComponentListType {
@@ -61,7 +60,7 @@ public:
     using pointer = std::optional<T>*;    // or also value_type*
     using reference = std::optional<T>&;  // or also value_type&
 
-    Iterator(pointer ptr, int pos) : m_ptr_(ptr), pos_(pos) {}
+    Iterator(pointer ptr, unsigned pos) : m_ptr_(ptr), pos_(pos) {}
 
     reference operator*() const { return *m_ptr_; }
     pointer operator->() { return m_ptr_; }
@@ -84,7 +83,7 @@ public:
       return a.m_ptr_ != b.m_ptr_;
     };
 
-    int pos() const { return pos_; };
+    unsigned pos() const { return pos_; };
     bool valid() {
       return m_ptr_->has_value();
     }
@@ -94,7 +93,7 @@ public:
 
   private:
     pointer m_ptr_;
-    int pos_;
+    unsigned pos_;
   };
 
   Iterator begin() {
@@ -106,7 +105,7 @@ public:
   }
   Iterator end() {
     auto it = Iterator(&components_[components_.size() - 1],
-                       components_.size());
+                       static_cast<unsigned>(components_.size()));
     ++it;
     return it;
   }
@@ -148,7 +147,7 @@ public:
     using pointer = std::pair<unsigned, T>*;
     using reference = std::pair<unsigned, T>&;
 
-    Iterator(pointer ptr, bool ends = false) : m_ptr_(ptr), valid_{ends}{}
+    Iterator(pointer ptr, bool ends = false) : m_ptr_(ptr), valid_{!ends} {}
 
     reference operator*() const { return *m_ptr_; }
     pointer operator->() { return m_ptr_; }
@@ -168,7 +167,9 @@ public:
     friend bool operator!=(const Iterator& a, const Iterator& b) {
       return a.m_ptr_ != b.m_ptr_;
     }
-    int pos() const { return m_ptr_->first; };
+    int pos() const {
+      return m_ptr_->first;
+    }
     bool valid() const {
       return valid_;
     }
@@ -203,7 +204,8 @@ public:
   /// @brief get the last element + 1 (the element cannot be used)
   /// @return iterator
   Iterator end() {
-    auto it = Iterator(&components_[components_.size() - 1], true);
+    auto it = Iterator(
+        &components_[static_cast<unsigned>(components_.size()) - 1], true);
     ++it;
     return it;
   }
@@ -259,16 +261,18 @@ public:
       main_list_(&main),
       main_it_(main.begin()) {}
 
+  static bool allExists(auto&... lists) {
+    return (true && ... && lists->at(main_it_.pos()).valid());
+  }
   bool next() {
-    auto all_exists = [this](auto&... lists) -> bool {
+    auto all_exist = [this](auto&... lists) -> bool {
       return (true && ... && lists->at(main_it_.pos()).valid());
     };
     auto it_end = main_list_->end();
-    
+
     while (main_it_ != it_end) {
       if (main_it_.valid()) {
-        if (std::apply(all_exists, lists_)) {
-          ++main_it_;
+        if (std::apply(all_exist, lists_)) {
           return true;
         }
       }
@@ -276,14 +280,16 @@ public:
     }
     return false;
   }
-  auto get() const {
-    return std::apply(
+  auto get() {
+    auto res = std::apply(
         [this](auto&... lists) {
           return std::make_tuple(std::ref(main_it_.component()),
-                                 std::ref(lists->at(main_it_.pos()-1).component())
+                                 std::ref(lists->at(main_it_.pos()).component())
                                  ...);
         },
         lists_);
+    ++main_it_;
+    return res;
   }
 
 private:
