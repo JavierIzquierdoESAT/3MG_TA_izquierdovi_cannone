@@ -11,6 +11,7 @@
 #include "window.hpp"
 #include "engine.hpp"
 #include "imgui/imgui_impl_glfw_gl3.h"
+#include "imgui/imgui_props.h"
 
 
 int main(int argv, char** args) {
@@ -58,7 +59,7 @@ int main(int argv, char** args) {
     component_manager.addEntity<Position, AudioSource>(p, audio);
     component_manager.addEntity<Position, AudioSource>(p, audio2);
     component_manager.addEntity<Position, AudioSource>(p, audio3);
-
+    ImguiProp prop;
     
 
 
@@ -66,7 +67,7 @@ int main(int argv, char** args) {
 
         
       
-        
+        prop.AddNewTrack(component_manager);
         //Use the system to set the status od the audio comps
         SoundSystem(component_manager.getCompactIterator<AudioSource>(),
                     component_manager.getIterator<Position>());
