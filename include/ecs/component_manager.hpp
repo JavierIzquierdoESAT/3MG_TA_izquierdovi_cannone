@@ -17,14 +17,14 @@
 
 /// @brief Abstracto for component usage
 class ComponentManager {
- public:
+public:
   /// @brief
   ComponentManager();
   /// @brief non copyable
   ComponentManager(const ComponentManager&) = delete;
 
   ~ComponentManager() = default;
-
+  
   template <typename... T>
   unsigned addEntity(T&... args) {
     unsigned e = addEntity();
@@ -88,11 +88,8 @@ class ComponentManager {
     }
   }
 
-  /// @brief retrieves complete component container
-  /// @tparam T Component type
-  /// @return container
   template <typename T>
-  ComponentListCompact<T>& getCompactIterator() {
+  ComponentListCompact<T>& getCompactList() {
     auto comp_base = components_.find(typeid(T).hash_code());
     ComponentListCompact<T>* component_vector =
         static_cast<ComponentListCompact<T>*>(comp_base->second.get());
@@ -103,30 +100,11 @@ class ComponentManager {
   /// @tparam T Component type
   /// @return container
   template <typename T>
-  ComponentListSparse<T>& getIterator() {
+  ComponentListSparse<T>& getSparseList() {
     auto comp_base = components_.find(typeid(T).hash_code());
     ComponentListSparse<T>* component_vector =
         static_cast<ComponentListSparse<T>*>(comp_base->second.get());
     return *component_vector;
-  }
-
-  template <typename T>
-  ComponentList<T>& getList() {
-    auto comp_base = components_.find(typeid(T).hash_code());
-    ComponentList<T>* component_vector =
-        static_cast<ComponentList<T>*>(comp_base->second.get());
-    return *component_vector;
-  }
-
-  /// @brief retrieves all the components of the specified type
-  /// @tparam T component type
-  /// @return all T components
-  template <typename T>
-  std::vector<std::optional<T>>& getAll() {
-    auto comp_base = components_.find(typeid(T).hash_code());
-    ComponentListSparse<T>* component_vector =
-        static_cast<ComponentListSparse<T>*>(comp_base->second.get());
-    return component_vector->components_;
   }
 
 
@@ -140,7 +118,7 @@ class ComponentManager {
 
   // map containint all component lists
   std::unordered_map<std::size_t, std::unique_ptr<ComponentListBase>>
-      components_;
+  components_;
 
   // marks the positions where entities have been freed so that they can be
   // filled with new components to avoid blanks in the compoent vectors

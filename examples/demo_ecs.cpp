@@ -136,14 +136,14 @@ int main(int, char**) {
   InputManager i(window, g_input_map);
 
   while (!window.isDone()) {
-    InputMoveSystem(component_manager.getCompactIterator<Movement>(),
-                    component_manager.getCompactIterator<InputMovement>(), i);
-    MoveSystem(component_manager.getIterator<Position>(),
-               component_manager.getCompactIterator<Movement>());
-    CircleMoveSystem(component_manager.getIterator<Position>(),
-                     component_manager.getIterator<AI>());
-    RenderSystem(component_manager.getAll<Position>(),
-                 component_manager.getAll<Render>());
+    InputMoveSystem(component_manager.getCompactList<Movement>(),
+                    component_manager.getCompactList<InputMovement>(), i);
+    MoveSystem(component_manager.getSparseList<Position>(),
+               component_manager.getCompactList<Movement>());
+    CircleMoveSystem(component_manager.getSparseList<Position>(),
+                     component_manager.getSparseList<AI>());
+    RenderSystem(component_manager.getSparseList<Position>(),
+                 component_manager.getSparseList<Render>());
 
     window.update();
   }

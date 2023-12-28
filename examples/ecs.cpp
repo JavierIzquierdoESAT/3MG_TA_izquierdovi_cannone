@@ -26,7 +26,7 @@ void CompactHard(ComponentListCompact<CompactTest1>& c1,
     auto mcmp_it = c2.at(e);
     if (mcmp_it != c2.end()) {
       auto& mcmp = mcmp_it->second;
-      mcmp.a=0.0f;
+      mcmp.a = 0.0f;
     }
   }
   auto end = std::chrono::system_clock::now();
@@ -140,16 +140,16 @@ void InputMoveSystem(ComponentListCompact<Movement>& mov,
         switch (count) {
           case 0:
             mcmp.dir.y++;
-          break;
+            break;
           case 1:
             mcmp.dir.y--;
-          break;
+            break;
           case 2:
             mcmp.dir.x--;
-          break;
+            break;
           case 3:
             mcmp.dir.x++;
-          break;
+            break;
           default:
             break;
         }
@@ -164,9 +164,9 @@ void MoveSystem(ComponentListSparse<Position>& pos,
   ComponentIterator it(mov, pos);
   while (it.next()) {
     auto [mcmp, pcmp] = it.get();
-      coma::Vec3 dir = coma::Vec3(mcmp.dir.x, mcmp.dir.y, 0.0f);
-      dir *= (mcmp.speed * Time::DeltaTime());
-      pcmp.pos += dir;
+    coma::Vec3 dir = coma::Vec3(mcmp.dir.x, mcmp.dir.y, 0.0f);
+    dir *= (mcmp.speed * Time::DeltaTime());
+    pcmp.pos += dir;
   }
 }
 
@@ -233,14 +233,14 @@ int defaultMain() {
   InputManager i(window, g_input_map);
 
   while (!window.isDone()) {
-    InputMoveSystem(component_manager.getCompactIterator<Movement>(),
-                    component_manager.getCompactIterator<InputMovement>(), i);
-    MoveSystem(component_manager.getIterator<Position>(),
-               component_manager.getCompactIterator<Movement>());
-    CircleMoveSystem(component_manager.getIterator<Position>(),
-                     component_manager.getIterator<AI>());
-    RenderSystem(component_manager.getAll<Position>(),
-                 component_manager.getAll<Render>());
+    InputMoveSystem(component_manager.getCompactList<Movement>(),
+                    component_manager.getCompactList<InputMovement>(), i);
+    MoveSystem(component_manager.getSparseList<Position>(),
+               component_manager.getCompactList<Movement>());
+    CircleMoveSystem(component_manager.getSparseList<Position>(),
+                     component_manager.getSparseList<AI>());
+    RenderSystem(component_manager.getSparseList<Position>(),
+                 component_manager.getSparseList<Render>());
     window.update();
   }
 
@@ -296,22 +296,22 @@ int timeMain() {
   }
 
   while (!window.isDone()) {
-    CompactHard(component_manager.getCompactIterator<CompactTest1>(),
-            component_manager.getCompactIterator<CompactTest2>());
-    CompactEasy(component_manager.getCompactIterator<CompactTest1>(),
-                component_manager.getCompactIterator<CompactTest2>());
+    CompactHard(component_manager.getCompactList<CompactTest1>(),
+                component_manager.getCompactList<CompactTest2>());
+    CompactEasy(component_manager.getCompactList<CompactTest1>(),
+                component_manager.getCompactList<CompactTest2>());
 
-    MixedHard(component_manager.getCompactIterator<CompactTest1>(),
-      component_manager.getIterator<SparseTest1>());
-    MixedEasy(component_manager.getCompactIterator<CompactTest1>(),
-              component_manager.getIterator<SparseTest1>());
+    MixedHard(component_manager.getCompactList<CompactTest1>(),
+              component_manager.getSparseList<SparseTest1>());
+    MixedEasy(component_manager.getCompactList<CompactTest1>(),
+              component_manager.getSparseList<SparseTest1>());
 
 
-    SparseHard(component_manager.getIterator<SparseTest1>(),
-           component_manager.getIterator<SparseTest2>());
-    SparseEasy(component_manager.getIterator<SparseTest1>(),
-               component_manager.getIterator<SparseTest2>());
-    
+    SparseHard(component_manager.getSparseList<SparseTest1>(),
+               component_manager.getSparseList<SparseTest2>());
+    SparseEasy(component_manager.getSparseList<SparseTest1>(),
+               component_manager.getSparseList<SparseTest2>());
+
     window.update();
   }
 
@@ -319,6 +319,6 @@ int timeMain() {
 }
 
 int main(int, char**) {
-  //return defaultMain();
+  return defaultMain();
   return timeMain();
 }

@@ -21,8 +21,8 @@ int main(int, char**) {
   component_manager.addEntity<Position, Render>(pos, ren);
 
   while (!window.isDone()) {
-    RenderSystem(component_manager.getAll<Position>(),
-                 component_manager.getAll<Render>());
+    RenderSystem(component_manager.getSparseList<Position>(),
+                 component_manager.getSparseList<Render>());
 
     window.update();
   }

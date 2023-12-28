@@ -11,16 +11,12 @@
 #include "ecs/component_manager.hpp"
 #include "math/vector_3.h"
 
-inline void RenderSystem(std::vector<std::optional<Position>>& positions,
-                  std::vector<std::optional<Render>>& render) {
-  auto p = positions.begin();
-  auto r = render.begin();
+inline void RenderSystem(ComponentListSparse<Position>& positions,
+                  ComponentListSparse<Render>& render) {
 
-  for (; p != positions.end(); ++p, ++r) {
-    if (!p->has_value() || !r->has_value()) continue;
-    auto& pv = p->value();
-    auto& rv = r->value();
-
+  ComponentIterator it(positions, render);
+  while (it.next()) {
+    auto [pv, rv] = it.get();
     float posToArr[3] = {pv.pos.x, pv.pos.y, pv.pos.z};
     rv.shaderProgram.setUniformValue(DataType::FLOAT_3, posToArr, "position");
     float colToArr[3] = {1, 0, 1};
@@ -38,7 +34,6 @@ inline void RenderSystem(std::vector<std::optional<Position>>& positions,
     //glDrawArrays(GL_TRIANGLES, 0, 3);
     // Render
   }
-  assert(r == render.end());
 }
 
 inline void CircleMoveSystem(ComponentListSparse<Position>& positions,
