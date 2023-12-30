@@ -215,11 +215,12 @@ int defaultMain() {
                    {"1Up", "1Down", "1Left", "1Right"}, s, component_manager);
 
   std::vector<unsigned int> ents;
-  float trisize = 0.01f;
-  float tridist = 0.02f;
+
   int width = 100;
   for (int y = 0; y < width; y++) {
     for (int x = 0; x < width; x++) {
+      float trisize = 0.01f;
+      float tridist = 0.02f;
       float pos_x = (x - ((float)width / 2.0f)) * tridist;
       float pos_y = (y - ((float)width / 2.0f)) * tridist;
       Position p(pos_x, pos_y, 0.0f);
@@ -247,7 +248,7 @@ int defaultMain() {
   return 0;
 }
 
-int timeMain() {
+int TimeMain() {
   Engine e;
   Window window = Window::Make(e, 640, 480, "ventana");
 
@@ -319,6 +320,7 @@ int timeMain() {
 }
 
 int main(int, char**) {
-  return defaultMain();
-  return timeMain();
+  defaultMain();
+  //TimeMain();
+  return 0;
 }

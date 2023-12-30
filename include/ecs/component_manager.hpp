@@ -1,19 +1,12 @@
 #pragma once
 
-#include <cassert>
-#include <iostream>
 #include <memory>
 #include <optional>
-#include <tuple>
 #include <typeinfo>
 #include <unordered_map>
 #include <vector>
-
-#include "buffer.hpp"
 #include "default_components.hpp"
 #include "ecs/component_lists.hpp"
-#include "math/vector_2.h"
-#include "math/vector_3.h"
 
 /// @brief Abstracto for component usage
 class ComponentManager {
@@ -21,9 +14,11 @@ public:
   /// @brief
   ComponentManager();
   /// @brief non copyable
-  ComponentManager(const ComponentManager&) = delete;
-
   ~ComponentManager() = default;
+  ComponentManager(const ComponentManager&) = delete;
+  ComponentManager(ComponentManager&&) = default;
+  ComponentManager& operator= (const ComponentManager&) = delete;
+  ComponentManager& operator= (ComponentManager&&) = default;
   
   template <typename... T>
   unsigned addEntity(T&... args) {
