@@ -17,7 +17,7 @@ public:
   ComponentListBase(ComponentListType t) : type_{t} {}
 
   /// @brief type of container used
-  const ComponentListType type_;
+  ComponentListType type_;
 
   virtual ~ComponentListBase() = default;
 
@@ -34,12 +34,6 @@ protected:
   virtual bool removeComponent(unsigned e) = 0;
 };
 
-template <typename T>
-class ComponentList : public ComponentListBase {
-public:
-  ComponentList(ComponentListType t) : ComponentListBase(t) {}
-};
-
 /// @brief Container for compnents that are used by most entities
 /// 
 /// all of these containers will have the same size, wich will be number of
@@ -47,10 +41,10 @@ public:
 /// this component type, wasting performance when iterating them
 /// @tparam T Component to store
 template <typename T>
-class ComponentListSparse : public ComponentList<T> {
+class ComponentListSparse : public ComponentListBase {
 public:
   friend class ComponentManager;
-  ComponentListSparse() : ComponentList<T>(ComponentListType::kSparse) {}
+  ComponentListSparse() : ComponentListBase(ComponentListType::kSparse) {}
   using ComponentType = T;
   /// @brief provides an stardat way of iterating the container
   struct Iterator {
@@ -134,10 +128,10 @@ private:
 /// throug them, but elements will always have a component
 /// @tparam T Component to store
 template <typename T>
-class ComponentListCompact : public ComponentList<T> {
+class ComponentListCompact : public ComponentListBase {
 public:
   friend class ComponentManager;
-  ComponentListCompact() : ComponentList<T>(ComponentListType::kCompact) {}
+  ComponentListCompact() : ComponentListBase(ComponentListType::kCompact) {}
   using ComponentType = T;
   /// @brief provides an stardat way of iterating the container
   struct Iterator {
@@ -253,6 +247,11 @@ private:
   std::vector<std::pair<unsigned, T>> components_;
 };
 
+
+/// @brief helper to iterate several compoenent lists simultaneously
+/// 
+/// @tparam T Main list to iterate it should be list that contains less components
+/// @tparam Types Rest of the lists
 template <typename T, typename... Types>
 class ComponentIterator {
 public:
@@ -261,9 +260,10 @@ public:
       main_list_(&main),
       main_it_(main.begin()) {}
 
-  static bool allExists(auto&... lists) {
-    return (true && ... && lists->at(main_it_.pos()).valid());
-  }
+  /// @brief iterates all lists until an entity containing all components is found
+  /// 
+  /// @return true if an entity was found, false if no new entity was found
+  /// before reaching the end of a list
   bool next() {
     auto all_exist = [this](auto&... lists) -> bool {
       return (true && ... && lists->at(main_it_.pos()).valid());
@@ -280,6 +280,9 @@ public:
     }
     return false;
   }
+  /// @brief retrieve the components of the last entity found using next()
+  /// 
+  /// @return tuple containing references to all the requested components on the entity
   auto get() {
     auto res = std::apply(
         [this](auto&... lists) {
