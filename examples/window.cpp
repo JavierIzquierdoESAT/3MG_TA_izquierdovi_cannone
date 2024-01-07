@@ -40,8 +40,8 @@ int TriangleTutorial() {
 
   while (!window.isDone()) {
     //++++++++++++++++++++++++
-    RenderSystem(component_manager.getAll<Position>(),
-                 component_manager.getAll<Render>());
+    RenderSystem(component_manager.getSparseList<Position>(),
+                 component_manager.getSparseList<Render>());
     //++++++++++++++++++++++++
 
     window.update();
@@ -91,8 +91,8 @@ int InputTutorial() {
     }
     //++++++++++++++++++++++++
 
-    RenderSystem(component_manager.getAll<Position>(),
-                 component_manager.getAll<Render>());
+    RenderSystem(component_manager.getSparseList<Position>(),
+                 component_manager.getSparseList<Render>());
 
     window.update();
   }
@@ -127,8 +127,8 @@ int main(int, char**) {
     if (input.buttonDown("Left")) trianglePos->pos = Vec3(-0.5f, 0.0f, 0.0f);
     if (input.buttonDown("Right")) trianglePos->pos = Vec3(0.5f, 0.0f, 0.0f);
 
-    RenderSystem(component_manager.getAll<Position>(),
-                 component_manager.getAll<Render>());
+    RenderSystem(component_manager.getSparseList<Position>(),
+                 component_manager.getSparseList<Render>());
 
     window.update();
   }

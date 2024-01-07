@@ -48,8 +48,8 @@ int main(int, char**) {
       trianglePos->pos.x += speed * Time::DeltaTime();
     }
 
-    RenderSystem(component_manager.getAll<Position>(),
-                 component_manager.getAll<Render>());
+    RenderSystem(component_manager.getSparseList<Position>(),
+                 component_manager.getSparseList<Render>());
 
     window.update();
   }

@@ -96,8 +96,8 @@ int main(int, char**) {
     shade.setUniformValue(DataType::FLOAT_1, &t, "time");
 
     //render the obj
-    RenderSystem(component_manager.getAll<Position>(),
-                 component_manager.getAll<Render>());
+    RenderSystem(component_manager.getSparseList<Position>(),
+                 component_manager.getSparseList<Render>());
     t += Time::DeltaTime();
     w.update();
   }
