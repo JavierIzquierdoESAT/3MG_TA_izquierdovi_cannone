@@ -6,14 +6,14 @@ class ImguiProp {
   ~ImguiProp();
   void AddNewTrack(class ComponentManager& m);
 
-  float a[3];
-  float b[3];
-  float aux_gain;
-  float aux_pitch;
-  char name[255];
-  char root[255];
+  float pos_[3];
+  float speed_[3];
+  float aux_gain_;
+  float aux_pitch_;
+  char name_[255];
+  char root_[255];
 
 private:
-  std::vector<class SoundBuffer> myBuff;
+  std::vector<class SoundBuffer> myBuff_;
 
 };

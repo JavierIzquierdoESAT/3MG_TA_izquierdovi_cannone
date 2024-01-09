@@ -4,17 +4,17 @@
 #include "sound/soundbuffer.h"
 
 ImguiProp::ImguiProp()
-    : a{0.0f, 0.0f, 0.0f},
-      b{0.0f, 0.0f, 0.0f},
-      aux_gain{0.0f},
-      aux_pitch{0.0f},
-      name{""},
-      root{""} {}
+    : pos_{0.0f, 0.0f, 0.0f},
+      speed_{0.0f, 0.0f, 0.0f},
+      aux_gain_{0.0f},
+      aux_pitch_{0.0f},
+      name_{""},
+      root_{""} {}
 
 ImguiProp::~ImguiProp() {
   
-  for (auto& a : myBuff) {
-    a.active_ = false;
+  for (auto& audioBuf : myBuff_) {
+    audioBuf.active_ = false;
   }
 
 }
@@ -25,29 +25,29 @@ void ImguiProp::AddNewTrack(ComponentManager& m) {
   
 	 ImGui::Begin("New Sound");
 
-    ImGui::InputText("Name", name, 255);
-    ImGui::InputText("Archive Root", root, 255);
+    ImGui::InputText("Name", name_, 255);
+    ImGui::InputText("Archive Root", root_, 255);
     
-    ImGui::SliderFloat("Gain", &aux_gain, 0.0f, 1.0f, "%.3f");
+    ImGui::SliderFloat("Gain", &aux_gain_, 0.0f, 1.0f, "%.3f");
     
 
     
-    ImGui::SliderFloat("Pitch", &aux_pitch, 0.0f, 2.0f, "%.3f");
+    ImGui::SliderFloat("Pitch", &aux_pitch_, 0.0f, 2.0f, "%.3f");
 
 
-    ImGui::SliderFloat3("Position", a, -100.0f, 100.0f);
+    ImGui::SliderFloat3("Position", pos_, -100.0f, 100.0f);
 
   
     // Create the components of audio
     if (ImGui::Button("Create")) {
-      Position p(a[0], a[1], a[2]);
-      AudioSource audio(name, a, b, aux_gain, aux_pitch);
+      Position p(pos_[0], pos_[1], pos_[2]);
+      AudioSource audio(name_, pos_, speed_, aux_gain_, aux_pitch_);
       SoundBuffer buf =
-          SoundBuffer::MakeBuffer(root).value();
+          SoundBuffer::MakeBuffer(root_).value();
       
       audio.src.addSound(&buf);
       buf.active_ = true;
-      myBuff.push_back(buf);
+      myBuff_.push_back(buf);
       audio.src.start_ = false;
       audio.src.stop_ = false;
       m.addEntity<Position, AudioSource>(p, audio);
