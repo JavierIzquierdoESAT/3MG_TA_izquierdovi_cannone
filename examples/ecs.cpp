@@ -187,7 +187,7 @@ int defaultMain() {
   Window window = Window::Make(e, 640, 480, "ventana");
 
   ShaderManager s =
-      ShaderManager::MakeShaders("../assets/col.fs", "../assets/col.vs")
+      ShaderManager::MakeShaders("../assets/Shaders/col.fs", "../assets/Shaders/col.vs")
       .value();
 
   ComponentManager component_manager;
@@ -253,7 +253,7 @@ int TimeMain() {
   Window window = Window::Make(e, 640, 480, "ventana");
 
   ShaderManager s =
-      ShaderManager::MakeShaders("../assets/col.fs", "../assets/col.vs")
+      ShaderManager::MakeShaders("../assets/Shaders/col.fs", "../assets/Shaders/col.vs")
       .value();
 
   ComponentManager component_manager;

@@ -31,7 +31,7 @@ int TriangleTutorial() {
   ComponentManager component_manager;
   Position pos(0.0f, 0.0f, 0.0f);
   ShaderManager shader_program =
-      ShaderManager::MakeShaders("../assets/col.fs", "../assets/col.vs")
+      ShaderManager::MakeShaders("../assets/Shaders/col.fs", "../assets/Shaders/col.vs")
           .value();
   Render ren =
       Render::MakeTriangle(0.5f, Vec3(1.0f, 0.0f, 0.0f), shader_program);
@@ -67,7 +67,7 @@ int InputTutorial() {
   ComponentManager component_manager;
   Position pos(0.0f, 0.0f, 0.0f);
   ShaderManager shader_program =
-      ShaderManager::MakeShaders("../assets/col.fs", "../assets/col.vs")
+      ShaderManager::MakeShaders("../assets/Shaders/col.fs", "../assets/Shaders/col.vs")
           .value();
   Render ren =
       Render::MakeTriangle(0.5f, Vec3(1.0f, 0.0f, 0.0f), shader_program);
@@ -115,7 +115,7 @@ int main(int, char**) {
   // TODO: this should not be needed just an option
   // maybe we can use Engine to create some shader programs
   ShaderManager shader_program =
-      ShaderManager::MakeShaders("../assets/col.fs", "../assets/col.vs")
+      ShaderManager::MakeShaders("../assets/Shaders/col.fs", "../assets/Shaders/col.vs")
           .value();
   Render ren =
       Render::MakeTriangle(0.5f, Vec3(1.0f, 0.0f, 0.0f), shader_program);

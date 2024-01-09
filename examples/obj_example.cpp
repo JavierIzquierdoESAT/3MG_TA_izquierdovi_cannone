@@ -70,8 +70,8 @@ int main(int, char**) {
   std::vector<std::future<std::optional<Mesh>>> resultado;
 
   auto w = Window::Make(e, 640, 480, "ventana");
-  auto shade = ShaderManager::MakeShaders("../assets/obj.fs",
-                                          "../assets/obj.vs").value();
+  auto shade = ShaderManager::MakeShaders("../assets/Shaders/obj.fs",
+                                          "../assets/Shaders/obj.vs").value();
   std::vector<Render> r;
   
   e.loadObj("../assets/obj/javi.obj");

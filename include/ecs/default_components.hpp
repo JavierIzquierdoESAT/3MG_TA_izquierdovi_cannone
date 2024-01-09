@@ -23,6 +23,32 @@ struct Position {
   coma::Vec3 pos;
 };
 
+///@brief Component storing position in world
+struct Rotation {
+  Rotation() : rot{coma::Vec3(0, 0, 0)} {}
+  Rotation(float x, float y, float z) : rot{coma::Vec3(x, y, z)} {}
+
+  Rotation(const Rotation& p) : rot{p.rot} {
+    //    std::cout<<"huh?";
+  }
+
+  /// @brief current position in world
+  coma::Vec3 rot;
+};
+
+///@brief Component storing position in world
+struct Scale {
+  Scale() : scale{coma::Vec3(0, 0, 0)} {}
+  Scale(float x, float y, float z) : scale{coma::Vec3(x, y, z)} {}
+
+  Scale(const Scale& p) : scale{p.scale} {
+    //    std::cout<<"huh?";
+  }
+
+  /// @brief current position in world
+  coma::Vec3 scale;
+};
+
 /// @brief Component used for performing automated movement
 struct AI {
   /// @brief iterations moved in the same direction

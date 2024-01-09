@@ -3,8 +3,11 @@
 
 ComponentManager::ComponentManager() : current_entity_{1} {
   addComponentClass<Position>(ComponentListType::kSparse);
+  addComponentClass<Scale>(ComponentListType::kSparse);
+  addComponentClass<Rotation>(ComponentListType::kSparse);
   addComponentClass<Render>(ComponentListType::kSparse);
   addComponentClass<AI>(ComponentListType::kSparse);
+  addComponentClass<AudioSource>(ComponentListType::kSparse);
 }
 
 unsigned ComponentManager::addEntity() {

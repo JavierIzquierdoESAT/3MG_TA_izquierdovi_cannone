@@ -14,7 +14,7 @@ int main(int, char**) {
   ComponentManager component_manager;
   Position pos(0.0f, 0.0f, 0.0f);
   ShaderManager shader_program =
-      ShaderManager::MakeShaders("../assets/col.fs", "../assets/col.vs")
+      ShaderManager::MakeShaders("../assets/Shaders/col.fs", "../assets/Shaders/col.vs")
           .value();
   Render ren =
       Render::MakeTriangle(0.5f, Vec3(1.0f, 0.0f, 0.0f), shader_program);
