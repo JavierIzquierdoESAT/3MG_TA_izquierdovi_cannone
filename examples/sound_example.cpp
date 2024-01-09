@@ -69,8 +69,8 @@ int main(int argv, char** args) {
       
         prop.AddNewTrack(component_manager);
         //Use the system to set the status od the audio comps
-        SoundSystem(component_manager.getCompactIterator<AudioSource>(),
-                    component_manager.getIterator<Position>());
+        SoundSystem(component_manager.getCompactList<AudioSource>(),
+                    component_manager.getSparseList<Position>());
 
 
         window.renderImgui();
@@ -79,7 +79,7 @@ int main(int argv, char** args) {
     }
 
     //unbid all the buffers from the sources before delete
-    UnbindSoundSystem(component_manager.getCompactIterator<AudioSource>());
+    UnbindSoundSystem(component_manager.getCompactList<AudioSource>());
 
     return 0;
 }

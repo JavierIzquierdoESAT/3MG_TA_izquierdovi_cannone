@@ -94,10 +94,10 @@ int main(int, char**) {
 
 
     // render the obj
-    CircleMoveSystem(component_manager.getIterator<Position>(),
-                     component_manager.getIterator<AI>());
-    RenderSystem(component_manager.getAll<Position>(),
-                 component_manager.getAll<Render>());
+    CircleMoveSystem(component_manager.getSparseList<Position>(),
+                     component_manager.getSparseList<AI>());
+    RenderSystem(component_manager.getSparseList<Position>(),
+                 component_manager.getSparseList<Render>());
     elapsed_time += Time::DeltaTime();
     window.update();
   }

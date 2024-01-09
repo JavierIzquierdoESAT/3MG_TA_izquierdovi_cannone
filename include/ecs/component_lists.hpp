@@ -1,5 +1,6 @@
 #pragma once
 
+
 /// @brief type of container
 enum class ComponentListType {
   kCompact,  ///< for compoenents used by few entities
@@ -8,7 +9,7 @@ enum class ComponentListType {
 
 /// @brief Interface for the different Component containers
 class ComponentListBase {
- public:
+public:
   friend class ComponentManager;
 
   /// @brief
@@ -16,11 +17,11 @@ class ComponentListBase {
   ComponentListBase(ComponentListType t) : type_{t} {}
 
   /// @brief type of container used
-  const ComponentListType type_;
+  ComponentListType type_;
 
   virtual ~ComponentListBase() = default;
 
- protected:
+protected:
   /// @brief performs needed operations on the container when adding entities 
   /// to the program
   /// @param e entity id
@@ -41,10 +42,10 @@ class ComponentListBase {
 /// @tparam T Component to store
 template <typename T>
 class ComponentListSparse : public ComponentListBase {
- public:
+public:
   friend class ComponentManager;
   ComponentListSparse() : ComponentListBase(ComponentListType::kSparse) {}
-
+  using ComponentType = T;
   /// @brief provides an stardat way of iterating the container
   struct Iterator {
     using iterator_category = std::forward_iterator_tag;
@@ -53,18 +54,20 @@ class ComponentListSparse : public ComponentListBase {
     using pointer = std::optional<T>*;    // or also value_type*
     using reference = std::optional<T>&;  // or also value_type&
 
-    Iterator(pointer ptr) : m_ptr_(ptr) {}
+    Iterator(pointer ptr, unsigned pos) : m_ptr_(ptr), pos_(pos) {}
 
     reference operator*() const { return *m_ptr_; }
     pointer operator->() { return m_ptr_; }
 
     Iterator& operator++() {
-      m_ptr_++;
+      ++m_ptr_;
+      ++pos_;
       return *this;
     }
     Iterator operator++(int) {
       Iterator tmp = *this;
       ++(*this);
+      ++this->pos_;
       return tmp;
     }
     friend bool operator==(const Iterator& a, const Iterator& b) {
@@ -74,19 +77,34 @@ class ComponentListSparse : public ComponentListBase {
       return a.m_ptr_ != b.m_ptr_;
     };
 
-   private:
+    unsigned pos() const { return pos_; };
+    bool valid() {
+      return m_ptr_->has_value();
+    }
+    T& component() const {
+      return m_ptr_->value();
+    }
+
+  private:
     pointer m_ptr_;
+    unsigned pos_;
   };
 
-  Iterator begin() { return Iterator(&components_[0]); };
-  Iterator at(unsigned e) { return Iterator(&components_.at(e - 1)); }
+  Iterator begin() {
+    return Iterator(&components_[0], 1);
+  };
+  Iterator at(unsigned e) {
+    return Iterator(&components_.at(e - 1),
+                    e);
+  }
   Iterator end() {
-    auto it = Iterator(&components_[components_.size() - 1]);
-    it++;
+    auto it = Iterator(&components_[components_.size() - 1],
+                       static_cast<unsigned>(components_.size()));
+    ++it;
     return it;
   }
 
- private:
+private:
   bool addEntity(unsigned e) override {
     if (e >= components_.size()) {
       components_.emplace_back(std::optional<T>());
@@ -111,10 +129,10 @@ class ComponentListSparse : public ComponentListBase {
 /// @tparam T Component to store
 template <typename T>
 class ComponentListCompact : public ComponentListBase {
- public:
+public:
   friend class ComponentManager;
   ComponentListCompact() : ComponentListBase(ComponentListType::kCompact) {}
-
+  using ComponentType = T;
   /// @brief provides an stardat way of iterating the container
   struct Iterator {
     using iterator_category = std::forward_iterator_tag;
@@ -123,13 +141,13 @@ class ComponentListCompact : public ComponentListBase {
     using pointer = std::pair<unsigned, T>*;
     using reference = std::pair<unsigned, T>&;
 
-    Iterator(pointer ptr) : m_ptr_(ptr) {}
+    Iterator(pointer ptr, bool ends = false) : m_ptr_(ptr), valid_{!ends} {}
 
     reference operator*() const { return *m_ptr_; }
     pointer operator->() { return m_ptr_; }
 
     Iterator& operator++() {
-      m_ptr_++;
+      ++m_ptr_;
       return *this;
     }
     Iterator operator++(int) {
@@ -139,41 +157,54 @@ class ComponentListCompact : public ComponentListBase {
     }
     friend bool operator==(const Iterator& a, const Iterator& b) {
       return a.m_ptr_ == b.m_ptr_;
-    };
+    }
     friend bool operator!=(const Iterator& a, const Iterator& b) {
       return a.m_ptr_ != b.m_ptr_;
-    };
+    }
+    int pos() const {
+      return m_ptr_->first;
+    }
+    bool valid() const {
+      return valid_;
+    }
+    T& component() const {
+      return m_ptr_->second;
+    }
 
-   private:
+  private:
     pointer m_ptr_;
+    bool valid_;
   };
-  
+
   /// @brief get the first element of the container
   /// @return iterator
-  Iterator begin() { return Iterator(&components_[0]); };
+  Iterator begin() {
+    return Iterator(&components_[0]);
+  }
 
   /// @brief get the component of a specific entity
   /// @param e entity to retrieve the component from
   /// @return iterator or end() if not found
   Iterator at(unsigned e) {
-    // TODO: posible bug converting form vector iterator to ComponentListCompact
-    // iterator
+    // TODO: possible bug converting form vector iterator to ComponentListCompact
     auto lb =
         std::lower_bound(components_.begin(), components_.end(), e, compare);
 
     size_t pos = lb - components_.begin();
-    if (lb->first == e) return Iterator(&components_.at(pos));
+    if (lb->first == e)
+      return Iterator(&components_.at(pos));
     return end();
   }
   /// @brief get the last element + 1 (the element cannot be used)
   /// @return iterator
   Iterator end() {
-    auto it = Iterator(&components_[components_.size() - 1]);
-    it++;
+    auto it = Iterator(
+        &components_[static_cast<unsigned>(components_.size()) - 1], true);
+    ++it;
     return it;
   }
 
- private:
+private:
   static bool compare(std::pair<unsigned, T>& x, unsigned e) {
     return x.first < e;
   }
@@ -214,4 +245,58 @@ class ComponentListCompact : public ComponentListBase {
   }
 
   std::vector<std::pair<unsigned, T>> components_;
+};
+
+
+/// @brief helper to iterate several compoenent lists simultaneously
+/// 
+/// @tparam T Main list to iterate it should be list that contains less components
+/// @tparam Types Rest of the lists
+template <typename T, typename... Types>
+class ComponentIterator {
+public:
+  ComponentIterator(T& main, Types&... list)
+    : lists_(std::make_tuple(&list...)),
+      main_list_(&main),
+      main_it_(main.begin()) {}
+
+  /// @brief iterates all lists until an entity containing all components is found
+  /// 
+  /// @return true if an entity was found, false if no new entity was found
+  /// before reaching the end of a list
+  bool next() {
+    auto all_exist = [this](auto&... lists) -> bool {
+      return (true && ... && lists->at(main_it_.pos()).valid());
+    };
+    auto it_end = main_list_->end();
+
+    while (main_it_ != it_end) {
+      if (main_it_.valid()) {
+        if (std::apply(all_exist, lists_)) {
+          return true;
+        }
+      }
+      ++main_it_;
+    }
+    return false;
+  }
+  /// @brief retrieve the components of the last entity found using next()
+  /// 
+  /// @return tuple containing references to all the requested components on the entity
+  auto get() {
+    auto res = std::apply(
+        [this](auto&... lists) {
+          return std::make_tuple(std::ref(main_it_.component()),
+                                 std::ref(lists->at(main_it_.pos()).component())
+                                 ...);
+        },
+        lists_);
+    ++main_it_;
+    return res;
+  }
+
+private:
+  std::tuple<Types*...> lists_;
+  T* main_list_;
+  typename T::Iterator main_it_;
 };
