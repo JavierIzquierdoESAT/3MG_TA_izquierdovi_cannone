@@ -6,29 +6,35 @@
 #include <iostream>
 
 #include "engine.hpp"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw_gl3.h"
 #include "input.hpp"
 
-Window::Window(GLFWwindow* w, Engine* e) : window_handle_{w}, engine_{e} {
+Window::Window(GLFWwindow* w, Engine* e, ImGuiIO* o)
+    : window_handle_{w}, engine_{e}, io_{o} {
   glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwMakeContextCurrent(w);
   glewInit();
+
 }
 
 Window::Window(Window& w)
-    : window_handle_{w.window_handle_}, engine_{w.engine_} {
+    : window_handle_{w.window_handle_}, engine_{w.engine_}, io_{w.io_} {
   w.window_handle_ = NULL;
 }
 
 Window::Window(Window&& w) noexcept
-    : window_handle_{w.window_handle_}, engine_{w.engine_} {
+    : window_handle_{w.window_handle_}, engine_{w.engine_}, io_{w.io_} {
   w.window_handle_ = NULL;
 }
 
 Window::~Window() {
   if (NULL != window_handle_) {
     glfwDestroyWindow(window_handle_);
+    ImGui_ImplGlfwGL3_Shutdown();
+    ImGui::DestroyContext();
   }
 }
 
@@ -49,15 +55,32 @@ Window Window::Make(Engine& e, int w, int h, const std::string& title) {
               << std::endl;
     std::exit(EXIT_FAILURE);
   }
+  
+   ImGui::CreateContext();
+   ImGuiIO* o = &ImGui::GetIO();
+   ImGui_ImplGlfwGL3_Init(wind, true);
+   ImGui::StyleColorsDark();
 
-  return Window{wind, &e};
+  return Window{wind, &e, o};
 }
 
 void Window::update() const {
+
+    
+  ImGui::Render();
   glfwSwapBuffers(window_handle_);
   glClear(GL_COLOR_BUFFER_BIT);
+
   InputManager::update();
   engine_->update();
 }
 
-bool Window::isDone() const { return glfwWindowShouldClose(window_handle_); }
+void Window::renderImgui() const {
+  ImGui::Render();
+  ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+bool Window::isDone() const {
+  ImGui_ImplGlfwGL3_NewFrame();
+  return glfwWindowShouldClose(window_handle_);
+}

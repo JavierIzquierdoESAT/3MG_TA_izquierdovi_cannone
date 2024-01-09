@@ -7,6 +7,7 @@
 #include "math/vector_2.h"
 #include "math/vector_3.h"
 #include "shader_manager.hpp"
+#include "sound/soundsource.h"
 
 ///@brief Component storing position in world
 struct Position {
@@ -30,7 +31,15 @@ struct AI {
   bool right = false;
 };
 
-/// @brief Component storing rendering information
+struct AudioSource {
+  AudioSource(std::string name, ALfloat pos[3] ,
+              ALfloat speed[3],
+              float gain = 1.0f, float pitch = 1.0f)
+      : src(name, &pos[0], &speed[0], gain, pitch) {}
+
+    SoundSource src;
+};
+
 struct Render {
   // TODO: rendermode
   Render(std::vector<coma::Vec3> position, std::vector<coma::Vec3> normals,

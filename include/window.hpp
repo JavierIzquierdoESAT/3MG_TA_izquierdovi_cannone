@@ -44,11 +44,14 @@ class Window {
 
   /// @brief swaps screen buffers
   void update() const;
+  void renderImgui() const;
 
  private:
-  Window(GLFWwindow* w, Engine* e);
+  Window(GLFWwindow* w, Engine* e, struct ImGuiIO* o);
 
   /** openGL window handle */
   GLFWwindow* window_handle_;
   Engine* engine_;
+  struct ImGuiIO* io_;
+  
 };

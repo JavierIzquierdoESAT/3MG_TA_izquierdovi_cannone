@@ -19,4 +19,6 @@ public:
 private:
   std::vector<std::future<std::optional<Mesh>>> loading_meshes_;
   JobSystem job_system_;
+  struct ALCdevice* device_;
+  struct ALCcontext* ctx_;
 };
