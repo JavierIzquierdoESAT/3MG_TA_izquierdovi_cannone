@@ -6,6 +6,7 @@
 #include "buffer.hpp"
 #include "math/vector_2.h"
 #include "math/vector_3.h"
+#include "math/matrix_4.h"
 #include "shader_manager.hpp"
 #include "sound/soundsource.h"
 
@@ -39,6 +40,28 @@ struct AudioSource {
 
     SoundSource src;
 };
+
+struct TreeNode {
+  //check order
+  unsigned parent;
+  std::array<unsigned, 4> children;
+};
+
+struct Material {
+  Buffer mesh;     // will be Mesh class
+  Buffer indices;  // will be Index class
+
+  // probably handled with bitmasks
+  bool is_visible;
+  bool is_transparent;
+
+  std::array<Material*, 4> children;
+};
+struct Transform {
+  coma::Mat4 t;
+};
+
+
 
 struct Render {
   // TODO: rendermode
@@ -74,3 +97,4 @@ struct Render {
   /// @brief GPU buffer containing the order in which to paint the vercices
   Buffer index_buffer;
 };
+
