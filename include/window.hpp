@@ -46,10 +46,8 @@ class Window {
   void update() const;
   void renderImgui() const;
 
-  GLFWwindow* const GetWindow() { return window_handle_; }
-
  private:
-  Window(GLFWwindow* w, Engine* e);
+  Window(GLFWwindow* w, Engine* e, struct ImGuiIO* o);
 
   /** openGL window handle */
   GLFWwindow* window_handle_;

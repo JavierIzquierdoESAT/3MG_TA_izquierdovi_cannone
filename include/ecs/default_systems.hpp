@@ -107,6 +107,7 @@ void SoundSystem(ComponentListCompact<AudioSource> &audio,
     }
 }
 
+//TODO:: Move to the destructor
 void UnbindSoundSystem(ComponentListCompact<AudioSource>& audio) {
   for (auto& [e, audio_comp] : audio) {
     

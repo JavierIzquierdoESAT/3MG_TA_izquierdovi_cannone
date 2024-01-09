@@ -10,18 +10,14 @@
 #include "imgui/imgui_impl_glfw_gl3.h"
 #include "input.hpp"
 
-Window::Window(GLFWwindow* w, Engine* e)
-    : window_handle_{w}, engine_{e}, io_{nullptr} {
+Window::Window(GLFWwindow* w, Engine* e, ImGuiIO* o)
+    : window_handle_{w}, engine_{e}, io_{o} {
   glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwMakeContextCurrent(w);
   glewInit();
-  ImGui::CreateContext();
-  io_ = &ImGui::GetIO();
-  (void)io_;
-  ImGui_ImplGlfwGL3_Init(w, true);
-  ImGui::StyleColorsDark();
+
 }
 
 Window::Window(Window& w)
@@ -59,8 +55,13 @@ Window Window::Make(Engine& e, int w, int h, const std::string& title) {
               << std::endl;
     std::exit(EXIT_FAILURE);
   }
+  
+   ImGui::CreateContext();
+   ImGuiIO* o = &ImGui::GetIO();
+   ImGui_ImplGlfwGL3_Init(wind, true);
+   ImGui::StyleColorsDark();
 
-  return Window{wind, &e};
+  return Window{wind, &e, o};
 }
 
 void Window::update() const {
